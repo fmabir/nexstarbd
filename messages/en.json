@@ -1,0 +1,187 @@
+{
+  "nav": {
+    "home": "Home",
+    "tournaments": "Tournaments",
+    "rules": "Rules",
+    "hallOfFame": "Hall of Fame",
+    "community": "Community",
+    "admin": "Admin"
+  },
+  "hero": {
+    "title": "Bangladesh Free Fire Community Tournament",
+    "subtitle": "Weekly Squad Battles | Free Registration | Prize Pools",
+    "cta_register": "Register Now",
+    "cta_winners": "View Previous Winners"
+  },
+  "tournament": {
+    "upcoming": "Upcoming Tournaments",
+    "noTournaments": "No upcoming tournaments right now. Stay tuned!",
+    "prizePool": "Prize Pool",
+    "mode": "Mode",
+    "slots": "Slots",
+    "date": "Date",
+    "status_upcoming": "Upcoming",
+    "status_ongoing": "LIVE",
+    "status_completed": "Completed",
+    "status_cancelled": "Cancelled",
+    "registerBtn": "Register Squad",
+    "viewDashboard": "View Dashboard",
+    "waitlistBtn": "Join Waitlist",
+    "registrationClosed": "Registration Closed",
+    "liveNow": "LIVE NOW",
+    "startsIn": "Starts In",
+    "registrationEnds": "Registration Ends"
+  },
+  "registration": {
+    "title": "Register Your Squad",
+    "subtitle": "Fill in your squad details to join the tournament",
+    "squadName": "Squad Name",
+    "leaderName": "Team Leader IGN",
+    "ffuid": "Free Fire UID",
+    "whatsapp": "WhatsApp Number",
+    "player": "Player",
+    "playerIGN": "Player IGN (In-Game Name)",
+    "playerUID": "Player UID",
+    "captain": "Captain",
+    "submit": "Register Squad",
+    "submitting": "Registering...",
+    "success": "Squad registered successfully!",
+    "successMsg": "Your squad has been registered. Check the tournament dashboard for updates.",
+    "waitlistSuccess": "Added to waiting list!",
+    "waitlistMsg": "All 12 slots are filled. Your squad is on the waiting list.",
+    "error_duplicate": "This Free Fire UID is already registered in this tournament.",
+    "error_closed": "Registration is currently closed.",
+    "error_generic": "Something went wrong. Please try again.",
+    "waitlistBanner": "All slots are filled! Registering will add you to the waiting list.",
+    "optional": "Optional"
+  },
+  "dashboard": {
+    "title": "Tournament Dashboard",
+    "squads": "Registered Squads",
+    "announcements": "Announcements",
+    "roomInfo": "Room Information",
+    "roomId": "Room ID",
+    "roomPassword": "Room Password",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "noAnnouncements": "No announcements yet. Check back soon!",
+    "slot": "Slot",
+    "waitlist": "Waitlist",
+    "noSquads": "No squads registered yet. Be the first!",
+    "matchTiming": "Match Timing",
+    "status": "Status"
+  },
+  "announcements": {
+    "latest": "Latest Announcements",
+    "pinned": "Pinned",
+    "info": "Info",
+    "warning": "Warning",
+    "roomInfo": "Room Info",
+    "result": "Result"
+  },
+  "hallOfFame": {
+    "title": "Hall of Fame",
+    "subtitle": "Champions of Bangladesh Free Fire Community",
+    "champion": "Champion",
+    "runnerUp": "Runner-Up",
+    "thirdPlace": "3rd Place",
+    "prize": "Prize",
+    "noWinners": "No previous tournament results yet."
+  },
+  "mvp": {
+    "title": "MVP Players",
+    "subtitle": "Our most outstanding performers",
+    "kills": "Kills",
+    "damage": "Damage",
+    "badge": "MVP"
+  },
+  "sponsors": {
+    "title": "Our Sponsors & Partners"
+  },
+  "community": {
+    "title": "Join Our Community",
+    "subtitle": "Connect with thousands of Free Fire players in Bangladesh",
+    "discord": "Join Discord",
+    "facebook": "Facebook Group",
+    "whatsapp": "WhatsApp Community"
+  },
+  "rules": {
+    "title": "Tournament Rules",
+    "subtitle": "Please read all rules carefully before registering",
+    "fairPlay": {
+      "title": "Fair Play",
+      "rules": [
+        "No hacking, cheating, or using third-party software",
+        "No teaming with other squads outside your registered team",
+        "All players must use their registered Free Fire UID",
+        "Respect all opponents and tournament officials"
+      ]
+    },
+    "squad": {
+      "title": "Squad Requirements",
+      "rules": [
+        "Each squad must have 2–4 players",
+        "One squad per team — duplicate UIDs will be disqualified",
+        "Players cannot be on multiple squads in the same tournament",
+        "Squad leader is responsible for team conduct"
+      ]
+    },
+    "match": {
+      "title": "Match Rules",
+      "rules": [
+        "Join the room within 5 minutes of the room ID announcement",
+        "Squads not joining on time will be disqualified",
+        "Room ID and password will be posted in the tournament dashboard",
+        "Follow all in-game tournament settings as specified by admin"
+      ]
+    },
+    "disqualification": {
+      "title": "Disqualification",
+      "rules": [
+        "Using any form of cheating software results in immediate disqualification",
+        "Abusive language or harassment will result in a ban",
+        "Intentional disconnection to avoid elimination is not allowed",
+        "Admin decisions are final in all disputes"
+      ]
+    }
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "login": "Admin Login",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "dashboard": "Dashboard",
+    "tournaments": "Tournaments",
+    "announcements": "Announcements",
+    "winners": "Winners",
+    "mvp": "MVP Players",
+    "sponsors": "Sponsors",
+    "createTournament": "Create Tournament",
+    "manageTournament": "Manage Tournament",
+    "postAnnouncement": "Post Announcement",
+    "selectWinner": "Select Winner",
+    "openRegistration": "Open Registration",
+    "closeRegistration": "Close Registration",
+    "setRoomInfo": "Set Room Info",
+    "viewRegistrations": "View Registrations",
+    "removeSquad": "Remove Squad",
+    "promoteWaitlist": "Promote from Waitlist",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "uploadBanner": "Upload Banner",
+    "uploadPhoto": "Upload Photo",
+    "uploadLogo": "Upload Logo"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "back": "Back",
+    "seeAll": "See All",
+    "bd": "Bangladesh",
+    "freeFire": "Free Fire"
+  }
+}

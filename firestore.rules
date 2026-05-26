@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // All collections: public read, no direct client writes
+    // All mutations go through Next.js API routes using Admin SDK
+
+    match /tournaments/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /registrations/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /announcements/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /winners/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /mvpPlayers/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /sponsors/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

@@ -8,19 +8,44 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: #F42A41;
+  --color-primary-dark: #D41F32;
+  --color-primary-light: #FFF3F4;
+  --color-secondary: #006A4E;
+  --color-secondary-dark: #004D39;
+  --color-secondary-light: #E6F4F0;
+  --color-muted: #F5F5F5;
+  --color-muted-foreground: #6B7280;
+  --color-border: #E5E7EB;
+  --color-card: #ffffff;
+  --font-sans: var(--font-barlow);
+  --font-display: var(--font-bebas);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #F42A41;
+  border-radius: 3px;
+}
+
+/* Selection color */
+::selection {
+  background: #F42A41;
+  color: white;
 }

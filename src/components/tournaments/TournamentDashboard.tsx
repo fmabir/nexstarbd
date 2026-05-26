@@ -1,0 +1,62 @@
+"use client";
+
+import { useAnnouncements } from "@/lib/hooks/useAnnouncements";
+import { AnnouncementCard } from "@/components/announcements/AnnouncementCard";
+import { SquadList } from "./SquadList";
+import { RoomInfoCard } from "./RoomInfoCard";
+import { Spinner } from "@/components/ui/Spinner";
+import { useTranslations } from "next-intl";
+import type { Tournament } from "@/lib/types";
+
+export function TournamentDashboard({ tournament }: { tournament: Tournament }) {
+  const t = useTranslations("dashboard");
+  const { announcements, loading } = useAnnouncements(tournament.id);
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+      {/* Left: Announcements + Room Info */}
+      <div className="lg:col-span-3 space-y-6">
+        {/* Room info (shown when ongoing and room is set) */}
+        {tournament.status === "ongoing" &&
+          tournament.roomId &&
+          tournament.roomPassword && (
+            <RoomInfoCard
+              roomId={tournament.roomId}
+              roomPassword={tournament.roomPassword}
+            />
+          )}
+
+        {/* Announcements */}
+        <div>
+          <h2 className="font-display text-2xl text-foreground tracking-wide mb-4">
+            {t("announcements")}
+          </h2>
+          {loading ? (
+            <div className="flex justify-center py-8">
+              <Spinner />
+            </div>
+          ) : announcements.length === 0 ? (
+            <div className="text-center py-8 bg-muted rounded-xl">
+              <p className="text-2xl mb-2">📢</p>
+              <p className="text-muted-foreground text-sm">{t("noAnnouncements")}</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {announcements.map((a) => (
+                <AnnouncementCard key={a.id} announcement={a} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Right: Squad list */}
+      <div className="lg:col-span-2">
+        <h2 className="font-display text-2xl text-foreground tracking-wide mb-4">
+          {t("squads")}
+        </h2>
+        <SquadList tournamentId={tournament.id} />
+      </div>
+    </div>
+  );
+}
