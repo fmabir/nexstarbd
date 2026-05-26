@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
 import { CountdownTimer } from "./CountdownTimer";
 import { SlotProgressBar } from "./SlotProgressBar";
 import type { Tournament, TournamentStatus } from "@/lib/types";
@@ -24,47 +23,43 @@ export function TournamentCard({ tournament }: { tournament: Tournament }) {
 
   return (
     <div className="rounded-2xl border border-border overflow-hidden bg-white hover:shadow-md transition-shadow flex flex-col">
-      {/* Banner — clean, no negative margins */}
+      {/* Banner */}
       <div
-        className="relative h-36 w-full shrink-0 overflow-hidden"
+        className="relative w-full shrink-0 overflow-hidden"
         style={{
+          height: "68px",
           backgroundImage: `url(${resolveBannerUrl(tournament.bannerUrl, tournament.id)})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundColor: "#1f2937",
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-        <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2">
-          <h3 className="font-display text-lg text-white tracking-wide leading-tight line-clamp-2 flex-1">
-            {tournament.name}
-          </h3>
-          <Badge variant={s.variant} className="shrink-0">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent" />
+        <div className="absolute top-1.5 right-1.5">
+          <Badge variant={s.variant}>
             {s.label === "LIVE" && (
               <span className="w-1.5 h-1.5 bg-current rounded-full animate-pulse mr-1" />
             )}
             {s.label}
           </Badge>
         </div>
+        <div className="absolute bottom-1.5 left-2 right-2">
+          <h3 className="font-display text-xs text-white tracking-wide leading-tight line-clamp-2">
+            {tournament.name}
+          </h3>
+        </div>
       </div>
 
       {/* Body */}
-      <div className="p-4 flex flex-col gap-3 flex-1">
-        {/* Info grid */}
-        <div className="grid grid-cols-2 gap-2 text-sm">
-          <div>
-            <span className="text-xs text-muted-foreground uppercase tracking-wide font-semibold block">Prize</span>
-            <span className="font-bold text-secondary">{tournament.prizePool}</span>
-          </div>
-          <div>
-            <span className="text-xs text-muted-foreground uppercase tracking-wide font-semibold block">Mode</span>
-            <span className="font-semibold">{tournament.mode}</span>
-          </div>
-          <div className="col-span-2">
-            <span className="text-xs text-muted-foreground uppercase tracking-wide font-semibold block">Date</span>
-            <span className="font-semibold text-xs">{formatTournamentDate(tournament.startsAt)}</span>
-          </div>
+      <div className="p-2 flex flex-col gap-1.5 flex-1">
+        {/* Prize + mode row */}
+        <div className="flex items-center justify-between gap-1">
+          <span className="text-xs font-bold text-primary leading-none">{tournament.prizePool}</span>
+          <span style={{ fontSize: "10px" }} className="font-semibold text-secondary bg-secondary/10 px-1.5 py-0.5 rounded-full">{tournament.mode}</span>
         </div>
+
+        {/* Date */}
+        <p style={{ fontSize: "10px" }} className="text-muted-foreground">{formatTournamentDate(tournament.startsAt)}</p>
 
         {/* Slots */}
         <SlotProgressBar
@@ -78,22 +73,34 @@ export function TournamentCard({ tournament }: { tournament: Tournament }) {
           <CountdownTimer targetDate={tournament.startsAt.toDate()} />
         )}
 
-        {/* Actions — pushed to bottom */}
-        <div className="flex gap-2 mt-auto pt-1">
+        {/* Actions */}
+        <div className="flex gap-1.5 mt-auto pt-0.5">
           {canRegister ? (
-            <Button href={`/register/${tournament.id}`} variant={isFull ? "outline" : "primary"} size="sm" className="flex-1">
+            <Link
+              href={`/register/${tournament.id}`}
+              style={{ fontSize: "10px" }}
+              className={`flex-1 text-center font-bold py-1 rounded-lg border transition-colors ${
+                isFull
+                  ? "border-border text-foreground hover:bg-muted"
+                  : "bg-primary hover:bg-primary-dark text-white border-primary"
+              }`}
+            >
               {isFull ? "Join Waitlist" : "Register Squad"}
-            </Button>
+            </Link>
           ) : (
-            <span className="flex-1 text-center text-xs text-muted-foreground py-2 font-medium">
+            <span style={{ fontSize: "10px" }} className="flex-1 text-center text-muted-foreground py-1 font-medium">
               {tournament.status === "completed" ? "Tournament Ended"
                 : tournament.status === "cancelled" ? "Cancelled"
                 : "Registration Closed"}
             </span>
           )}
-          <Button href={`/tournaments/${tournament.id}`} variant="ghost" size="sm">
-            Details
-          </Button>
+          <Link
+            href={`/tournaments/${tournament.id}`}
+            style={{ fontSize: "10px" }}
+            className="font-bold text-primary bg-primary/8 border border-primary/20 rounded-lg px-2 py-1 hover:bg-primary hover:text-white transition-colors"
+          >
+            Details →
+          </Link>
         </div>
       </div>
     </div>

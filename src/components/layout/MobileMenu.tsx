@@ -43,10 +43,10 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
       />
       <div className="fixed top-0 right-0 h-full w-72 bg-white z-50 shadow-2xl flex flex-col">
         <div className="flex items-center justify-between px-6 py-5 border-b border-border">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/banners/lnsbd.png" alt="nextstarBD logo" style={{ height: "38px", width: "auto", display: "block" }} />
-            <span className="font-display text-2xl text-foreground tracking-wide">nextstar<span className="text-primary">BD</span></span>
+            <img src="/banners/lnsbd.png" alt="nextstarBD logo" style={{ height: "68px", width: "auto", display: "block", transform: "translateY(-6px) translateX(6px)" }} />
+            <span className="font-brand font-bold text-2xl text-foreground tracking-wide">NextStar<span className="text-primary">B</span><span className="text-green-700">D</span></span>
           </div>
           <button
             onClick={onClose}

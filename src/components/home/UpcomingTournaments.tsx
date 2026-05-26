@@ -27,9 +27,6 @@ export function UpcomingTournaments() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {upcoming.map((t) => {
-            const canRegister = t.isRegistrationOpen;
-            const isFull = t.registeredCount >= t.maxSlots;
-
             return (
               <div key={t.id} className="bg-white border border-border rounded-2xl overflow-hidden hover:shadow-md transition-shadow flex flex-col">
 
@@ -79,15 +76,15 @@ export function UpcomingTournaments() {
                   </div>
 
                   {/* Mode + Start time */}
-                  <div className="flex items-start gap-2">
-                    <span className="flex-1 self-start bg-secondary/10 text-secondary border border-secondary/20 text-xs font-bold px-3 py-1.5 rounded-full">
+                  <div className="flex items-center gap-2">
+                    <span className="shrink-0 bg-secondary/10 text-secondary border border-secondary/20 text-xs font-bold px-2.5 py-1.5 rounded-full">
                       ⚔️ {t.mode}
                     </span>
-                    {/* Start time box — right corner, blinking */}
-                    <div className="shrink-0 blink bg-primary text-white rounded-xl px-3 py-2 text-right shadow-sm">
-                      <p className="text-xs font-semibold uppercase tracking-widest opacity-80 leading-none mb-0.5">Starts</p>
-                      <p className="font-display text-lg tracking-wide leading-none">{formatTimeOnly(t.startsAt)}</p>
-                      <p className="text-xs font-semibold opacity-80 mt-0.5">{formatDateOnly(t.startsAt)}</p>
+                    <div className="flex-1" />
+                    <div className="shrink-0 blink bg-primary text-white rounded-xl px-2.5 py-1.5 text-right shadow-sm">
+                      <p className="text-[10px] font-semibold uppercase tracking-widest opacity-80 leading-none mb-0.5">Starts</p>
+                      <p className="font-display text-base tracking-wide leading-none">{formatTimeOnly(t.startsAt)}</p>
+                      <p className="text-[10px] font-semibold opacity-80 mt-0.5">{formatDateOnly(t.startsAt)}</p>
                     </div>
                   </div>
 
@@ -95,24 +92,12 @@ export function UpcomingTournaments() {
                   <SlotProgressBar filled={t.registeredCount} max={t.maxSlots} waitlisted={t.waitlistCount} />
 
                   {/* Actions */}
-                  <div className="flex gap-2 mt-auto">
-                    {canRegister ? (
-                      <Link
-                        href={`/register/${t.id}`}
-                        className={`flex-1 text-center text-sm font-bold py-2.5 rounded-xl transition-colors ${
-                          isFull ? "bg-amber-500 hover:bg-amber-600 text-white" : "bg-primary hover:bg-primary-dark text-white"
-                        }`}
-                      >
-                        {isFull ? "Join Waitlist" : "Register"}
-                      </Link>
-                    ) : (
-                      <span className="flex-1 text-center text-xs text-muted-foreground py-2.5">Registration Closed</span>
-                    )}
+                  <div className="mt-auto">
                     <Link
                       href={`/tournaments/${t.id}`}
-                      className="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-foreground text-sm font-semibold py-2.5 rounded-xl transition-colors"
+                      className="block w-full text-center bg-gray-100 hover:bg-gray-200 text-foreground text-sm font-semibold py-2.5 rounded-xl transition-colors"
                     >
-                      Details
+                      View Details
                     </Link>
                   </div>
                 </div>

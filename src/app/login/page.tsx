@@ -83,11 +83,11 @@ function LoginForm() {
 
         {/* Logo */}
         <div className="text-center mb-7">
-          <div className="flex items-center justify-center gap-2 mb-1">
+          <div className="flex items-center justify-center gap-0 mb-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/banners/lnsbd.png" alt="nextstarBD logo" style={{ height: "52px", width: "auto", display: "block" }} />
-            <h1 className="font-display text-3xl text-foreground tracking-wide">
-              nextstar<span className="text-primary">BD</span>
+            <img src="/banners/lnsbd.png" alt="nextstarBD logo" style={{ height: "88px", width: "auto", display: "block", transform: "translateY(-8px) translateX(8px)" }} />
+            <h1 className="font-brand font-bold text-3xl text-foreground tracking-wide">
+              NextStar<span className="text-primary">B</span><span className="text-green-700">D</span>
             </h1>
           </div>
           <p className="text-muted-foreground text-sm mt-1">

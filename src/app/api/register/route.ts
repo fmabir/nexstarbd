@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { tournamentId, userId, squadName, leaderName, leaderUid, whatsapp, player2Uid, player3Uid, player4Uid } = body;
+  const { tournamentId, userId, squadName, leaderName, leaderUid, whatsapp, bkash, player2Uid, player3Uid, player4Uid } = body;
 
   if (!userId?.trim()) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
@@ -56,7 +56,6 @@ export async function POST(request: NextRequest) {
 
       const data = tournamentDoc.data()!;
       if (!data.isRegistrationOpen) throw new Error("REGISTRATION_CLOSED");
-      if (data.status !== "upcoming") throw new Error("REGISTRATION_CLOSED");
 
       const existingUids: string[] = data.allUids || [];
       const duplicate = newUids.find((uid) => existingUids.includes(uid));
@@ -75,6 +74,7 @@ export async function POST(request: NextRequest) {
         leaderName: leaderName.trim(),
         leaderUid: leaderUid.trim(),
         whatsapp: whatsapp.trim(),
+        bkash: bkash?.trim() || null,
         player2Uid: player2Uid.trim(),
         player3Uid: player3Uid.trim(),
         player4Uid: player4Uid.trim(),

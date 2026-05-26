@@ -30,12 +30,12 @@ export function Navbar({ locale }: { locale: string }) {
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center gap-2 group"
+              className="flex items-center gap-0 group"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/banners/lnsbd.png" alt="nextstarBD logo" style={{ height: "42px", width: "auto", display: "block" }} />
-              <span className="font-display text-2xl text-foreground tracking-wide group-hover:text-primary transition-colors">
-                nextstar<span className="text-primary">BD</span>
+              <img src="/banners/lnsbd.png" alt="nextstarBD logo" style={{ height: "72px", width: "auto", display: "block", transform: "translateY(-6px) translateX(6px)" }} />
+              <span className="font-brand font-bold text-2xl text-foreground tracking-wide group-hover:text-primary transition-colors">
+                NextStar<span className="text-primary">B</span><span className="text-green-700">D</span>
               </span>
             </Link>
 

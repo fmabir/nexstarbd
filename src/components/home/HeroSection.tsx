@@ -7,11 +7,11 @@ export function HeroSection({ subtitle }: { subtitle: string }) {
 
       <div className="relative max-w-3xl mx-auto px-4">
         {/* Logo mark */}
-        <div className="inline-flex items-center gap-3 mb-4">
+        <div className="inline-flex items-center gap-0 mb-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/banners/lnsbd.png" alt="nextstarBD logo" style={{ height: "64px", width: "auto", display: "block" }} />
-          <span className="font-display text-4xl sm:text-5xl tracking-wide text-foreground">
-            nextstar<span className="text-primary">BD</span>
+          <img src="/banners/lnsbd.png" alt="nextstarBD logo" style={{ height: "108px", width: "auto", display: "block", transform: "translateY(-8px) translateX(8px)" }} />
+          <span className="font-brand font-bold text-4xl sm:text-5xl tracking-wide text-foreground">
+            NextStar<span className="text-primary">B</span><span className="text-green-700">D</span>
           </span>
         </div>
 

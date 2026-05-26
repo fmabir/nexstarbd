@@ -20,6 +20,7 @@
   --color-card: #ffffff;
   --font-sans: var(--font-barlow);
   --font-display: var(--font-bebas);
+  --font-brand: var(--font-exo2);
 }
 
 body {

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Barlow } from "next/font/google";
+import { Bebas_Neue, Barlow, Exo_2 } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { AuthProvider } from "@/context/AuthContext";
@@ -17,6 +17,13 @@ const barlow = Barlow({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   variable: "--font-barlow",
+  display: "swap",
+});
+
+const exo2 = Exo_2({
+  weight: ["700", "800", "900"],
+  subsets: ["latin"],
+  variable: "--font-exo2",
   display: "swap",
 });
 
@@ -43,7 +50,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${bebasNeue.variable} ${barlow.variable}`}
+      className={`${bebasNeue.variable} ${barlow.variable} ${exo2.variable}`}
     >
       <body className="font-sans antialiased bg-background text-foreground">
         <NextIntlClientProvider messages={messages}>

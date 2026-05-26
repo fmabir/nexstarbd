@@ -37,11 +37,11 @@ export function RoomInfoCard({ roomId, roomPassword }: RoomInfoCardProps) {
           { label: t("roomPassword"), value: roomPassword, which: "pw" as const, copied: copiedPw },
         ].map(({ label, value, which, copied }) => (
           <div key={label} className="bg-white rounded-xl px-4 py-3 flex items-center justify-between gap-3">
-            <div>
+            <div className="min-w-0">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-0.5">
                 {label}
               </p>
-              <p className="font-display text-2xl text-foreground tracking-widest">{value}</p>
+              <p className="font-display text-xl sm:text-2xl text-foreground tracking-widest break-all">{value}</p>
             </div>
             <button
               onClick={() => copy(value, which)}

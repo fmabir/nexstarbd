@@ -88,8 +88,11 @@ export default async function MyRegistrationPage({
 
           {/* Header */}
           <div>
-            <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              ← Back to Home
+            <Link
+              href={`/tournaments/${reg.tournamentId}`}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              ← Back to Tournament
             </Link>
             <h1 className="font-display text-3xl text-foreground tracking-wide mt-3">My Registration</h1>
             {tournament && (
@@ -175,14 +178,20 @@ export default async function MyRegistrationPage({
             </div>
           )}
 
-          {tournament && (
+          <div className="flex flex-col sm:flex-row gap-3">
             <Link
               href={`/tournaments/${reg.tournamentId}`}
-              className="block text-center bg-white border border-border rounded-xl py-3 text-sm font-semibold text-foreground hover:bg-gray-50 transition-colors"
+              className="flex-1 block text-center bg-primary hover:bg-primary-dark text-white rounded-xl py-3 text-sm font-bold transition-colors"
             >
-              View Tournament Dashboard →
+              Go to Tournament Dashboard →
             </Link>
-          )}
+            <Link
+              href="/"
+              className="flex-1 block text-center bg-white border border-border rounded-xl py-3 text-sm font-semibold text-foreground hover:bg-gray-50 transition-colors"
+            >
+              Back to Home
+            </Link>
+          </div>
         </div>
       </main>
       <Footer />

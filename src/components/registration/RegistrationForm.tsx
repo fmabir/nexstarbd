@@ -28,6 +28,7 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
   const [leaderName, setLeaderName] = useState("");
   const [leaderUid, setLeaderUid] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
+  const [bkash, setBkash] = useState("");
   const [player2Uid, setPlayer2Uid] = useState("");
   const [player3Uid, setPlayer3Uid] = useState("");
   const [player4Uid, setPlayer4Uid] = useState("");
@@ -72,7 +73,7 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tournamentId, userId, squadName, leaderName, leaderUid, whatsapp, player2Uid, player3Uid, player4Uid }),
+        body: JSON.stringify({ tournamentId, userId, squadName, leaderName, leaderUid, whatsapp, bkash, player2Uid, player3Uid, player4Uid }),
       });
 
       const data = await res.json();
@@ -92,7 +93,7 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
     );
   }
 
-  if (!ts?.isRegistrationOpen || ts?.status !== "upcoming") {
+  if (!ts?.isRegistrationOpen) {
     return (
       <div className="text-center py-12">
         <p className="text-4xl mb-3">🔒</p>
@@ -146,12 +147,19 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
         </div>
       </div>
 
-      {/* WhatsApp */}
-      <div>
-        <label className={labelClass}>WhatsApp Number *</label>
-        <input type="tel" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)}
-          className={inputClass} placeholder="+880 1XXX-XXXXXX" />
-        {errors.whatsapp && <p className={errorClass}>{errors.whatsapp}</p>}
+      {/* WhatsApp + bKash */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className={labelClass}>WhatsApp Number *</label>
+          <input type="tel" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)}
+            className={inputClass} placeholder="+880 1XXX-XXXXXX" />
+          {errors.whatsapp && <p className={errorClass}>{errors.whatsapp}</p>}
+        </div>
+        <div>
+          <label className={labelClass}>bKash Number (Leader)</label>
+          <input type="tel" value={bkash} onChange={(e) => setBkash(e.target.value)}
+            className={inputClass} placeholder="+880 1XXX-XXXXXX" />
+        </div>
       </div>
 
       {/* Other Players */}

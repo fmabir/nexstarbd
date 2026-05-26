@@ -32,31 +32,37 @@ export function MySquadCard({ registration: reg }: { registration: Registration 
       </div>
 
       <div className="space-y-1.5 text-sm">
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">Leader</span>
-          <span className="font-semibold text-foreground">{reg.leaderName}</span>
+        <div className="flex justify-between gap-2">
+          <span className="text-muted-foreground shrink-0">Leader</span>
+          <span className="font-semibold text-foreground text-right">{reg.leaderName}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">Leader UID</span>
-          <span className="font-mono text-foreground">{reg.leaderUid}</span>
+        <div className="flex justify-between gap-2">
+          <span className="text-muted-foreground shrink-0">Leader UID</span>
+          <span className="font-mono text-foreground text-right break-all">{reg.leaderUid}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-muted-foreground">WhatsApp</span>
-          <span className="text-foreground">{reg.whatsapp}</span>
+        <div className="flex justify-between gap-2">
+          <span className="text-muted-foreground shrink-0">WhatsApp</span>
+          <span className="text-foreground text-right">{reg.whatsapp}</span>
         </div>
+        {reg.bkash && (
+          <div className="flex justify-between gap-2">
+            <span className="text-muted-foreground shrink-0">bKash</span>
+            <span className="text-foreground text-right">{reg.bkash}</span>
+          </div>
+        )}
       </div>
 
       <div className="border-t border-border pt-3">
         <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Other Players</p>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-1 gap-2">
           {[
             { label: "P2", uid: reg.player2Uid },
             { label: "P3", uid: reg.player3Uid },
             { label: "P4", uid: reg.player4Uid },
           ].map(({ label, uid }) => (
-            <div key={uid} className="bg-muted rounded-lg px-3 py-1.5 text-xs">
-              <span className="font-semibold text-muted-foreground mr-1.5">{label}</span>
-              <span className="font-mono text-foreground">{uid}</span>
+            <div key={uid} className="bg-muted rounded-lg px-3 py-2 text-xs flex items-center gap-2">
+              <span className="font-semibold text-muted-foreground shrink-0">{label}</span>
+              <span className="font-mono text-foreground break-all">{uid}</span>
             </div>
           ))}
         </div>

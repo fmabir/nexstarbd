@@ -47,6 +47,7 @@ export interface Registration {
   leaderName: string;
   leaderUid: string;
   whatsapp: string;
+  bkash: string | null;
   player2Uid: string;
   player3Uid: string;
   player4Uid: string;

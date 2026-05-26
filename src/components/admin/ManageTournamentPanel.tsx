@@ -12,6 +12,108 @@ const statusConfig: Record<ApprovalStatus, { label: string; color: string; icon:
   rejected: { label: "Rejected",         color: "text-primary bg-primary-light border-primary",  icon: "❌" },
 };
 
+function RegistrationCard({
+  reg,
+  loading,
+  onApprove,
+  waitIndex,
+}: {
+  reg: Registration;
+  loading: string | null;
+  onApprove: (id: string, status: ApprovalStatus) => void;
+  waitIndex: number | null;
+}) {
+  const cfg = statusConfig[reg.approvalStatus];
+  const slotLabel = waitIndex !== null ? `W${waitIndex}` : reg.slotNumber ? `#${reg.slotNumber}` : "—";
+
+  const registeredAt = reg.registeredAt
+    ? new Date(
+        typeof (reg.registeredAt as { seconds?: number }).seconds === "number"
+          ? (reg.registeredAt as { seconds: number }).seconds * 1000
+          : reg.registeredAt as unknown as number
+      ).toLocaleString("en-BD", { dateStyle: "medium", timeStyle: "short" })
+    : null;
+
+  return (
+    <div className="p-5 space-y-4">
+      {/* Header row */}
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="font-display text-lg text-foreground">{reg.squadName}</span>
+          <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Slot {slotLabel}</span>
+          <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${cfg.color}`}>{cfg.icon} {cfg.label}</span>
+        </div>
+        {registeredAt && (
+          <span className="text-xs text-muted-foreground shrink-0">{registeredAt}</span>
+        )}
+      </div>
+
+      {/* Player info grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+        <div className="flex justify-between gap-2 border-b border-border pb-1">
+          <span className="text-muted-foreground shrink-0">Leader Name</span>
+          <span className="font-semibold text-right">{reg.leaderName}</span>
+        </div>
+        <div className="flex justify-between gap-2 border-b border-border pb-1">
+          <span className="text-muted-foreground shrink-0">Leader UID</span>
+          <span className="font-mono text-right break-all">{reg.leaderUid}</span>
+        </div>
+        <div className="flex justify-between gap-2 border-b border-border pb-1">
+          <span className="text-muted-foreground shrink-0">WhatsApp</span>
+          <span className="font-semibold text-right">{reg.whatsapp}</span>
+        </div>
+        <div className="flex justify-between gap-2 border-b border-border pb-1">
+          <span className="text-muted-foreground shrink-0">bKash</span>
+          <span className="font-semibold text-right">{reg.bkash || <span className="text-muted-foreground italic">not provided</span>}</span>
+        </div>
+        <div className="flex justify-between gap-2 border-b border-border pb-1">
+          <span className="text-muted-foreground shrink-0">Player 2 UID</span>
+          <span className="font-mono text-right break-all">{reg.player2Uid}</span>
+        </div>
+        <div className="flex justify-between gap-2 border-b border-border pb-1">
+          <span className="text-muted-foreground shrink-0">Player 3 UID</span>
+          <span className="font-mono text-right break-all">{reg.player3Uid}</span>
+        </div>
+        <div className="flex justify-between gap-2 border-b border-border pb-1">
+          <span className="text-muted-foreground shrink-0">Player 4 UID</span>
+          <span className="font-mono text-right break-all">{reg.player4Uid}</span>
+        </div>
+      </div>
+
+      {/* Action buttons */}
+      <div className="flex gap-2 flex-wrap">
+        {reg.approvalStatus !== "approved" && (
+          <button
+            disabled={loading === reg.id}
+            onClick={() => onApprove(reg.id, "approved")}
+            className="text-xs font-bold px-3 py-1.5 rounded-lg bg-secondary text-white hover:bg-secondary/80 disabled:opacity-50 transition-colors"
+          >
+            {loading === reg.id ? "…" : "✓ Approve"}
+          </button>
+        )}
+        {reg.approvalStatus !== "rejected" && (
+          <button
+            disabled={loading === reg.id}
+            onClick={() => onApprove(reg.id, "rejected")}
+            className="text-xs font-bold px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary/80 disabled:opacity-50 transition-colors"
+          >
+            {loading === reg.id ? "…" : "✗ Reject"}
+          </button>
+        )}
+        {reg.approvalStatus !== "pending" && (
+          <button
+            disabled={loading === reg.id}
+            onClick={() => onApprove(reg.id, "pending")}
+            className="text-xs font-bold px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50 transition-colors"
+          >
+            {loading === reg.id ? "…" : "↺ Reset"}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function ManageTournamentPanel({
   tournament,
   registrations,
@@ -142,78 +244,7 @@ export function ManageTournamentPanel({
           <div className="text-center py-10 text-muted-foreground text-sm">No registrations yet.</div>
         ) : (
           <div className="divide-y divide-border">
-            {confirmed.map((reg) => {
-              const s = statusConfig[reg.approvalStatus || "pending"];
-              return (
-                <div key={reg.id} className="px-5 py-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      {/* Squad header */}
-                      <div className="flex items-center gap-2 mb-2 flex-wrap">
-                        {reg.slotNumber && (
-                          <span className="w-6 h-6 rounded-full bg-secondary text-white text-xs font-bold flex items-center justify-center shrink-0">
-                            {reg.slotNumber}
-                          </span>
-                        )}
-                        <span className="font-bold text-foreground">{reg.squadName}</span>
-                        <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border ${s.color}`}>
-                          {s.icon} {s.label}
-                        </span>
-                      </div>
-
-                      {/* Leader */}
-                      <div className="text-sm mb-1">
-                        <span className="text-muted-foreground">Leader: </span>
-                        <span className="font-medium">{reg.leaderName}</span>
-                        <span className="text-muted-foreground ml-2 text-xs">UID: {reg.leaderUid}</span>
-                      </div>
-
-                      {/* UIDs */}
-                      <div className="flex flex-wrap gap-1.5 mb-1">
-                        {[reg.player2Uid, reg.player3Uid, reg.player4Uid].map((uid, i) => (
-                          <span key={i} className="text-xs bg-gray-100 px-2 py-0.5 rounded-full text-muted-foreground">
-                            P{i + 2}: {uid}
-                          </span>
-                        ))}
-                      </div>
-
-                      <p className="text-xs text-muted-foreground">📱 {reg.whatsapp}</p>
-                    </div>
-
-                    {/* Action buttons */}
-                    <div className="flex flex-col gap-1.5 shrink-0">
-                      {reg.approvalStatus !== "approved" && (
-                        <button
-                          onClick={() => setApproval(reg.id, "approved")}
-                          disabled={loading === reg.id}
-                          className="text-xs font-bold bg-secondary hover:bg-secondary-dark text-white px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
-                        >
-                          Approve
-                        </button>
-                      )}
-                      {reg.approvalStatus !== "rejected" && (
-                        <button
-                          onClick={() => setApproval(reg.id, "rejected")}
-                          disabled={loading === reg.id}
-                          className="text-xs font-bold bg-gray-100 hover:bg-primary hover:text-white text-foreground px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
-                        >
-                          Reject
-                        </button>
-                      )}
-                      {reg.approvalStatus !== "pending" && (
-                        <button
-                          onClick={() => setApproval(reg.id, "pending")}
-                          disabled={loading === reg.id}
-                          className="text-xs text-muted-foreground hover:text-foreground px-3 py-1 transition-colors disabled:opacity-50"
-                        >
-                          Reset
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            {confirmed.map((reg) => <RegistrationCard key={reg.id} reg={reg} loading={loading} onApprove={(id, s) => setApproval(id, s)} waitIndex={null} />)}
           </div>
         )}
       </div>
@@ -225,41 +256,7 @@ export function ManageTournamentPanel({
             <h2 className="font-semibold">Waiting List ({waitlisted.length})</h2>
           </div>
           <div className="divide-y divide-border">
-            {waitlisted.map((reg, i) => {
-              const s = statusConfig[reg.approvalStatus || "pending"];
-              return (
-                <div key={reg.id} className="px-5 py-4 flex items-center justify-between gap-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="w-6 h-6 rounded-full bg-amber-400 text-white text-xs font-bold flex items-center justify-center">
-                        W{i + 1}
-                      </span>
-                      <span className="font-bold">{reg.squadName}</span>
-                      <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border ${s.color}`}>
-                        {s.icon} {s.label}
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {reg.leaderName} · 📱 {reg.whatsapp}
-                    </p>
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    {reg.approvalStatus !== "approved" && (
-                      <button onClick={() => setApproval(reg.id, "approved")} disabled={loading === reg.id}
-                        className="text-xs font-bold bg-secondary hover:bg-secondary-dark text-white px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50">
-                        Approve
-                      </button>
-                    )}
-                    {reg.approvalStatus !== "rejected" && (
-                      <button onClick={() => setApproval(reg.id, "rejected")} disabled={loading === reg.id}
-                        className="text-xs font-bold bg-gray-100 hover:bg-primary hover:text-white text-foreground px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50">
-                        Reject
-                      </button>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+            {waitlisted.map((reg, i) => <RegistrationCard key={reg.id} reg={reg} loading={loading} onApprove={(id, s) => setApproval(id, s)} waitIndex={i + 1} />)}
           </div>
         </div>
       )}

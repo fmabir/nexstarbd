@@ -25,7 +25,7 @@ export function TournamentDashboard({ tournament, myRegistration }: TournamentDa
     myRegistration?.approvalStatus === "approved";
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8">
       {/* Left: Announcements + Room Info */}
       <div className="lg:col-span-3 space-y-6">
         {/* Room info — only for approved registered players */}
