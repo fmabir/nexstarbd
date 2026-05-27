@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Barlow, Exo_2 } from "next/font/google";
+import { Bebas_Neue, Barlow, Exo_2, Orbitron } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { AuthProvider } from "@/context/AuthContext";
@@ -27,6 +27,13 @@ const exo2 = Exo_2({
   display: "swap",
 });
 
+const orbitron = Orbitron({
+  weight: ["700", "800", "900"],
+  subsets: ["latin"],
+  variable: "--font-orbitron",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "nextstarBD — Bangladesh Free Fire Community Tournaments",
   description:
@@ -50,7 +57,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${bebasNeue.variable} ${barlow.variable} ${exo2.variable}`}
+      className={`${bebasNeue.variable} ${barlow.variable} ${exo2.variable} ${orbitron.variable}`}
     >
       <body className="font-sans antialiased bg-background text-foreground">
         <NextIntlClientProvider messages={messages}>

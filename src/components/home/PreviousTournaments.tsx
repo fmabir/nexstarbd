@@ -12,12 +12,12 @@ export function PreviousTournaments() {
   if (tournaments.length === 0) return null;
 
   return (
-    <section className="py-10 bg-white border-t border-border">
+    <section className="py-10 bg-white/80 border-t border-border">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h2 className="font-display text-2xl text-foreground tracking-wide">Previous Tournaments</h2>
+            <h2 className="font-esports font-bold text-xl text-foreground tracking-wide uppercase">Previous Tournaments</h2>
             <div className="w-8 h-1 bg-primary rounded-full mt-1" />
           </div>
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">

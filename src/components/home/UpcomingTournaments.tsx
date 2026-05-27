@@ -41,12 +41,12 @@ export function UpcomingTournaments() {
   if (loading || upcoming.length === 0) return null;
 
   return (
-    <section id="upcoming-tournaments" className="py-12 bg-gray-50 border-t border-border">
+    <section id="upcoming-tournaments" className="py-12 bg-gray-50/80 border-t border-border">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="font-display text-3xl text-foreground tracking-wide">Upcoming Tournaments</h2>
+            <h2 className="font-esports font-bold text-2xl text-foreground tracking-wide uppercase">Upcoming Tournaments</h2>
             <div className="w-10 h-1 bg-primary rounded-full mt-1" />
           </div>
           <Link href="/tournaments" className="text-sm font-semibold text-primary hover:underline">

@@ -21,10 +21,27 @@
   --font-sans: var(--font-barlow);
   --font-display: var(--font-bebas);
   --font-brand: var(--font-exo2);
+  --font-esports: var(--font-orbitron);
 }
 
 body {
-  background: var(--background);
+  background:
+    /* Red diagonal stripe — top-left to bottom-right */
+    linear-gradient(
+      -30deg,
+      transparent 0%,
+      transparent 30%,
+      rgba(244, 42, 65, 0.10) 30%,
+      rgba(244, 42, 65, 0.10) 36%,
+      transparent 36%,
+      transparent 62%,
+      rgba(0, 106, 78, 0.10) 62%,
+      rgba(0, 106, 78, 0.10) 68%,
+      transparent 68%,
+      transparent 100%
+    ),
+    var(--background);
+  background-attachment: fixed;
   color: var(--foreground);
 }
 

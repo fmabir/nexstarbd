@@ -128,7 +128,7 @@ export function FeaturedTournament() {
 
   if (loading) {
     return (
-      <section className="py-20 bg-white border-t border-border flex justify-center">
+      <section className="py-20 bg-white/80 border-t border-border flex justify-center">
         <Spinner size="lg" />
       </section>
     );
@@ -136,7 +136,7 @@ export function FeaturedTournament() {
 
   if (active.length === 0) {
     return (
-      <section className="py-20 bg-white border-t border-border text-center">
+      <section className="py-20 bg-white/80 border-t border-border text-center">
         <p className="text-5xl mb-4">🎮</p>
         <p className="text-lg font-semibold text-foreground">No active tournament right now</p>
         <p className="text-muted-foreground text-sm mt-1">Check back soon for the next one!</p>
@@ -147,12 +147,12 @@ export function FeaturedTournament() {
   const hasOngoing = active[0].status === "ongoing";
 
   return (
-    <section className="py-6 sm:py-12 bg-white border-t border-border">
+    <section className="py-6 sm:py-12 bg-white/80 border-t border-border">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="flex items-center gap-2 mb-4 sm:mb-6">
           <span className={`w-2.5 h-2.5 rounded-full animate-pulse ${hasOngoing ? "bg-primary" : "bg-secondary"}`} />
-          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+          <span className="font-esports font-bold text-xs uppercase tracking-widest text-muted-foreground">
             {hasOngoing ? "Live Tournaments" : "Registration Open"}
           </span>
         </div>

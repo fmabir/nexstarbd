@@ -1,23 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
-import { MobileMenu } from "./MobileMenu";
-import { LanguageToggle } from "./LanguageToggle";
 import { useAuth } from "@/context/AuthContext";
 
-export function Navbar({ locale }: { locale: string }) {
-  const t = useTranslations("nav");
-  const [menuOpen, setMenuOpen] = useState(false);
-  const { user, signOut } = useAuth();
+const navLinks = [
+  { href: "/", label: "Home" },
+  { href: "/#upcoming-tournaments", label: "Tournaments" },
+  { href: "/results", label: "Results" },
+  { href: "/rules", label: "Rules" },
+];
 
-  const links = [
-    { href: "/#upcoming-tournaments", label: t("tournaments") },
-    { href: "/hall-of-fame", label: t("hallOfFame") },
-    { href: "/rules", label: t("rules") },
-    { href: "/#community", label: t("community") },
-  ];
+// locale prop kept so callers don't need to change
+export function Navbar({ locale: _locale }: { locale: string }) {
+  const { user, signOut } = useAuth();
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   return (
     <>
@@ -25,74 +34,89 @@ export function Navbar({ locale }: { locale: string }) {
       <div className="h-1 bg-gradient-to-r from-secondary via-primary to-secondary" />
 
       <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-border">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link
-              href="/"
-              className="flex items-center gap-0 group"
-            >
+        <nav className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center h-14 sm:h-16 gap-1 sm:gap-4">
+
+            {/* Logo — small icon + name on mobile, full size on desktop */}
+            <Link href="/" className="flex items-center shrink-0 group">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/banners/lnsbd.png" alt="nextstarBD logo" style={{ height: "72px", width: "auto", display: "block", transform: "translateY(-6px) translateX(6px)" }} />
-              <span className="font-brand font-bold text-2xl text-foreground tracking-wide group-hover:text-primary transition-colors">
+              <img
+                src="/banners/lnsbd.png"
+                alt="NextStarBD"
+                className="w-auto"
+                style={{
+                  height: "clamp(38px, 6vw, 68px)",
+                  display: "block",
+                  transform: "translateY(-3px) translateX(3px)",
+                }}
+              />
+              <span className="font-brand font-bold text-xs sm:text-2xl text-foreground tracking-wide group-hover:text-primary transition-colors">
                 NextStar<span className="text-primary">B</span><span className="text-green-700">D</span>
               </span>
             </Link>
 
-            {/* Desktop nav */}
-            <div className="hidden md:flex items-center gap-1">
-              {links.map((link) => (
+            {/* Nav links — always visible */}
+            <div className="flex items-center flex-1">
+              {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="px-3 py-2 rounded-lg text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  className="px-1.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[12px] sm:text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors whitespace-nowrap"
                 >
                   {link.label}
                 </Link>
               ))}
             </div>
 
-            {/* Right side */}
-            <div className="flex items-center gap-2">
-              <LanguageToggle currentLocale={locale} />
-
+            {/* Profile / Login */}
+            <div className="shrink-0 relative" ref={profileRef}>
               {user ? (
-                <div className="hidden sm:flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold shrink-0">
-                    {(user.displayName?.[0] ?? user.email?.[0] ?? "?").toUpperCase()}
-                  </div>
+                <>
                   <button
-                    onClick={signOut}
-                    className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+                    onClick={() => setProfileOpen((v) => !v)}
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold hover:bg-primary-dark transition-colors shadow-sm"
+                    aria-label="Profile"
                   >
-                    Sign Out
+                    {(user.displayName?.[0] ?? user.email?.[0] ?? "?").toUpperCase()}
                   </button>
-                </div>
+
+                  {profileOpen && (
+                    <div className="absolute right-0 top-11 w-56 bg-white border border-border rounded-2xl shadow-xl py-1.5 z-50">
+                      {/* User info */}
+                      <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
+                        <div className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shrink-0">
+                          {(user.displayName?.[0] ?? user.email?.[0] ?? "?").toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          {user.displayName && (
+                            <p className="text-sm font-semibold text-foreground truncate">{user.displayName}</p>
+                          )}
+                          <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                        </div>
+                      </div>
+                      {/* Sign out */}
+                      <button
+                        onClick={async () => { setProfileOpen(false); await signOut(); }}
+                        className="w-full text-left px-4 py-2.5 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors rounded-b-2xl"
+                      >
+                        🚪 Sign Out
+                      </button>
+                    </div>
+                  )}
+                </>
               ) : (
                 <Link
                   href="/login"
-                  className="hidden sm:inline-flex items-center gap-1.5 bg-primary hover:bg-primary-dark text-white font-semibold px-4 py-2 rounded-xl text-sm transition-colors"
+                  className="inline-flex items-center bg-primary hover:bg-primary-dark text-white font-semibold px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm transition-colors"
                 >
                   Login
                 </Link>
               )}
-
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setMenuOpen(true)}
-                className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
-                aria-label="Open menu"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
             </div>
+
           </div>
         </nav>
       </header>
-
-      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
     </>
   );
 }

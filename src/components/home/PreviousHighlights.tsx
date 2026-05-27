@@ -95,13 +95,13 @@ export function PreviousHighlights({ winners, mvpPlayers }: { winners: Winner[];
   ];
 
   return (
-    <section className="py-12 bg-white border-t border-border">
+    <section className="py-12 bg-white/80 border-t border-border">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header + tabs */}
         <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
           <div>
-            <h2 className="font-display text-3xl text-foreground tracking-wide">Hall of Fame</h2>
+            <h2 className="font-esports font-bold text-2xl text-foreground tracking-wide uppercase">Hall of Fame</h2>
             <div className="w-10 h-1 bg-secondary rounded-full mt-1" />
           </div>
           <Link href="/hall-of-fame" className="text-sm font-semibold text-secondary hover:underline">
