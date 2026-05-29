@@ -31,12 +31,6 @@ export function AdminMobileNav() {
           {user && (
             <span className="text-gray-400 text-xs truncate max-w-[110px]">{user.email}</span>
           )}
-          <Link
-            href="/?preview=admin"
-            className="text-xs font-semibold text-gray-400 hover:text-white bg-gray-800 px-2.5 py-1.5 rounded-lg transition-colors"
-          >
-            👁️
-          </Link>
           <button
             onClick={handleSignOut}
             className="text-xs font-semibold text-gray-400 hover:text-white bg-gray-800 px-2.5 py-1.5 rounded-lg transition-colors"
