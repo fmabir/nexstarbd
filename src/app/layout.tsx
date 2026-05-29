@@ -5,6 +5,7 @@ import { getLocale, getMessages } from "next-intl/server";
 import { AuthProvider } from "@/context/AuthContext";
 import { ToastProvider } from "@/context/ToastContext";
 import { TransitionOverlay } from "@/components/ui/TransitionOverlay";
+import { AdminPreviewBar } from "@/components/ui/AdminPreviewBar";
 import "./globals.css";
 
 const bebasNeue = Bebas_Neue({
@@ -69,6 +70,7 @@ export default async function RootLayout({
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
             <TransitionOverlay />
+            <AdminPreviewBar />
             <ToastProvider>{children}</ToastProvider>
           </AuthProvider>
         </NextIntlClientProvider>

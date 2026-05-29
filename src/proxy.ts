@@ -7,13 +7,17 @@ const JWKS_URL =
 
 const JWKS = createRemoteJWKSet(new URL(JWKS_URL));
 
+function getAdminEmails(): string[] {
+  return (process.env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (
-    pathname.startsWith("/admin") &&
-    !pathname.startsWith("/admin/login")
-  ) {
+  if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
     const session = request.cookies.get("__session")?.value;
 
     if (!session) {
@@ -21,10 +25,21 @@ export async function proxy(request: NextRequest) {
     }
 
     try {
-      await jwtVerify(session, JWKS, {
+      const { payload } = await jwtVerify(session, JWKS, {
         audience: PROJECT_ID,
         issuer: `https://securetoken.google.com/${PROJECT_ID}`,
       });
+
+      const email = ((payload.email as string | undefined) ?? "").toLowerCase();
+      const admins = getAdminEmails();
+
+      if (admins.length > 0 && !admins.includes(email)) {
+        // Valid session but not an admin — redirect without touching the cookie
+        return NextResponse.redirect(
+          new URL("/admin/login?error=forbidden", request.url)
+        );
+      }
+
       return NextResponse.next();
     } catch {
       const response = NextResponse.redirect(
