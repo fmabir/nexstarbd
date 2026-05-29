@@ -12,7 +12,7 @@ export function AdminMobileNav() {
 
   const handleSignOut = async () => {
     await signOut();
-    router.push("/admin/login");
+    router.push("/login");
   };
 
   return (
