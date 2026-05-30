@@ -1,0 +1,14 @@
+[     133ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[     881ms] [LOG] [Fast Refresh] done in 853ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[    2820ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[    2893ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[    3154ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[    3294ms] [LOG] [Fast Refresh] done in 254ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[    4289ms] [ERROR] [2026-05-30T06:19:40.314Z]  @firebase/firestore: Firestore (12.13.0): Uncaught Error in snapshot listener: FirebaseError: [code=failed-precondition]: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/nextstarbd-bfc80/firestore/indexes?create_composite=ClZwcm9qZWN0cy9uZXh0c3RhcmJkLWJmYzgwL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9hbm5vdW5jZW1lbnRzL2luZGV4ZXMvXxABGgwKCGlzUGlubmVkEAIaDQoJY3JlYXRlZEF0EAIaDAoIX19uYW1lX18QAg @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:3318
+[    4290ms] [ERROR] [2026-05-30T06:19:40.315Z]  @firebase/firestore: Firestore (12.13.0): Uncaught Error in snapshot listener: FirebaseError: [code=failed-precondition]: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/nextstarbd-bfc80/firestore/indexes?create_composite=ClZwcm9qZWN0cy9uZXh0c3RhcmJkLWJmYzgwL2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9hbm5vdW5jZW1lbnRzL2luZGV4ZXMvXxABGgwKCGlzUGlubmVkEAIaDQoJY3JlYXRlZEF0EAIaDAoIX19uYW1lX18QAg @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:3318
+[    8121ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[    8248ms] [LOG] [Fast Refresh] done in 235ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[   31067ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[   31718ms] [LOG] [Fast Refresh] done in 756ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[   31828ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[   32203ms] [LOG] [Fast Refresh] done in 477ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477

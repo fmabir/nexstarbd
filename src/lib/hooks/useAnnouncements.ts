@@ -22,7 +22,6 @@ export function useAnnouncements(tournamentId: string | null) {
     if (tournamentId === null) {
       q = query(
         collection(db, "announcements"),
-        orderBy("isPinned", "desc"),
         orderBy("createdAt", "desc"),
         limit(20)
       );
@@ -30,16 +29,22 @@ export function useAnnouncements(tournamentId: string | null) {
       q = query(
         collection(db, "announcements"),
         where("tournamentId", "==", tournamentId),
-        orderBy("isPinned", "desc"),
         orderBy("createdAt", "desc"),
         limit(20)
       );
     }
 
     const unsub = onSnapshot(q, (snap) => {
-      setAnnouncements(
-        snap.docs.map((d) => ({ id: d.id, ...d.data() } as Announcement))
-      );
+      let docs = snap.docs.map((d) => ({ id: d.id, ...d.data() } as Announcement));
+
+      if (tournamentId === null) {
+        docs = docs.sort((a, b) => {
+          if (b.isPinned !== a.isPinned) return (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0);
+          return 0;
+        });
+      }
+
+      setAnnouncements(docs);
       setLoading(false);
     });
 
