@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FooterCommunityLink } from "@/components/ui/CommunityLinkButton";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -61,36 +62,9 @@ export function Footer() {
               Community
             </h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <a
-                  href={process.env.NEXT_PUBLIC_DISCORD_URL || "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Discord Server
-                </a>
-              </li>
-              <li>
-                <a
-                  href={process.env.NEXT_PUBLIC_FACEBOOK_URL || "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Facebook Group
-                </a>
-              </li>
-              <li>
-                <a
-                  href={process.env.NEXT_PUBLIC_WHATSAPP_URL || "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
-                  WhatsApp Community
-                </a>
-              </li>
+              <li><FooterCommunityLink href={process.env.NEXT_PUBLIC_DISCORD_URL || "#"} label="Discord Server" /></li>
+              <li><FooterCommunityLink href={process.env.NEXT_PUBLIC_FACEBOOK_URL || "#"} label="Facebook Group" /></li>
+              <li><FooterCommunityLink href={process.env.NEXT_PUBLIC_WHATSAPP_URL || "#"} label="WhatsApp Community" /></li>
             </ul>
           </div>
         </div>

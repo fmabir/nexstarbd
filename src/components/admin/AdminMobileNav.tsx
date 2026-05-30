@@ -43,7 +43,7 @@ export function AdminMobileNav() {
       {/* Scrollable section tabs */}
       <div className="flex overflow-x-auto scrollbar-none px-2 py-2 gap-1.5">
         {navItems.map((item) => {
-          const active = pathname.startsWith(item.href);
+          const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
           return (
             <Link
               key={item.href}
