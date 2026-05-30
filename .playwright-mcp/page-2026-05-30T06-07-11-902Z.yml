@@ -1,0 +1,152 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - generic [ref=e5]:
+        - link "NexStarBD NexStarBD" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - img "NexStarBD" [ref=e7]
+          - generic [ref=e8]: NexStarBD
+        - generic [ref=e9]:
+          - link "Home" [ref=e10] [cursor=pointer]:
+            - /url: /
+          - link "Tournaments" [ref=e11] [cursor=pointer]:
+            - /url: /#upcoming-tournaments
+          - link "Results" [ref=e12] [cursor=pointer]:
+            - /url: /hall-of-fame
+          - link "Rules" [ref=e13] [cursor=pointer]:
+            - /url: /rules
+        - link "Login" [ref=e15] [cursor=pointer]:
+          - /url: /login
+  - main [ref=e16]:
+    - generic [ref=e17]:
+      - generic [ref=e18]:
+        - img "NexStarBD" [ref=e21]
+        - generic [ref=e23]:
+          - img [ref=e24]
+          - generic [ref=e26]:
+            - generic [ref=e27]: 🏆
+            - generic [ref=e28]: tourney 2
+            - generic [ref=e29]: Champions
+          - generic [ref=e30]:
+            - generic [ref=e31]:
+              - generic [ref=e32]: 🥇 Champion
+              - paragraph [ref=e33]: fades war
+              - generic [ref=e34]:
+                - generic [ref=e35]: Fein
+                - generic [ref=e36]: godi
+                - generic [ref=e37]: raul
+                - generic [ref=e38]: jian
+              - generic [ref=e39]: "500"
+            - generic [ref=e41]: No runner-up recorded
+        - generic [ref=e43]:
+          - img [ref=e44]
+          - generic [ref=e46]:
+            - generic [ref=e47]:
+              - generic [ref=e49]: Top Kills
+              - generic [ref=e50]: ·
+              - generic [ref=e51]: tourney 2
+            - generic [ref=e52]:
+              - generic [ref=e53]: 💀
+              - generic [ref=e54]:
+                - paragraph [ref=e55]: jjo34
+                - paragraph [ref=e56]: "UID: 3r2qwfas"
+                - generic [ref=e57]:
+                  - generic [ref=e58]: "22"
+                  - generic [ref=e59]: kills
+                  - generic [ref=e60]: 322 dmg
+              - paragraph [ref=e62]: Most Kills
+      - button "Previous" [ref=e63]: ‹
+      - button "Next" [ref=e64]: ›
+      - generic [ref=e65]:
+        - button "Slide 1" [ref=e66]
+        - button "Slide 2" [ref=e67]
+        - button "Slide 3" [ref=e68]
+    - img [ref=e70]
+    - generic [ref=e74]:
+      - generic [ref=e75]:
+        - heading "Hall of Fame" [level=2] [ref=e77]
+        - link "View All →" [ref=e79] [cursor=pointer]:
+          - /url: /hall-of-fame
+      - generic [ref=e80]:
+        - button "Previous Champions1" [ref=e81]
+        - button "MVP Players1" [ref=e82]
+      - generic [ref=e84]:
+        - generic [ref=e86]: 🏆
+        - generic [ref=e87]:
+          - text: 🥇 Champion
+          - heading "fades war" [level=3] [ref=e88]
+          - paragraph [ref=e89]: tourney 2 · 27 May 2026
+          - generic [ref=e90]:
+            - generic [ref=e91]: Fein
+            - generic [ref=e92]: godi
+            - generic [ref=e93]: raul
+            - generic [ref=e94]: "+1"
+          - generic [ref=e95]:
+            - generic [ref=e96]: Prize
+            - generic [ref=e97]: "500"
+    - generic [ref=e100]:
+      - paragraph [ref=e101]: Our Sponsors & Partners
+      - link "Mountain Dew" [ref=e103] [cursor=pointer]:
+        - /url: https://www.mountaindew.com/
+        - img "Mountain Dew" [ref=e104]
+    - generic [ref=e106]:
+      - heading "Join Our Community" [level=2] [ref=e107]
+      - paragraph [ref=e109]: Connect with thousands of Free Fire players in Bangladesh
+      - generic [ref=e110]:
+        - button "Join Discord Soon" [ref=e111] [cursor=pointer]:
+          - img [ref=e112]
+          - generic [ref=e114]: Join Discord
+          - generic [ref=e115]: Soon
+        - button "Facebook Group Soon" [ref=e116] [cursor=pointer]:
+          - img [ref=e117]
+          - generic [ref=e119]: Facebook Group
+          - generic [ref=e120]: Soon
+        - button "WhatsApp Community Soon" [ref=e121] [cursor=pointer]:
+          - img [ref=e122]
+          - generic [ref=e125]: WhatsApp Community
+          - generic [ref=e126]: Soon
+  - contentinfo [ref=e127]:
+    - generic [ref=e129]:
+      - generic [ref=e130]:
+        - generic [ref=e131]:
+          - generic [ref=e132]:
+            - img "NexStarBD logo" [ref=e133]
+            - generic [ref=e134]: NexStarBD
+          - paragraph [ref=e135]: Bangladesh's free community platform for Free Fire esports tournaments.
+        - generic [ref=e140]:
+          - heading "Navigate" [level=3] [ref=e141]
+          - list [ref=e142]:
+            - listitem [ref=e143]:
+              - link "Home" [ref=e144] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e145]:
+              - link "Tournaments" [ref=e146] [cursor=pointer]:
+                - /url: /#upcoming-tournaments
+            - listitem [ref=e147]:
+              - link "Hall of Fame" [ref=e148] [cursor=pointer]:
+                - /url: /hall-of-fame
+            - listitem [ref=e149]:
+              - link "Rules" [ref=e150] [cursor=pointer]:
+                - /url: /rules
+        - generic [ref=e151]:
+          - heading "Community" [level=3] [ref=e152]
+          - list [ref=e153]:
+            - listitem [ref=e154]:
+              - button "Discord Server (soon)" [ref=e155]:
+                - text: Discord Server
+                - generic [ref=e156]: (soon)
+            - listitem [ref=e157]:
+              - button "Facebook Group (soon)" [ref=e158]:
+                - text: Facebook Group
+                - generic [ref=e159]: (soon)
+            - listitem [ref=e160]:
+              - button "WhatsApp Community (soon)" [ref=e161]:
+                - text: WhatsApp Community
+                - generic [ref=e162]: (soon)
+      - generic [ref=e163]:
+        - generic [ref=e164]: © 2026 NexStarBD. All rights reserved.
+        - generic [ref=e165]:
+          - text: Built for the Bangladesh Free Fire community
+          - generic [ref=e166]: 🇧🇩
+  - button "Open Next.js Dev Tools" [ref=e172] [cursor=pointer]:
+    - img [ref=e173]

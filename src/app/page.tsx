@@ -3,6 +3,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { FeaturedTournament } from "@/components/home/FeaturedTournament";
+import { AnnouncementsFeed } from "@/components/home/AnnouncementsFeed";
 import { UpcomingTournaments } from "@/components/home/UpcomingTournaments";
 import { PreviousTournaments } from "@/components/home/PreviousTournaments";
 import { PreviousHighlights } from "@/components/home/PreviousHighlights";
@@ -46,6 +47,9 @@ export default async function HomePage() {
 
         {/* Section 1 — Current tournament (big, registration CTA) */}
         <FeaturedTournament />
+
+        {/* Section 1.5 — Latest announcements */}
+        <AnnouncementsFeed />
 
         {/* Section 2 — Other upcoming tournaments */}
         <UpcomingTournaments />
