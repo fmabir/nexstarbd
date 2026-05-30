@@ -1,0 +1,16 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - img "NexStarBD logo" [ref=e15]
+        - heading "NexStarBD" [level=1] [ref=e16]
+      - paragraph [ref=e17]: Reset your password
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - generic [ref=e20]: Email
+        - textbox "you@gmail.com" [ref=e21]
+      - button "Send Reset Code" [ref=e22]
+      - button "← Back to Sign In" [ref=e24]
+  - button "Open Next.js Dev Tools" [ref=e9] [cursor=pointer]:
+    - img [ref=e10]
+  - alert [ref=e25]

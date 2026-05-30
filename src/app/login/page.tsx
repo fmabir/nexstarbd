@@ -332,16 +332,15 @@ function LoginForm() {
         {/* Forgot — send OTP */}
         {mode === "forgot" && (
           <form onSubmit={handleSendResetOtp} className="space-y-4">
-            {email ? (
+            <div>
+              <label className="block text-sm font-semibold text-foreground mb-1.5">Email</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@gmail.com" required className={inputClass} autoComplete="email" />
+            </div>
+            {email && email.includes("@") && (
               <p className="text-sm text-muted-foreground text-center">
                 We&apos;ll send a reset code to <span className="font-semibold text-foreground">{email}</span>
               </p>
-            ) : (
-              <div>
-                <label className="block text-sm font-semibold text-foreground mb-1.5">Email</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@gmail.com" required className={inputClass} autoComplete="email" />
-              </div>
             )}
             <button type="submit" disabled={busy}
               className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 rounded-xl text-sm transition-colors disabled:opacity-60">
