@@ -1,0 +1,102 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - link "NexStarBD logo NexStarBD" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "NexStarBD logo" [ref=e6]
+          - generic [ref=e7]: NexStarBD
+        - paragraph [ref=e8]: Admin Panel
+      - navigation [ref=e9]:
+        - list [ref=e10]:
+          - listitem [ref=e11]:
+            - link "📊 Dashboard" [ref=e12] [cursor=pointer]:
+              - /url: /admin
+              - generic [ref=e13]: 📊
+              - text: Dashboard
+          - listitem [ref=e14]:
+            - link "🏆 Tournaments" [ref=e15] [cursor=pointer]:
+              - /url: /admin/tournaments
+              - generic [ref=e16]: 🏆
+              - text: Tournaments
+          - listitem [ref=e17]:
+            - link "📢 Announcements" [ref=e18] [cursor=pointer]:
+              - /url: /admin/announcements
+              - generic [ref=e19]: 📢
+              - text: Announcements
+          - listitem [ref=e20]:
+            - link "🥇 Winners" [ref=e21] [cursor=pointer]:
+              - /url: /admin/winners
+              - generic [ref=e22]: 🥇
+              - text: Winners
+          - listitem [ref=e23]:
+            - link "⭐ MVP Players" [ref=e24] [cursor=pointer]:
+              - /url: /admin/mvp
+              - generic [ref=e25]: ⭐
+              - text: MVP Players
+          - listitem [ref=e26]:
+            - link "🤝 Sponsors" [ref=e27] [cursor=pointer]:
+              - /url: /admin/sponsors
+              - generic [ref=e28]: 🤝
+              - text: Sponsors
+      - button "🚪 Sign Out" [ref=e30]:
+        - generic [ref=e31]: 🚪
+        - text: Sign Out
+    - generic [ref=e34]:
+      - heading "Announcements" [level=1] [ref=e35]
+      - generic [ref=e36]:
+        - heading "Post Announcement" [level=2] [ref=e37]
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - generic [ref=e40]: Title (optional)
+            - textbox "Announcement title..." [ref=e41]
+          - generic [ref=e42]:
+            - generic [ref=e43]: Message *
+            - textbox "Write your announcement..." [ref=e44]
+          - generic [ref=e45]:
+            - generic [ref=e46]:
+              - generic [ref=e47]: Type
+              - generic [ref=e48]:
+                - button "Info" [ref=e49]
+                - button "Warning" [ref=e50]
+                - button "Room Info" [ref=e51]
+                - button "Result" [ref=e52]
+            - generic [ref=e53]:
+              - generic [ref=e54]: Tournament (optional)
+              - combobox [ref=e55]:
+                - option "Site-wide" [selected]
+                - option "tourney6"
+                - option "tourney 4"
+                - option "tourney 2"
+                - option "tourney 3"
+                - option "nextstar tourney 1"
+                - option "tourney 5"
+            - generic [ref=e57] [cursor=pointer]:
+              - checkbox "Pin to top" [ref=e58]
+              - generic [ref=e59]: Pin to top
+          - button "Post Announcement" [ref=e60] [cursor=pointer]
+      - generic [ref=e61]:
+        - heading "Recent Announcements (2)" [level=2] [ref=e63]
+        - generic [ref=e64]:
+          - generic [ref=e66]:
+            - generic [ref=e67]:
+              - generic [ref=e68]:
+                - generic [ref=e69]: info
+                - generic [ref=e70]: 4 minutes ago
+              - paragraph [ref=e71]: First Announcement
+              - paragraph [ref=e72]: Welcome Everyone
+            - generic [ref=e73]:
+              - button "Edit" [ref=e74]
+              - button "Delete" [ref=e75]
+          - generic [ref=e77]:
+            - generic [ref=e78]:
+              - generic [ref=e79]:
+                - generic [ref=e80]: info
+                - generic [ref=e81]: 3 days ago
+              - paragraph [ref=e82]: room code
+              - paragraph [ref=e83]: aciaubi37287gvevge
+            - generic [ref=e84]:
+              - button "Edit" [ref=e85]
+              - button "Delete" [ref=e86]
+  - button "Open Next.js Dev Tools" [ref=e92] [cursor=pointer]:
+    - img [ref=e93]

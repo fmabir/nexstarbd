@@ -1,0 +1,153 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e31]:
+    - complementary [ref=e32]:
+      - generic [ref=e33]:
+        - link "NexStarBD logo NexStarBD" [ref=e34] [cursor=pointer]:
+          - /url: /
+          - img "NexStarBD logo" [ref=e35]
+          - generic [ref=e36]: NexStarBD
+        - paragraph [ref=e37]: Admin Panel
+      - navigation [ref=e38]:
+        - list [ref=e39]:
+          - listitem [ref=e40]:
+            - link "📊 Dashboard" [ref=e41] [cursor=pointer]:
+              - /url: /admin
+              - generic [ref=e42]: 📊
+              - text: Dashboard
+          - listitem [ref=e43]:
+            - link "🏆 Tournaments" [ref=e44] [cursor=pointer]:
+              - /url: /admin/tournaments
+              - generic [ref=e45]: 🏆
+              - text: Tournaments
+          - listitem [ref=e46]:
+            - link "📢 Announcements" [ref=e47] [cursor=pointer]:
+              - /url: /admin/announcements
+              - generic [ref=e48]: 📢
+              - text: Announcements
+          - listitem [ref=e49]:
+            - link "🥇 Winners" [ref=e50] [cursor=pointer]:
+              - /url: /admin/winners
+              - generic [ref=e51]: 🥇
+              - text: Winners
+          - listitem [ref=e52]:
+            - link "⭐ MVP Players" [ref=e53] [cursor=pointer]:
+              - /url: /admin/mvp
+              - generic [ref=e54]: ⭐
+              - text: MVP Players
+          - listitem [ref=e55]:
+            - link "🤝 Sponsors" [ref=e56] [cursor=pointer]:
+              - /url: /admin/sponsors
+              - generic [ref=e57]: 🤝
+              - text: Sponsors
+      - generic [ref=e58]:
+        - paragraph [ref=e59]: fmhossain2021@gmail.com
+        - button "🚪 Sign Out" [ref=e60]:
+          - generic [ref=e61]: 🚪
+          - text: Sign Out
+    - generic [ref=e64]:
+      - generic [ref=e65]:
+        - heading "Dashboard" [level=1] [ref=e66]
+        - paragraph [ref=e67]: Overview of your platform
+      - generic [ref=e68]:
+        - heading "Tournaments" [level=2] [ref=e69]
+        - generic [ref=e70]:
+          - link "Total 6" [ref=e71] [cursor=pointer]:
+            - /url: /admin/tournaments
+            - generic [ref=e72]:
+              - generic [ref=e73]: Total
+              - generic [ref=e74]: "6"
+          - link "Live Now 3 ongoing" [ref=e75] [cursor=pointer]:
+            - /url: /admin/tournaments
+            - generic [ref=e76]:
+              - generic [ref=e77]: Live Now
+              - generic [ref=e78]: "3"
+              - generic [ref=e79]: ongoing
+          - link "Upcoming 0" [ref=e80] [cursor=pointer]:
+            - /url: /admin/tournaments
+            - generic [ref=e81]:
+              - generic [ref=e82]: Upcoming
+              - generic [ref=e83]: "0"
+          - link "Completed 3" [ref=e84] [cursor=pointer]:
+            - /url: /admin/tournaments
+            - generic [ref=e85]:
+              - generic [ref=e86]: Completed
+              - generic [ref=e87]: "3"
+      - generic [ref=e88]:
+        - heading "Registrations" [level=2] [ref=e89]
+        - generic [ref=e90]:
+          - generic [ref=e91]:
+            - generic [ref=e92]: Total Squads
+            - generic [ref=e93]: "1"
+          - link "Pending 0 needs action" [ref=e94] [cursor=pointer]:
+            - /url: /admin/tournaments
+            - generic [ref=e95]:
+              - generic [ref=e96]: Pending
+              - generic [ref=e97]: "0"
+              - generic [ref=e98]: needs action
+          - generic [ref=e99]:
+            - generic [ref=e100]: Approved
+            - generic [ref=e101]: "1"
+          - generic [ref=e102]:
+            - generic [ref=e103]: Waitlisted
+            - generic [ref=e104]: "0"
+      - generic [ref=e105]:
+        - heading "Content" [level=2] [ref=e106]
+        - generic [ref=e107]:
+          - link "Announcements 2" [ref=e108] [cursor=pointer]:
+            - /url: /admin/announcements
+            - generic [ref=e109]:
+              - generic [ref=e110]: Announcements
+              - generic [ref=e111]: "2"
+          - link "Hall of Fame 1" [ref=e112] [cursor=pointer]:
+            - /url: /admin/winners
+            - generic [ref=e113]:
+              - generic [ref=e114]: Hall of Fame
+              - generic [ref=e115]: "1"
+          - link "MVP Players 1" [ref=e116] [cursor=pointer]:
+            - /url: /admin/mvp
+            - generic [ref=e117]:
+              - generic [ref=e118]: MVP Players
+              - generic [ref=e119]: "1"
+          - link "Sponsors 0" [ref=e120] [cursor=pointer]:
+            - /url: /admin/sponsors
+            - generic [ref=e121]:
+              - generic [ref=e122]: Sponsors
+              - generic [ref=e123]: "0"
+      - generic [ref=e124]:
+        - generic [ref=e125]:
+          - generic [ref=e126]:
+            - heading "Active Tournaments" [level=2] [ref=e127]
+            - link "View all →" [ref=e128] [cursor=pointer]:
+              - /url: /admin/tournaments
+          - generic [ref=e129]:
+            - link "tourney 5 0 / 12 squads ongoing" [ref=e130] [cursor=pointer]:
+              - /url: /admin/tournaments/q7NntqGfMlqmCyOpTMlC
+              - generic [ref=e131]:
+                - paragraph [ref=e132]: tourney 5
+                - paragraph [ref=e133]: 0 / 12 squads
+              - generic [ref=e134]: ongoing
+            - link "tourney 4 1 / 12 squads ongoing" [ref=e135] [cursor=pointer]:
+              - /url: /admin/tournaments/53cKC38v8eRKEwnDhmvD
+              - generic [ref=e136]:
+                - paragraph [ref=e137]: tourney 4
+                - paragraph [ref=e138]: 1 / 12 squads
+              - generic [ref=e139]: ongoing
+            - link "tourney6 0 / 12 squads ongoing" [ref=e140] [cursor=pointer]:
+              - /url: /admin/tournaments/HAp3yxStb3GU3fQoRdUu
+              - generic [ref=e141]:
+                - paragraph [ref=e142]: tourney6
+                - paragraph [ref=e143]: 0 / 12 squads
+              - generic [ref=e144]: ongoing
+        - generic [ref=e145]:
+          - generic [ref=e146]:
+            - heading "Recent Registrations" [level=2] [ref=e147]
+            - link "View all →" [ref=e148] [cursor=pointer]:
+              - /url: /admin/tournaments
+          - generic [ref=e150]:
+            - generic [ref=e151]:
+              - paragraph [ref=e152]: fasde
+              - paragraph [ref=e153]: by hourq
+            - generic [ref=e154]: approved
+  - button "Open Next.js Dev Tools" [ref=e9] [cursor=pointer]:
+    - img [ref=e10]
+  - alert [ref=e30]

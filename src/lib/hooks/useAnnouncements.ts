@@ -17,13 +17,24 @@ export function useAnnouncements(tournamentId: string | null) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(
-      collection(db, "announcements"),
-      where("tournamentId", "==", tournamentId),
-      orderBy("isPinned", "desc"),
-      orderBy("createdAt", "desc"),
-      limit(20)
-    );
+    let q;
+
+    if (tournamentId === null) {
+      q = query(
+        collection(db, "announcements"),
+        orderBy("isPinned", "desc"),
+        orderBy("createdAt", "desc"),
+        limit(20)
+      );
+    } else {
+      q = query(
+        collection(db, "announcements"),
+        where("tournamentId", "==", tournamentId),
+        orderBy("isPinned", "desc"),
+        orderBy("createdAt", "desc"),
+        limit(20)
+      );
+    }
 
     const unsub = onSnapshot(q, (snap) => {
       setAnnouncements(
