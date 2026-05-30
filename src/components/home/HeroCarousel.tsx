@@ -16,12 +16,12 @@ type Slide =
 /* ── Banner image slide ──────────────────────────────────────── */
 function BannerSlide() {
   return (
-    <div className="relative h-52 sm:h-72 overflow-hidden bg-black">
+    <div className="relative h-52 sm:h-80 bg-black flex items-center justify-center">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/banners/bgbn.png"
         alt="NexStarBD"
-        className="absolute inset-0 w-full h-full object-cover"
+        className="w-full h-full object-contain"
       />
     </div>
   );
@@ -159,12 +159,12 @@ function LeaderboardSlide({ player }: { player: MvpPlayer }) {
 /* ── Upcoming tournament slide ───────────────────────────────── */
 function UpcomingSlide({ tournament }: { tournament: Tournament }) {
   return (
-    <div className="relative h-52 sm:h-72 overflow-hidden" style={{ backgroundColor: "#1f2937" }}>
+    <div className="relative h-52 sm:h-80" style={{ backgroundColor: "#1f2937" }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={resolveBannerUrl(tournament.bannerUrl, tournament.id)}
         alt={tournament.name}
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-contain"
       />
       <div
         className="absolute inset-0"
@@ -234,14 +234,33 @@ export function HeroCarousel({
   ];
 
   const [current, setCurrent] = useState(0);
+  const [isAutoPlay, setIsAutoPlay] = useState(true);
 
   const next = useCallback(() => setCurrent((c) => (c + 1) % slides.length), [slides.length]);
   const prev = () => setCurrent((c) => (c - 1 + slides.length) % slides.length);
 
+  // Auto-play carousel
   useEffect(() => {
-    const id = setInterval(next, 4500);
+    if (!isAutoPlay) return;
+    const id = setInterval(next, 5000);
     return () => clearInterval(id);
-  }, [next]);
+  }, [isAutoPlay, next]);
+
+  // Handle manual slide change - restart auto-play
+  const handleManualChange = (index: number) => {
+    setCurrent(index);
+    setIsAutoPlay(true);
+  };
+
+  const handlePrev = () => {
+    prev();
+    setIsAutoPlay(true);
+  };
+
+  const handleNext = () => {
+    next();
+    setIsAutoPlay(true);
+  };
 
   return (
     <div className="relative overflow-hidden rounded-2xl mx-3 my-3 sm:mx-6 sm:my-4 shadow-md">
@@ -262,14 +281,14 @@ export function HeroCarousel({
 
       {/* Prev / Next arrows — desktop only */}
       <button
-        onClick={prev}
+        onClick={handlePrev}
         className="hidden sm:flex absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 hover:bg-black/70 text-white rounded-full items-center justify-center transition-colors z-10"
         aria-label="Previous"
       >
         ‹
       </button>
       <button
-        onClick={() => next()}
+        onClick={handleNext}
         className="hidden sm:flex absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 hover:bg-black/70 text-white rounded-full items-center justify-center transition-colors z-10"
         aria-label="Next"
       >
@@ -281,7 +300,7 @@ export function HeroCarousel({
         {slides.map((_, i) => (
           <button
             key={i}
-            onClick={() => setCurrent(i)}
+            onClick={() => handleManualChange(i)}
             className={`h-1.5 rounded-full transition-all duration-300 ${
               i === current ? "bg-white w-5" : "bg-white/40 w-1.5"
             }`}

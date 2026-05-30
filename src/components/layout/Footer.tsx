@@ -10,9 +10,9 @@ export function Footer() {
       <div className="h-1 bg-gradient-to-r from-secondary via-primary to-secondary" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8">
           {/* Brand */}
-          <div>
+          <div className="col-span-2 sm:col-span-1">
             <div className="flex items-center gap-0 mb-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/banners/lnsbd.png" alt="NexStarBD logo" style={{ height: "72px", width: "auto", display: "block", transform: "translateY(-6px) translateX(6px)" }} />
