@@ -1,0 +1,94 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - link "NexStarBD logo NexStarBD" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "NexStarBD logo" [ref=e6]
+          - generic [ref=e7]: NexStarBD
+        - paragraph [ref=e8]: Admin Panel
+      - navigation [ref=e9]:
+        - list [ref=e10]:
+          - listitem [ref=e11]:
+            - link "📊 Dashboard" [ref=e12] [cursor=pointer]:
+              - /url: /admin
+              - generic [ref=e13]: 📊
+              - text: Dashboard
+          - listitem [ref=e14]:
+            - link "🏆 Tournaments" [ref=e15] [cursor=pointer]:
+              - /url: /admin/tournaments
+              - generic [ref=e16]: 🏆
+              - text: Tournaments
+          - listitem [ref=e17]:
+            - link "📢 Announcements" [ref=e18] [cursor=pointer]:
+              - /url: /admin/announcements
+              - generic [ref=e19]: 📢
+              - text: Announcements
+          - listitem [ref=e20]:
+            - link "🥇 Winners" [active] [ref=e21] [cursor=pointer]:
+              - /url: /admin/winners
+              - generic [ref=e22]: 🥇
+              - text: Winners
+          - listitem [ref=e23]:
+            - link "⭐ MVP Players" [ref=e24] [cursor=pointer]:
+              - /url: /admin/mvp
+              - generic [ref=e25]: ⭐
+              - text: MVP Players
+          - listitem [ref=e26]:
+            - link "🤝 Sponsors" [ref=e27] [cursor=pointer]:
+              - /url: /admin/sponsors
+              - generic [ref=e28]: 🤝
+              - text: Sponsors
+      - generic [ref=e29]:
+        - paragraph [ref=e85]: fmhossain2021@gmail.com
+        - button "🚪 Sign Out" [ref=e30]:
+          - generic [ref=e31]: 🚪
+          - text: Sign Out
+    - generic [ref=e129]:
+      - heading "Hall of Fame — Winners" [level=1] [ref=e130]
+      - generic [ref=e131]:
+        - heading "Add Winner" [level=2] [ref=e132]
+        - generic [ref=e133]:
+          - generic [ref=e134]:
+            - generic [ref=e135]: Tournament
+            - combobox [ref=e136]:
+              - option "Select..." [selected]
+              - option "tourney 2"
+              - option "nextstar tourney 1"
+              - option "tourney 3"
+          - generic [ref=e137]:
+            - generic [ref=e138]: Position *
+            - combobox [ref=e139]:
+              - option "🥇 1st" [selected]
+              - option "🥈 2nd"
+              - option "🥉 3rd"
+          - generic [ref=e140]:
+            - generic [ref=e141]: Squad Name *
+            - textbox "Fire Dragons" [ref=e142]
+          - generic [ref=e143]:
+            - generic [ref=e144]: Prize *
+            - textbox "৳5,000" [ref=e145]
+          - generic [ref=e146]:
+            - generic [ref=e147]: Player IGNs (comma-separated) *
+            - textbox "Player1, Player2, Player3, Player4" [ref=e148]
+          - generic [ref=e149]:
+            - generic [ref=e150]: Tournament Date
+            - textbox [ref=e151]
+          - generic [ref=e152]:
+            - generic [ref=e153]: Photo URL (optional)
+            - textbox "https://..." [ref=e154]
+          - button "Add Winner" [ref=e156] [cursor=pointer]
+      - generic [ref=e157]:
+        - heading "All Winners (1)" [level=2] [ref=e159]
+        - generic [ref=e162]:
+          - generic [ref=e163]:
+            - paragraph [ref=e164]:
+              - text: fades war
+              - generic [ref=e165]: — 🥇
+            - paragraph [ref=e166]: tourney 2 · 27 May 2026 · 500
+          - generic [ref=e167]:
+            - button "Edit" [ref=e168]
+            - button "Delete" [ref=e169]
+  - button "Open Next.js Dev Tools" [ref=e81] [cursor=pointer]:
+    - img [ref=e82]
+  - alert [ref=e86]

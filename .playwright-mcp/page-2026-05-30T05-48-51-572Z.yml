@@ -1,0 +1,25 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - img "NexStarBD logo" [ref=e15]
+        - heading "NexStarBD" [level=1] [ref=e16]
+      - paragraph [ref=e17]: Check your email for a code
+    - generic [ref=e56]: Incorrect code. Please try again.
+    - generic [ref=e33]:
+      - paragraph [ref=e34]: We sent a 6-digit code to otptest2@example.com
+      - generic [ref=e57]:
+        - textbox [ref=e58]: "1"
+        - textbox [ref=e59]: "2"
+        - textbox [ref=e60]: "3"
+        - textbox [ref=e61]: "4"
+        - textbox [ref=e62]: "5"
+        - textbox [ref=e63]: "6"
+      - button "Verify Email" [ref=e42]
+      - generic [ref=e64]:
+        - text: Didn't get the code?
+        - button "Resend" [ref=e65]
+      - button "← Back" [ref=e46]
+  - button "Open Next.js Dev Tools" [ref=e9] [cursor=pointer]:
+    - img [ref=e10]
+  - alert [ref=e32]

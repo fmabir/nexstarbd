@@ -1,0 +1,93 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - link "NexStarBD logo NexStarBD" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "NexStarBD logo" [ref=e6]
+          - generic [ref=e7]: NexStarBD
+        - paragraph [ref=e8]: Admin Panel
+      - navigation [ref=e9]:
+        - list [ref=e10]:
+          - listitem [ref=e11]:
+            - link "📊 Dashboard" [ref=e12] [cursor=pointer]:
+              - /url: /admin
+              - generic [ref=e13]: 📊
+              - text: Dashboard
+          - listitem [ref=e14]:
+            - link "🏆 Tournaments" [ref=e15] [cursor=pointer]:
+              - /url: /admin/tournaments
+              - generic [ref=e16]: 🏆
+              - text: Tournaments
+          - listitem [ref=e17]:
+            - link "📢 Announcements" [ref=e18] [cursor=pointer]:
+              - /url: /admin/announcements
+              - generic [ref=e19]: 📢
+              - text: Announcements
+          - listitem [ref=e20]:
+            - link "🥇 Winners" [ref=e21] [cursor=pointer]:
+              - /url: /admin/winners
+              - generic [ref=e22]: 🥇
+              - text: Winners
+          - listitem [ref=e23]:
+            - link "⭐ MVP Players" [ref=e24] [cursor=pointer]:
+              - /url: /admin/mvp
+              - generic [ref=e25]: ⭐
+              - text: MVP Players
+          - listitem [ref=e26]:
+            - link "🤝 Sponsors" [ref=e27] [cursor=pointer]:
+              - /url: /admin/sponsors
+              - generic [ref=e28]: 🤝
+              - text: Sponsors
+      - button "🚪 Sign Out" [ref=e30]:
+        - generic [ref=e31]: 🚪
+        - text: Sign Out
+    - generic [ref=e34]:
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - link "← Back" [ref=e37] [cursor=pointer]:
+            - /url: /admin/tournaments
+          - heading "tourney6" [level=1] [ref=e38]
+        - generic [ref=e39]:
+          - button "⬇ Export CSV" [ref=e40]
+          - button "✏ Edit Details" [ref=e41]
+          - button "🗑 Delete" [ref=e42]
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - generic [ref=e45]: 0/12
+          - generic [ref=e46]: Registered
+        - generic [ref=e47]:
+          - generic [ref=e48]: "0"
+          - generic [ref=e49]: Approved
+        - generic [ref=e50]:
+          - generic [ref=e51]: "0"
+          - generic [ref=e52]: Waitlisted
+        - generic [ref=e53]:
+          - generic [ref=e54]: "0"
+          - generic [ref=e55]: Pending
+      - generic [ref=e56]:
+        - generic [ref=e57]:
+          - heading "Registration" [level=3] [ref=e58]
+          - paragraph [ref=e59]: Open ✓
+          - button "Close Registration" [ref=e60] [cursor=pointer]
+        - generic [ref=e61]:
+          - heading "Status" [level=3] [ref=e62]
+          - paragraph [ref=e63]: ongoing
+          - combobox [ref=e64]:
+            - option "Upcoming"
+            - option "Ongoing (LIVE)" [selected]
+            - option "Completed"
+            - option "Cancelled"
+        - generic [ref=e65]:
+          - heading "Room Info" [level=3] [ref=e66]
+          - generic [ref=e67]:
+            - textbox "Room ID" [ref=e68]
+            - textbox "Room Password" [ref=e69]
+          - button "Save Room Info" [ref=e70] [cursor=pointer]
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - heading "Squad Applications (0)" [level=2] [ref=e73]
+          - generic [ref=e74]: 0 approved
+        - generic [ref=e75]: No registrations yet.
+  - button "Open Next.js Dev Tools" [ref=e81] [cursor=pointer]:
+    - img [ref=e82]

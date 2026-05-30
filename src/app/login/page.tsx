@@ -107,10 +107,12 @@ function LoginForm() {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(""); setBusy(true);
+    const savedEmail = email;
     try {
       await initiateSignup(email, password, displayName);
       setOtpDigits(["", "", "", "", "", ""]);
       switchMode("verify");
+      setEmail(savedEmail);
       setTimeout(() => otpRefs.current[0]?.focus(), 100);
     } catch (err) {
       setError(friendlyError((err as Error).message ?? ""));
@@ -123,11 +125,13 @@ function LoginForm() {
     e.preventDefault();
     if (!email.trim()) { setError("Please enter your email address."); return; }
     setError(""); setBusy(true);
+    const savedEmail = email;
     try {
       await sendPasswordResetOtp(email);
       setOtpDigits(["", "", "", "", "", ""]);
       setNewPassword(""); setConfirmPassword("");
       switchMode("verify-reset");
+      setEmail(savedEmail);
       setTimeout(() => otpRefs.current[0]?.focus(), 100);
     } catch (err) {
       setError(friendlyError((err as Error).message ?? ""));
@@ -141,11 +145,19 @@ function LoginForm() {
     const next = [...otpDigits];
     next[index] = digit;
     setOtpDigits(next);
-    if (digit && index < 5) otpRefs.current[index + 1]?.focus();
+    if (digit && index < 5) {
+      setTimeout(() => otpRefs.current[index + 1]?.focus(), 0);
+    }
   };
 
   const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Backspace" && !otpDigits[index] && index > 0) otpRefs.current[index - 1]?.focus();
+    if (e.key === "Backspace" && !otpDigits[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    } else if (e.key === "ArrowRight" && index < 5) {
+      otpRefs.current[index + 1]?.focus();
+    } else if (e.key === "ArrowLeft" && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
   };
 
   const handleOtpPaste = (e: React.ClipboardEvent) => {
@@ -208,6 +220,12 @@ function LoginForm() {
           type="text" inputMode="numeric" maxLength={1} value={digit}
           onChange={(e) => handleOtpInput(i, e.target.value)}
           onKeyDown={(e) => handleOtpKeyDown(i, e)}
+          onKeyUp={(e) => {
+            const input = e.target as HTMLInputElement;
+            if (input.value && i < 5 && !otpDigits[i + 1]) {
+              setTimeout(() => otpRefs.current[i + 1]?.focus(), 0);
+            }
+          }}
           className="w-11 text-center text-xl font-bold border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-white"
           style={{ height: "52px" }} />
       ))}

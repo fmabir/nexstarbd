@@ -1,0 +1,24 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - img "NexStarBD logo" [ref=e15]
+        - heading "NexStarBD" [level=1] [ref=e16]
+      - paragraph [ref=e17]: Create your player account
+    - generic [ref=e18]:
+      - generic [ref=e31]:
+        - generic [ref=e32]: Your Name
+        - textbox "e.g. Safwan" [ref=e33]
+      - generic [ref=e19]:
+        - generic [ref=e20]: Email
+        - textbox "you@gmail.com" [ref=e21]
+      - generic [ref=e22]:
+        - generic [ref=e24]: Password
+        - textbox "Min. 6 characters" [ref=e34]
+      - button "Create Account" [ref=e35]
+    - generic [ref=e28]:
+      - text: Already have an account?
+      - button "Sign in" [active] [ref=e36]
+  - button "Open Next.js Dev Tools" [ref=e9] [cursor=pointer]:
+    - img [ref=e10]
+  - alert [ref=e30]

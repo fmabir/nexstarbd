@@ -1,0 +1,94 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - link "NexStarBD logo NexStarBD" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img "NexStarBD logo" [ref=e6]
+          - generic [ref=e7]: NexStarBD
+        - paragraph [ref=e8]: Admin Panel
+      - navigation [ref=e9]:
+        - list [ref=e10]:
+          - listitem [ref=e11]:
+            - link "📊 Dashboard" [ref=e12] [cursor=pointer]:
+              - /url: /admin
+              - generic [ref=e13]: 📊
+              - text: Dashboard
+          - listitem [ref=e14]:
+            - link "🏆 Tournaments" [ref=e15] [cursor=pointer]:
+              - /url: /admin/tournaments
+              - generic [ref=e16]: 🏆
+              - text: Tournaments
+          - listitem [ref=e17]:
+            - link "📢 Announcements" [active] [ref=e18] [cursor=pointer]:
+              - /url: /admin/announcements
+              - generic [ref=e19]: 📢
+              - text: Announcements
+          - listitem [ref=e20]:
+            - link "🥇 Winners" [ref=e21] [cursor=pointer]:
+              - /url: /admin/winners
+              - generic [ref=e22]: 🥇
+              - text: Winners
+          - listitem [ref=e23]:
+            - link "⭐ MVP Players" [ref=e24] [cursor=pointer]:
+              - /url: /admin/mvp
+              - generic [ref=e25]: ⭐
+              - text: MVP Players
+          - listitem [ref=e26]:
+            - link "🤝 Sponsors" [ref=e27] [cursor=pointer]:
+              - /url: /admin/sponsors
+              - generic [ref=e28]: 🤝
+              - text: Sponsors
+      - generic [ref=e29]:
+        - paragraph [ref=e85]: fmhossain2021@gmail.com
+        - button "🚪 Sign Out" [ref=e30]:
+          - generic [ref=e31]: 🚪
+          - text: Sign Out
+    - generic [ref=e87]:
+      - heading "Announcements" [level=1] [ref=e88]
+      - generic [ref=e89]:
+        - heading "Post Announcement" [level=2] [ref=e90]
+        - generic [ref=e91]:
+          - generic [ref=e92]:
+            - generic [ref=e93]: Title (optional)
+            - textbox "Announcement title..." [ref=e94]
+          - generic [ref=e95]:
+            - generic [ref=e96]: Message *
+            - textbox "Write your announcement..." [ref=e97]
+          - generic [ref=e98]:
+            - generic [ref=e99]:
+              - generic [ref=e100]: Type
+              - generic [ref=e101]:
+                - button "Info" [ref=e102]
+                - button "Warning" [ref=e103]
+                - button "Room Info" [ref=e104]
+                - button "Result" [ref=e105]
+            - generic [ref=e106]:
+              - generic [ref=e107]: Tournament (optional)
+              - combobox [ref=e108]:
+                - option "Site-wide" [selected]
+                - option "tourney6"
+                - option "tourney 4"
+                - option "tourney 2"
+                - option "tourney 3"
+                - option "nextstar tourney 1"
+                - option "tourney 5"
+            - generic [ref=e110] [cursor=pointer]:
+              - checkbox "Pin to top" [ref=e111]
+              - generic [ref=e112]: Pin to top
+          - button "Post Announcement" [ref=e113] [cursor=pointer]
+      - generic [ref=e114]:
+        - heading "Recent Announcements (1)" [level=2] [ref=e116]
+        - generic [ref=e119]:
+          - generic [ref=e120]:
+            - generic [ref=e121]:
+              - generic [ref=e122]: info
+              - generic [ref=e123]: 3 days ago
+            - paragraph [ref=e124]: room code
+            - paragraph [ref=e125]: aciaubi37287gvevge
+          - generic [ref=e126]:
+            - button "Edit" [ref=e127]
+            - button "Delete" [ref=e128]
+  - button "Open Next.js Dev Tools" [ref=e81] [cursor=pointer]:
+    - img [ref=e82]
+  - alert [ref=e86]
