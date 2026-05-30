@@ -1,0 +1,264 @@
+- generic [ref=e1]:
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - generic [ref=e5]:
+        - link "NexStarBD" [ref=e182] [cursor=pointer]:
+          - /url: /
+          - img "NexStarBD" [ref=e7]
+        - generic [ref=e16]:
+          - button "Toggle menu" [active] [ref=e183]:
+            - img [ref=e184]
+          - button "Profile menu" [ref=e186]:
+            - generic [ref=e187]: F
+            - img [ref=e188]
+  - main [ref=e19]:
+    - generic [ref=e20]:
+      - generic [ref=e21]:
+        - img "NexStarBD" [ref=e24]
+        - generic [ref=e26]:
+          - img [ref=e27]
+          - generic [ref=e29]:
+            - generic [ref=e30]: 🏆
+            - generic [ref=e31]: tourney 2
+            - generic [ref=e32]: Champions
+          - generic [ref=e33]:
+            - generic [ref=e34]:
+              - generic [ref=e35]: 🥇 Champion
+              - paragraph [ref=e36]: fades war
+              - generic [ref=e37]:
+                - generic [ref=e38]: Fein
+                - generic [ref=e39]: godi
+                - generic [ref=e40]: raul
+                - generic [ref=e41]: jian
+              - generic [ref=e42]: "500"
+            - generic [ref=e44]: No runner-up recorded
+        - generic [ref=e46]:
+          - img [ref=e47]
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - generic [ref=e52]: Top Kills
+              - generic [ref=e53]: ·
+              - generic [ref=e54]: tourney 2
+            - generic [ref=e55]:
+              - generic [ref=e56]: 💀
+              - generic [ref=e57]:
+                - paragraph [ref=e58]: jjo34
+                - paragraph [ref=e59]: "UID: 3r2qwfas"
+                - generic [ref=e60]:
+                  - generic [ref=e61]: "22"
+                  - generic [ref=e62]: kills
+      - generic [ref=e68]:
+        - button "Slide 1" [ref=e69]
+        - button "Slide 2" [ref=e70]
+        - button "Slide 3" [ref=e71]
+    - generic [ref=e190]:
+      - generic [ref=e193]: Live Tournaments
+      - generic [ref=e194]:
+        - generic [ref=e195]:
+          - generic [ref=e196]: ✨ FREE ENTRY — No Registration Fee
+          - generic [ref=e197]:
+            - img "tourney 5" [ref=e198]
+            - generic [ref=e201]: LIVE NOW
+            - heading "tourney 5" [level=2] [ref=e204]
+          - generic [ref=e205]:
+            - generic [ref=e206]:
+              - generic [ref=e207]:
+                - paragraph [ref=e208]: Prize Pool
+                - paragraph [ref=e209]: "333"
+              - generic [ref=e210]: ⚔️ Squad (BR)
+              - generic [ref=e211]:
+                - paragraph [ref=e212]: Starts
+                - paragraph [ref=e213]: 02:34 PM
+                - paragraph [ref=e214]: 27 May 2026
+            - generic [ref=e216]:
+              - generic [ref=e217]: Slots
+              - generic [ref=e218]: 0/12
+            - generic [ref=e222]: LIVE NOW
+            - generic [ref=e223]:
+              - link "Register Squad →" [ref=e224] [cursor=pointer]:
+                - /url: /register/q7NntqGfMlqmCyOpTMlC
+              - link "View Details" [ref=e225] [cursor=pointer]:
+                - /url: /tournaments/q7NntqGfMlqmCyOpTMlC
+        - generic [ref=e226]:
+          - generic [ref=e227]: ✨ FREE ENTRY — No Registration Fee
+          - generic [ref=e228]:
+            - img "tourney 4" [ref=e229]
+            - generic [ref=e232]: LIVE NOW
+            - heading "tourney 4" [level=2] [ref=e235]
+          - generic [ref=e236]:
+            - generic [ref=e237]:
+              - generic [ref=e238]:
+                - paragraph [ref=e239]: Prize Pool
+                - paragraph [ref=e240]: "500"
+              - generic [ref=e241]: ⚔️ Squad (BR)
+              - generic [ref=e242]:
+                - paragraph [ref=e243]: Starts
+                - paragraph [ref=e244]: 11:58 PM
+                - paragraph [ref=e245]: 27 May 2026
+            - generic [ref=e247]:
+              - generic [ref=e248]: Slots
+              - generic [ref=e249]: 1/12
+            - generic [ref=e254]: LIVE NOW
+            - generic [ref=e255]:
+              - link "Register Squad →" [ref=e256] [cursor=pointer]:
+                - /url: /register/53cKC38v8eRKEwnDhmvD
+              - link "View Details" [ref=e257] [cursor=pointer]:
+                - /url: /tournaments/53cKC38v8eRKEwnDhmvD
+        - generic [ref=e258]:
+          - generic [ref=e259]: ✨ FREE ENTRY — No Registration Fee
+          - generic [ref=e260]:
+            - img "tourney6" [ref=e261]
+            - generic [ref=e264]: LIVE NOW
+            - heading "tourney6" [level=2] [ref=e267]
+          - generic [ref=e268]:
+            - generic [ref=e269]:
+              - generic [ref=e270]:
+                - paragraph [ref=e271]: Prize Pool
+                - paragraph [ref=e272]: "7000"
+              - generic [ref=e273]: ⚔️ Squad (BR)
+              - generic [ref=e274]:
+                - paragraph [ref=e275]: Starts
+                - paragraph [ref=e276]: 10:30 PM
+                - paragraph [ref=e277]: 30 May 2026
+            - generic [ref=e279]:
+              - generic [ref=e280]: Slots
+              - generic [ref=e281]: 0/12
+            - generic [ref=e285]: LIVE NOW
+            - generic [ref=e286]:
+              - link "Register Squad →" [ref=e287] [cursor=pointer]:
+                - /url: /register/HAp3yxStb3GU3fQoRdUu
+              - link "View Details" [ref=e288] [cursor=pointer]:
+                - /url: /tournaments/HAp3yxStb3GU3fQoRdUu
+    - generic [ref=e77]:
+      - heading "Latest Announcements" [level=2] [ref=e81]
+      - generic [ref=e289]:
+        - generic [ref=e290]:
+          - generic [ref=e291]: Info
+          - generic [ref=e292]: about 2 hours ago
+        - heading "First Announcement" [level=4] [ref=e293]
+        - paragraph [ref=e294]: Welcome Everyone
+    - generic [ref=e296]:
+      - generic [ref=e297]:
+        - heading "Previous Tournaments" [level=2] [ref=e299]
+        - generic [ref=e301]: 3 completed
+      - generic [ref=e302]:
+        - link "tourney 2 ✓ Done tourney 2 500 Squad (BR) 27 May 2026 View Results →" [ref=e303] [cursor=pointer]:
+          - /url: /tournaments/BDUEECeGzaIuqZkJBwml
+          - generic [ref=e304]:
+            - img "tourney 2" [ref=e305]
+            - generic [ref=e307]: ✓ Done
+          - generic [ref=e308]:
+            - paragraph [ref=e309]: tourney 2
+            - generic [ref=e310]:
+              - generic [ref=e311]: "500"
+              - generic [ref=e312]: Squad (BR)
+            - paragraph [ref=e313]: 27 May 2026
+            - generic [ref=e315]: View Results →
+        - link "tourney 3 ✓ Done tourney 3 600 Squad (BR) 27 May 2026 View Results →" [ref=e316] [cursor=pointer]:
+          - /url: /tournaments/WMBhN9QzN5qWsjFp86od
+          - generic [ref=e317]:
+            - img "tourney 3" [ref=e318]
+            - generic [ref=e320]: ✓ Done
+          - generic [ref=e321]:
+            - paragraph [ref=e322]: tourney 3
+            - generic [ref=e323]:
+              - generic [ref=e324]: "600"
+              - generic [ref=e325]: Squad (BR)
+            - paragraph [ref=e326]: 27 May 2026
+            - generic [ref=e328]: View Results →
+        - link "nextstar tourney 1 ✓ Done nextstar tourney 1 350 Squad (BR) 27 May 2026 View Results →" [ref=e329] [cursor=pointer]:
+          - /url: /tournaments/SENogMCxTBgPAdl7L8XV
+          - generic [ref=e330]:
+            - img "nextstar tourney 1" [ref=e331]
+            - generic [ref=e333]: ✓ Done
+          - generic [ref=e334]:
+            - paragraph [ref=e335]: nextstar tourney 1
+            - generic [ref=e336]:
+              - generic [ref=e337]: "350"
+              - generic [ref=e338]: Squad (BR)
+            - paragraph [ref=e339]: 27 May 2026
+            - generic [ref=e341]: View Results →
+    - generic [ref=e87]:
+      - generic [ref=e88]:
+        - heading "Hall of Fame" [level=2] [ref=e90]
+        - link "View All →" [ref=e92] [cursor=pointer]:
+          - /url: /hall-of-fame
+      - generic [ref=e93]:
+        - button "Previous Champions1" [ref=e94]
+        - button "MVP Players1" [ref=e95]
+      - generic [ref=e97]:
+        - generic [ref=e99]: 🏆
+        - generic [ref=e100]:
+          - text: 🥇 Champion
+          - heading "fades war" [level=3] [ref=e101]
+          - paragraph [ref=e102]: tourney 2 · 27 May 2026
+          - generic [ref=e103]:
+            - generic [ref=e104]: Fein
+            - generic [ref=e105]: godi
+            - generic [ref=e106]: raul
+            - generic [ref=e107]: "+1"
+          - generic [ref=e108]:
+            - generic [ref=e109]: Prize
+            - generic [ref=e110]: "500"
+    - generic [ref=e112]:
+      - heading "Join Our Community" [level=2] [ref=e113]
+      - paragraph [ref=e115]: Connect with thousands of Free Fire players in Bangladesh
+      - generic [ref=e116]:
+        - button "Join Discord Soon" [ref=e117] [cursor=pointer]:
+          - img [ref=e118]
+          - generic [ref=e120]: Join Discord
+          - generic [ref=e121]: Soon
+        - button "Facebook Group Soon" [ref=e122] [cursor=pointer]:
+          - img [ref=e123]
+          - generic [ref=e125]: Facebook Group
+          - generic [ref=e126]: Soon
+        - button "WhatsApp Community Soon" [ref=e127] [cursor=pointer]:
+          - img [ref=e128]
+          - generic [ref=e131]: WhatsApp Community
+          - generic [ref=e132]: Soon
+  - contentinfo [ref=e133]:
+    - generic [ref=e135]:
+      - generic [ref=e136]:
+        - generic [ref=e137]:
+          - generic [ref=e138]:
+            - img "NexStarBD logo" [ref=e139]
+            - generic [ref=e140]: NexStarBD
+          - paragraph [ref=e141]: Bangladesh's free community platform for Free Fire esports tournaments.
+        - generic [ref=e146]:
+          - heading "Navigate" [level=3] [ref=e147]
+          - list [ref=e148]:
+            - listitem [ref=e149]:
+              - link "Home" [ref=e150] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e151]:
+              - link "Tournaments" [ref=e152] [cursor=pointer]:
+                - /url: /#upcoming-tournaments
+            - listitem [ref=e153]:
+              - link "Hall of Fame" [ref=e154] [cursor=pointer]:
+                - /url: /hall-of-fame
+            - listitem [ref=e155]:
+              - link "Rules" [ref=e156] [cursor=pointer]:
+                - /url: /rules
+        - generic [ref=e157]:
+          - heading "Community" [level=3] [ref=e158]
+          - list [ref=e159]:
+            - listitem [ref=e160]:
+              - button "Discord Server (soon)" [ref=e161]:
+                - text: Discord Server
+                - generic [ref=e162]: (soon)
+            - listitem [ref=e163]:
+              - button "Facebook Group (soon)" [ref=e164]:
+                - text: Facebook Group
+                - generic [ref=e165]: (soon)
+            - listitem [ref=e166]:
+              - button "WhatsApp Community (soon)" [ref=e167]:
+                - text: WhatsApp Community
+                - generic [ref=e168]: (soon)
+      - generic [ref=e169]:
+        - generic [ref=e170]: © 2026 NexStarBD. All rights reserved.
+        - generic [ref=e171]:
+          - text: Built for the Bangladesh Free Fire community
+          - generic [ref=e172]: 🇧🇩
+  - button "Open Next.js Dev Tools" [ref=e178] [cursor=pointer]:
+    - img [ref=e179]
+  - alert [ref=e342]
