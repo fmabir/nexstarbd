@@ -73,15 +73,22 @@ export function Navbar({ locale: _locale }: { locale: string }) {
             <div className="flex items-center gap-4">
               {/* Mobile menu toggle */}
               <div className="md:hidden flex items-center gap-2">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.label.length > 6 ? link.label.substring(0, 3) : link.label}
-                  </Link>
-                ))}
+                {navLinks.map((link) => {
+                  const abbrevMap: Record<string, string> = {
+                    "Tournaments": "Tour",
+                    "Results": "Res",
+                  };
+                  const display = abbrevMap[link.label] || link.label;
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {display}
+                    </Link>
+                  );
+                })}
               </div>
 
               <div className="shrink-0 relative" ref={profileRef}>

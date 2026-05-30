@@ -16,12 +16,12 @@ type Slide =
 /* ── Banner image slide ──────────────────────────────────────── */
 function BannerSlide() {
   return (
-    <div className="relative h-52 sm:h-80 bg-black flex items-center justify-center">
+    <div className="relative h-52 sm:h-72 bg-black flex items-center justify-center">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/banners/bgbn.png"
         alt="NexStarBD"
-        className="w-full h-full object-contain"
+        className="w-full h-full object-cover"
       />
     </div>
   );
@@ -159,12 +159,12 @@ function LeaderboardSlide({ player }: { player: MvpPlayer }) {
 /* ── Upcoming tournament slide ───────────────────────────────── */
 function UpcomingSlide({ tournament }: { tournament: Tournament }) {
   return (
-    <div className="relative h-52 sm:h-80" style={{ backgroundColor: "#1f2937" }}>
+    <div className="relative h-52 sm:h-72" style={{ backgroundColor: "#1f2937" }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={resolveBannerUrl(tournament.bannerUrl, tournament.id)}
         alt={tournament.name}
-        className="absolute inset-0 w-full h-full object-contain"
+        className="absolute inset-0 w-full h-full object-cover"
       />
       <div
         className="absolute inset-0"
