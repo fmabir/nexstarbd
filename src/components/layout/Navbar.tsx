@@ -15,6 +15,7 @@ const navLinks = [
 export function Navbar({ locale: _locale }: { locale: string }) {
   const { user, signOut } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown on outside click
@@ -27,6 +28,20 @@ export function Navbar({ locale: _locale }: { locale: string }) {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    function handleClick(e: MouseEvent) {
+      const drawer = document.querySelector('[data-mobile-menu]');
+      const hamburger = document.querySelector('[data-hamburger]');
+      if (drawer && !drawer.contains(e.target as Node) && !hamburger?.contains(e.target as Node)) {
+        setMobileMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [mobileMenuOpen]);
 
   return (
     <>
@@ -70,26 +85,18 @@ export function Navbar({ locale: _locale }: { locale: string }) {
             </div>
 
             {/* Profile / Login — right */}
-            <div className="flex items-center gap-4">
-              {/* Mobile menu toggle */}
-              <div className="md:hidden flex items-center gap-2">
-                {navLinks.map((link) => {
-                  const abbrevMap: Record<string, string> = {
-                    "Tournaments": "Tour",
-                    "Results": "Res",
-                  };
-                  const display = abbrevMap[link.label] || link.label;
-                  return (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className="text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {display}
-                    </Link>
-                  );
-                })}
-              </div>
+            <div className="flex items-center gap-3 md:gap-4">
+              {/* Mobile hamburger menu */}
+              <button
+                data-hamburger
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                aria-label="Toggle menu"
+              >
+                <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
 
               <div className="shrink-0 relative" ref={profileRef}>
                 {user ? (
@@ -149,6 +156,51 @@ export function Navbar({ locale: _locale }: { locale: string }) {
           </div>
         </nav>
       </header>
+
+      {/* Mobile drawer menu */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-20 md:hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/30 transition-opacity duration-200"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+
+          {/* Drawer */}
+          <div
+            data-mobile-menu
+            className="absolute left-0 top-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out"
+          >
+            {/* Drawer header with close button */}
+            <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100">
+              <span className="font-brand font-bold text-lg text-foreground">Menu</span>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                aria-label="Close menu"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Navigation links */}
+            <nav className="flex flex-col py-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="px-4 py-3 text-base font-medium text-foreground hover:text-primary hover:bg-gray-50 transition-colors border-l-4 border-transparent hover:border-primary"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        </div>
+      )}
     </>
   );
 }
