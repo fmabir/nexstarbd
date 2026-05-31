@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { RegistrationsTable } from "@/components/admin/RegistrationsTable";
 import type { Tournament, Registration } from "@/lib/types";
 import { serialize } from "@/lib/utils/serialize";
