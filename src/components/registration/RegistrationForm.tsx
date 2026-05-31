@@ -105,21 +105,6 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      {/* Payment notice for paid tournaments */}
-      {!ts?.isFree && ts?.bkashNumber && (
-        <div className="bg-secondary/10 border border-secondary rounded-xl px-4 py-3 space-y-2">
-          <p className="text-sm font-semibold text-secondary flex items-center gap-2">
-            📱 Payment Required
-          </p>
-          <p className="text-sm text-foreground">
-            Send Money via bKash to: <span className="font-bold text-lg">{ts.bkashNumber}</span>
-          </p>
-          <p className="text-xs text-muted-foreground">
-            After sending payment, enter your transaction ID below to complete registration.
-          </p>
-        </div>
-      )}
-
       {/* Waitlist notice */}
       {isFull && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 font-medium">
@@ -175,10 +160,21 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
         </div>
       </div>
 
-      {/* Transaction ID - only for paid tournaments */}
+      {/* Payment section - only for paid tournaments */}
       {!ts?.isFree && (
-        <div className="border-t border-border pt-1">
-          <p className="text-xs font-bold uppercase tracking-widest text-secondary mb-4">Payment Verification</p>
+        <div className="border-t border-border pt-1 space-y-4">
+          <p className="text-xs font-bold uppercase tracking-widest text-secondary">Payment Verification</p>
+
+          {/* bKash Send Money info */}
+          {ts?.bkashNumber && (
+            <div className="bg-amber-50 border border-amber-300 rounded-xl px-4 py-4 space-y-1">
+              <p className="text-xs font-bold uppercase tracking-wider text-amber-700">💸 Send Money via bKash (Personal)</p>
+              <p className="font-mono text-2xl font-bold text-amber-900 tracking-widest">{ts.bkashNumber}</p>
+              <p className="text-xs text-amber-700">Send money to this bKash number, then enter your transaction ID below.</p>
+            </div>
+          )}
+
+          {/* Transaction ID */}
           <div>
             <label className={labelClass}>Transaction ID *</label>
             <input type="text" value={transactionId} onChange={(e) => setTransactionId(e.target.value)}
