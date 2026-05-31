@@ -47,11 +47,9 @@ export function SquadList({ tournamentId }: { tournamentId: string }) {
                   Leader: <span className="font-medium">{reg.leaderName}</span>
                 </p>
                 <div className="flex flex-wrap gap-1.5 mt-1.5">
-                  {[reg.leaderUid, reg.player2Uid, reg.player3Uid, reg.player4Uid].map((uid, i) => (
-                    <span key={uid} className="text-xs text-muted-foreground bg-white px-2 py-0.5 rounded-full">
-                      {i === 0 ? "Leader" : `P${i + 1}`}: {uid}
-                    </span>
-                  ))}
+                  <span className="text-xs text-muted-foreground bg-white px-2 py-0.5 rounded-full">
+                    Leader: {reg.leaderUid}
+                  </span>
                 </div>
               </div>
               {/* Approval badge */}
