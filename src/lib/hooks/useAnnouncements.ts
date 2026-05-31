@@ -22,6 +22,7 @@ export function useAnnouncements(tournamentId: string | null) {
     if (tournamentId === null) {
       q = query(
         collection(db, "announcements"),
+        where("tournamentId", "==", null),
         orderBy("createdAt", "desc"),
         limit(20)
       );
