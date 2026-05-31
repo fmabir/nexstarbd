@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/context/ToastContext";
-import type { Tournament, Registration, ApprovalStatus } from "@/lib/types";
-import { formatTournamentDate, toDate } from "@/lib/utils/formatDate";
+import type { Tournament, Registration, ApprovalStatus, Announcement, AnnouncementType } from "@/lib/types";
+import { formatTournamentDate, timeAgo, toDate } from "@/lib/utils/formatDate";
 
 function tsToDatetimeLocal(ts: unknown): string {
   try {
@@ -126,7 +126,7 @@ function RegistrationCard({
   );
 }
 
-export function ManageTournamentPanel({ tournament, registrations }: { tournament: Tournament; registrations: Registration[] }) {
+export function ManageTournamentPanel({ tournament, registrations, announcements }: { tournament: Tournament; registrations: Registration[]; announcements: Announcement[] }) {
   const router = useRouter();
   const { showToast } = useToast();
   const [loading, setLoading] = useState<string | null>(null);
@@ -220,6 +220,39 @@ export function ManageTournamentPanel({ tournament, registrations }: { tournamen
 
   const toggleSelect = (id: string) => {
     setSelectedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  };
+
+  const [annForm, setAnnForm] = useState({ title: "", body: "", type: "info" as AnnouncementType, isPinned: false });
+  const [annLoading, setAnnLoading] = useState(false);
+  const [deletingAnn, setDeletingAnn] = useState<string | null>(null);
+
+  const handlePostAnnouncement = async () => {
+    if (!annForm.body.trim()) return;
+    setAnnLoading(true);
+    try {
+      const res = await fetch("/api/admin/announcements", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...annForm, tournamentId: tournament.id }),
+      });
+      if (!res.ok) throw new Error();
+      showToast("Announcement posted!", "success");
+      setAnnForm({ title: "", body: "", type: "info", isPinned: false });
+      router.refresh();
+    } catch { showToast("Failed to post", "error"); }
+    finally { setAnnLoading(false); }
+  };
+
+  const handleDeleteAnnouncement = async (id: string) => {
+    setDeletingAnn(id);
+    try {
+      await fetch("/api/admin/announcements", {
+        method: "DELETE", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      showToast("Deleted", "success");
+      router.refresh();
+    } catch { showToast("Delete failed", "error"); }
+    finally { setDeletingAnn(null); }
   };
 
   const pendingRegs = registrations.filter(r => r.approvalStatus === "pending");
@@ -440,6 +473,73 @@ export function ManageTournamentPanel({ tournament, registrations }: { tournamen
           </div>
         </div>
       )}
+
+      {/* Announcements */}
+      <div className="bg-white rounded-2xl border border-border overflow-hidden">
+        <div className="px-6 py-4 border-b border-border">
+          <h2 className="font-semibold">Announcements to Registered Players</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">Visible only to squads registered for this tournament</p>
+        </div>
+
+        {/* Compose */}
+        <div className="px-6 py-5 border-b border-border space-y-3">
+          <input
+            value={annForm.title}
+            onChange={e => setAnnForm(p => ({ ...p, title: e.target.value }))}
+            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
+            placeholder="Title (optional)"
+          />
+          <textarea
+            value={annForm.body}
+            onChange={e => setAnnForm(p => ({ ...p, body: e.target.value }))}
+            rows={3}
+            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary resize-none"
+            placeholder="Write your announcement..."
+          />
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex gap-1.5">
+              {(["info", "warning", "roomInfo", "result"] as AnnouncementType[]).map(t => (
+                <button key={t} type="button" onClick={() => setAnnForm(p => ({ ...p, type: t }))}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold border-2 transition-colors ${annForm.type === t ? "border-primary bg-primary text-white" : "border-border text-muted-foreground"}`}>
+                  {t === "roomInfo" ? "Room Info" : t.charAt(0).toUpperCase() + t.slice(1)}
+                </button>
+              ))}
+            </div>
+            <label className="flex items-center gap-1.5 text-sm cursor-pointer">
+              <input type="checkbox" checked={annForm.isPinned} onChange={e => setAnnForm(p => ({ ...p, isPinned: e.target.checked }))} className="rounded" />
+              Pin to top
+            </label>
+            <Button size="sm" loading={annLoading} onClick={handlePostAnnouncement} className="ml-auto">
+              Post Announcement
+            </Button>
+          </div>
+        </div>
+
+        {/* List */}
+        {announcements.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground text-sm">No announcements yet.</div>
+        ) : (
+          <div className="divide-y divide-border">
+            {announcements.map(a => (
+              <div key={a.id} className="px-6 py-4 flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-muted text-muted-foreground uppercase">{a.type}</span>
+                    {a.isPinned && <span className="text-xs">📌 Pinned</span>}
+                    <span className="text-xs text-muted-foreground">{timeAgo(a.createdAt)}</span>
+                  </div>
+                  {a.title && <p className="font-semibold text-sm">{a.title}</p>}
+                  <p className="text-sm text-muted-foreground whitespace-pre-line">{a.body}</p>
+                </div>
+                <button onClick={() => handleDeleteAnnouncement(a.id)} disabled={deletingAnn === a.id}
+                  className="text-xs text-primary hover:underline font-medium shrink-0 disabled:opacity-50">
+                  {deletingAnn === a.id ? "…" : "Delete"}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
