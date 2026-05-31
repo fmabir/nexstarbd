@@ -13,11 +13,18 @@ const statusConfig: Record<ApprovalStatus, { label: string; color: string; icon:
 };
 
 function exportToCSV(tournament: Tournament, registrations: Registration[]) {
-  const headers = ["Slot", "Squad Name", "Leader Name", "Leader UID", "Player 2 UID", "Player 3 UID", "Player 4 UID", "WhatsApp", "bKash", "Status", "Waitlisted", "Registered At"];
+  const headers = tournament.isFree
+    ? ["Slot", "Squad Name", "Leader Name", "Leader UID", "WhatsApp", "Status", "Waitlisted", "Registered At"]
+    : ["Slot", "Squad Name", "Leader Name", "Leader UID", "WhatsApp", "Transaction ID", "Payment Status", "Status", "Waitlisted", "Registered At"];
+
   const rows = registrations.map((r) => {
     const slotLabel = r.isWaitlisted ? `W${registrations.filter(x => x.isWaitlisted).indexOf(r) + 1}` : r.slotNumber ? `#${r.slotNumber}` : "—";
     const regAt = r.registeredAt ? new Date(typeof (r.registeredAt as { seconds?: number }).seconds === "number" ? (r.registeredAt as { seconds: number }).seconds * 1000 : r.registeredAt as unknown as number).toLocaleString() : "";
-    return [slotLabel, r.squadName, r.leaderName, r.leaderUid, r.player2Uid, r.player3Uid, r.player4Uid, r.whatsapp, r.bkash || "", r.approvalStatus, r.isWaitlisted ? "Yes" : "No", regAt];
+    const paymentStatus = r.transactionId ? "Verified" : "Pending";
+
+    return tournament.isFree
+      ? [slotLabel, r.squadName, r.leaderName, r.leaderUid, r.whatsapp, r.approvalStatus, r.isWaitlisted ? "Yes" : "No", regAt]
+      : [slotLabel, r.squadName, r.leaderName, r.leaderUid, r.whatsapp, r.transactionId || "", paymentStatus, r.approvalStatus, r.isWaitlisted ? "Yes" : "No", regAt];
   });
 
   const csv = [headers, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
@@ -60,10 +67,10 @@ function RegistrationCard({
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
         {[
-          ["Leader Name", reg.leaderName], ["Leader UID", reg.leaderUid],
-          ["WhatsApp", reg.whatsapp], ["bKash", reg.bkash || "not provided"],
-          ["Player 2 UID", reg.player2Uid], ["Player 3 UID", reg.player3Uid],
-          ["Player 4 UID", reg.player4Uid],
+          ["Leader Name", reg.leaderName],
+          ["Leader UID", reg.leaderUid],
+          ["WhatsApp", reg.whatsapp],
+          ["bKash", reg.bkash || "not provided"],
         ].map(([label, value]) => (
           <div key={label} className="flex justify-between gap-2 border-b border-border pb-1">
             <span className="text-muted-foreground shrink-0">{label}</span>
@@ -71,6 +78,18 @@ function RegistrationCard({
           </div>
         ))}
       </div>
+      {reg.transactionId && (
+        <div className="pt-2 border-t border-border">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-muted-foreground text-sm">Transaction ID</span>
+            <span className="font-mono text-sm font-semibold">{reg.transactionId}</span>
+          </div>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="w-2 h-2 bg-secondary rounded-full" />
+            <span className="text-xs text-secondary font-semibold">✓ Payment Verified</span>
+          </div>
+        </div>
+      )}
       <div className="flex gap-2 flex-wrap">
         {reg.approvalStatus !== "approved" && (
           <button disabled={loading === reg.id} onClick={() => onApprove(reg.id, "approved")}
@@ -112,6 +131,7 @@ export function ManageTournamentPanel({ tournament, registrations }: { tournamen
     maxSlots: String(tournament.maxSlots),
     firstPrize: tournament.firstPrize || "",
     secondPrize: tournament.secondPrize || "",
+    bkashNumber: tournament.bkashNumber || "",
   });
 
   const patch = async (body: Record<string, unknown>, key: string) => {
@@ -177,6 +197,7 @@ export function ManageTournamentPanel({ tournament, registrations }: { tournamen
       maxSlots: Number(editForm.maxSlots),
       firstPrize: editForm.firstPrize || null,
       secondPrize: editForm.secondPrize || null,
+      bkashNumber: editForm.bkashNumber || null,
     }, "details");
     setShowEditDetails(false);
   };
@@ -245,6 +266,13 @@ export function ManageTournamentPanel({ tournament, registrations }: { tournamen
               <label className="block text-xs font-semibold mb-1 text-blue-700">2nd Prize</label>
               <input value={editForm.secondPrize} onChange={e => setEditForm(p => ({ ...p, secondPrize: e.target.value }))} className={inputClass} placeholder="৳1,500" />
             </div>
+            {!tournament.isFree && (
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-semibold mb-1 text-blue-700">bKash Number (for payments)</label>
+                <input type="tel" value={editForm.bkashNumber} onChange={e => setEditForm(p => ({ ...p, bkashNumber: e.target.value }))} className={inputClass} placeholder="+880 1XXX-XXXXXX" />
+                <p className="text-xs text-blue-600 mt-1">Players will send payments to this number during registration.</p>
+              </div>
+            )}
           </div>
           <div className="flex gap-2">
             <Button size="sm" loading={loading === "details"} onClick={handleSaveDetails}>Save Changes</Button>

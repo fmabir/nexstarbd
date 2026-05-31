@@ -18,6 +18,7 @@ export function CreateTournamentForm() {
     firstPrize: "",
     secondPrize: "",
     registrationFee: "",
+    bkashNumber: "",
     startsAt: "",
     registrationDeadline: "",
   });
@@ -38,7 +39,7 @@ export function CreateTournamentForm() {
       if (!res.ok) throw new Error("Failed");
       showToast("Tournament created!", "success");
       setIsFree(true);
-      setForm({ name: "", description: "", mode: "Squad (BR)", prizePool: "", firstPrize: "", secondPrize: "", registrationFee: "", startsAt: "", registrationDeadline: "" });
+      setForm({ name: "", description: "", mode: "Squad (BR)", prizePool: "", firstPrize: "", secondPrize: "", registrationFee: "", bkashNumber: "", startsAt: "", registrationDeadline: "" });
       router.refresh();
     } catch {
       showToast("Failed to create tournament", "error");
@@ -113,16 +114,30 @@ export function CreateTournamentForm() {
 
       {/* Registration fee — shown only when paid */}
       {!isFree && (
-        <div className="sm:col-span-2">
-          <label className="block text-sm font-semibold mb-1">Registration Fee *</label>
-          <input
-            required
-            value={form.registrationFee}
-            onChange={set("registrationFee")}
-            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
-            placeholder="৳50"
-          />
-        </div>
+        <>
+          <div className="sm:col-span-2">
+            <label className="block text-sm font-semibold mb-1">Registration Fee *</label>
+            <input
+              required
+              value={form.registrationFee}
+              onChange={set("registrationFee")}
+              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
+              placeholder="৳50"
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <label className="block text-sm font-semibold mb-1">bKash Number (for payments) *</label>
+            <input
+              required
+              type="tel"
+              value={form.bkashNumber}
+              onChange={set("bkashNumber")}
+              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
+              placeholder="+880 1XXX-XXXXXX"
+            />
+            <p className="text-xs text-muted-foreground mt-1">Players will send payments to this number during registration.</p>
+          </div>
+        </>
       )}
 
       <div>

@@ -10,6 +10,9 @@ interface TournamentState {
   maxSlots: number;
   isRegistrationOpen: boolean;
   status: string;
+  isFree: boolean;
+  registrationFee: string | null;
+  bkashNumber: string | null;
 }
 
 const inputClass = "w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-white";
@@ -29,9 +32,7 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
   const [leaderUid, setLeaderUid] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [bkash, setBkash] = useState("");
-  const [player2Uid, setPlayer2Uid] = useState("");
-  const [player3Uid, setPlayer3Uid] = useState("");
-  const [player4Uid, setPlayer4Uid] = useState("");
+  const [transactionId, setTransactionId] = useState("");
 
   useEffect(() => {
     fetch(`/api/register?tournamentId=${tournamentId}`)
@@ -46,18 +47,15 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
     if (!leaderName.trim()) e.leaderName = "Required";
     if (!leaderUid.trim()) e.leaderUid = "Required";
     if (!whatsapp.trim()) e.whatsapp = "Required";
-    if (!player2Uid.trim()) e.player2Uid = "Required";
-    if (!player3Uid.trim()) e.player3Uid = "Required";
-    if (!player4Uid.trim()) e.player4Uid = "Required";
 
-    const uids = [leaderUid.trim(), player2Uid.trim(), player3Uid.trim(), player4Uid.trim()].filter(Boolean);
+    if (!ts?.isFree && !transactionId.trim()) {
+      e.transactionId = "Transaction ID required for paid tournaments";
+    }
+
     const existing = ts?.allUids || [];
-    uids.forEach((uid, i) => {
-      if (existing.includes(uid)) {
-        const key = i === 0 ? "leaderUid" : `player${i + 1}Uid`;
-        e[key] = "This UID is already registered";
-      }
-    });
+    if (leaderUid.trim() && existing.includes(leaderUid.trim())) {
+      e.leaderUid = "This UID is already registered";
+    }
 
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -73,7 +71,7 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tournamentId, userId, squadName, leaderName, leaderUid, whatsapp, bkash, player2Uid, player3Uid, player4Uid }),
+        body: JSON.stringify({ tournamentId, userId, squadName, leaderName, leaderUid, whatsapp, bkash, transactionId: transactionId || null }),
       });
 
       const data = await res.json();
@@ -107,6 +105,21 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Payment notice for paid tournaments */}
+      {!ts?.isFree && ts?.bkashNumber && (
+        <div className="bg-secondary/10 border border-secondary rounded-xl px-4 py-3 space-y-2">
+          <p className="text-sm font-semibold text-secondary flex items-center gap-2">
+            📱 Payment Required
+          </p>
+          <p className="text-sm text-foreground">
+            Send payment to bKash: <span className="font-bold text-lg">{ ts.bkashNumber}</span>
+          </p>
+          <p className="text-xs text-muted-foreground">
+            After sending payment, enter your transaction ID below to complete registration.
+          </p>
+        </div>
+      )}
+
       {/* Waitlist notice */}
       {isFull && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm text-amber-800 font-medium">
@@ -162,24 +175,19 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
         </div>
       </div>
 
-      {/* Other Players */}
-      <div className="border-t border-border pt-1">
-        <p className="text-xs font-bold uppercase tracking-widest text-primary mb-4">Other Players (UIDs)</p>
-        <div className="space-y-3">
-          {[
-            { label: "Player 2 UID *", value: player2Uid, set: setPlayer2Uid, key: "player2Uid" },
-            { label: "Player 3 UID *", value: player3Uid, set: setPlayer3Uid, key: "player3Uid" },
-            { label: "Player 4 UID *", value: player4Uid, set: setPlayer4Uid, key: "player4Uid" },
-          ].map(({ label, value, set, key }) => (
-            <div key={key}>
-              <label className={labelClass}>{label}</label>
-              <input type="text" inputMode="numeric" value={value} onChange={(e) => set(e.target.value)}
-                className={inputClass} placeholder="Free Fire UID" />
-              {errors[key] && <p className={errorClass}>{errors[key]}</p>}
-            </div>
-          ))}
+      {/* Transaction ID - only for paid tournaments */}
+      {!ts?.isFree && (
+        <div className="border-t border-border pt-1">
+          <p className="text-xs font-bold uppercase tracking-widest text-secondary mb-4">Payment Verification</p>
+          <div>
+            <label className={labelClass}>Transaction ID *</label>
+            <input type="text" value={transactionId} onChange={(e) => setTransactionId(e.target.value)}
+              className={inputClass} placeholder="e.g., TXN1234567890" />
+            <p className="text-xs text-muted-foreground mt-1">Enter the transaction ID you received after sending payment to bKash.</p>
+            {errors.transactionId && <p className={errorClass}>{errors.transactionId}</p>}
+          </div>
         </div>
-      </div>
+      )}
 
       <button
         type="submit"

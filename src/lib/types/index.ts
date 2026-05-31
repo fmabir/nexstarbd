@@ -23,6 +23,7 @@ export interface Tournament {
   registrationFee: string | null;
   firstPrize: string | null;
   secondPrize: string | null;
+  bkashNumber: string | null;
   registeredCount: number;
   waitlistCount: number;
   allUids: string[];
@@ -48,9 +49,7 @@ export interface Registration {
   leaderUid: string;
   whatsapp: string;
   bkash: string | null;
-  player2Uid: string;
-  player3Uid: string;
-  player4Uid: string;
+  transactionId: string | null;
   allUids: string[];
   slotNumber: number | null;
   isWaitlisted: boolean;

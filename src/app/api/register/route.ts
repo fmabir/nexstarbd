@@ -20,6 +20,9 @@ export async function GET(request: NextRequest) {
       maxSlots: data.maxSlots || 12,
       isRegistrationOpen: data.isRegistrationOpen,
       status: data.status,
+      isFree: data.isFree,
+      registrationFee: data.registrationFee || null,
+      bkashNumber: data.bkashNumber || null,
     });
   } catch {
     return Response.json({ error: "Server error" }, { status: 500 });
@@ -28,22 +31,14 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { tournamentId, userId, squadName, leaderName, leaderUid, whatsapp, bkash, player2Uid, player3Uid, player4Uid } = body;
+  const { tournamentId, userId, squadName, leaderName, leaderUid, whatsapp, bkash, transactionId } = body;
 
   if (!userId?.trim()) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!tournamentId || !squadName?.trim() || !leaderName?.trim() || !leaderUid?.trim() || !whatsapp?.trim() || !player2Uid?.trim() || !player3Uid?.trim() || !player4Uid?.trim()) {
-    return Response.json({ error: "All fields are required" }, { status: 400 });
-  }
-
-  const newUids = [leaderUid.trim(), player2Uid.trim(), player3Uid.trim(), player4Uid.trim()];
-
-  // Check for duplicate UIDs within the squad
-  const uniqueUids = new Set(newUids);
-  if (uniqueUids.size !== newUids.length) {
-    return Response.json({ error: "Duplicate UIDs within the squad are not allowed" }, { status: 400 });
+  if (!tournamentId || !squadName?.trim() || !leaderName?.trim() || !leaderUid?.trim() || !whatsapp?.trim()) {
+    return Response.json({ error: "All required fields must be provided" }, { status: 400 });
   }
 
   try {
@@ -57,9 +52,16 @@ export async function POST(request: NextRequest) {
       const data = tournamentDoc.data()!;
       if (!data.isRegistrationOpen) throw new Error("REGISTRATION_CLOSED");
 
+      // For paid tournaments, transaction ID is required
+      if (!data.isFree && !transactionId?.trim()) {
+        throw new Error("TRANSACTION_ID_REQUIRED");
+      }
+
+      const newUid = leaderUid.trim();
       const existingUids: string[] = data.allUids || [];
-      const duplicate = newUids.find((uid) => existingUids.includes(uid));
-      if (duplicate) throw new Error(`DUPLICATE_UID:${duplicate}`);
+      if (existingUids.includes(newUid)) {
+        throw new Error(`DUPLICATE_UID:${newUid}`);
+      }
 
       const registeredCount = data.registeredCount || 0;
       const maxSlots = data.maxSlots || 12;
@@ -72,13 +74,11 @@ export async function POST(request: NextRequest) {
         userId: userId.trim(),
         squadName: squadName.trim(),
         leaderName: leaderName.trim(),
-        leaderUid: leaderUid.trim(),
+        leaderUid: newUid,
         whatsapp: whatsapp.trim(),
         bkash: bkash?.trim() || null,
-        player2Uid: player2Uid.trim(),
-        player3Uid: player3Uid.trim(),
-        player4Uid: player4Uid.trim(),
-        allUids: newUids,
+        transactionId: transactionId?.trim() || null,
+        allUids: [newUid],
         slotNumber,
         isWaitlisted,
         approvalStatus: "pending",
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
       });
 
       tx.update(tournamentRef, {
-        allUids: FieldValue.arrayUnion(...newUids),
+        allUids: FieldValue.arrayUnion(newUid),
         registeredCount: FieldValue.increment(1),
         waitlistCount: isWaitlisted ? FieldValue.increment(1) : data.waitlistCount || 0,
         updatedAt: FieldValue.serverTimestamp(),
@@ -101,7 +101,8 @@ export async function POST(request: NextRequest) {
     const msg = err instanceof Error ? err.message : "SERVER_ERROR";
     if (msg === "TOURNAMENT_NOT_FOUND") return Response.json({ error: "Tournament not found" }, { status: 404 });
     if (msg === "REGISTRATION_CLOSED") return Response.json({ error: "Registration is closed" }, { status: 409 });
-    if (msg.startsWith("DUPLICATE_UID")) return Response.json({ error: "A player UID is already registered in this tournament" }, { status: 409 });
+    if (msg === "TRANSACTION_ID_REQUIRED") return Response.json({ error: "Transaction ID required for paid tournaments" }, { status: 400 });
+    if (msg.startsWith("DUPLICATE_UID")) return Response.json({ error: "This UID is already registered in this tournament" }, { status: 409 });
     return Response.json({ error: "Server error" }, { status: 500 });
   }
 }
