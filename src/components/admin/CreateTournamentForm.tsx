@@ -131,7 +131,7 @@ export function CreateTournamentForm() {
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-sm font-semibold mb-1">bKash Number (for payments) *</label>
+            <label className="block text-sm font-semibold mb-1">bKash Send Money Number *</label>
             <input
               required
               type="tel"
