@@ -1,5 +1,5 @@
 import { type NextRequest } from "next/server";
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { verifyAdmin } from "@/lib/server/verifyAdmin";
 
 export async function PATCH(
@@ -27,6 +27,9 @@ export async function PATCH(
     for (const key of allowed) {
       if (key in body) update[key] = body[key];
     }
+
+    if (body.startsAt) update.startsAt = Timestamp.fromDate(new Date(body.startsAt));
+    if (body.registrationDeadline) update.registrationDeadline = Timestamp.fromDate(new Date(body.registrationDeadline));
 
     await adminDb.collection("tournaments").doc(id).update(update);
     return Response.json({ ok: true });

@@ -5,6 +5,18 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/context/ToastContext";
 import type { Tournament, Registration, ApprovalStatus } from "@/lib/types";
+import { formatTournamentDate, toDate } from "@/lib/utils/formatDate";
+
+function tsToDatetimeLocal(ts: unknown): string {
+  try {
+    const date = toDate(ts as Parameters<typeof toDate>[0]);
+    return new Intl.DateTimeFormat("sv-SE", {
+      timeZone: "Asia/Dhaka",
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", hour12: false,
+    }).format(date).replace(" ", "T");
+  } catch { return ""; }
+}
 
 const statusConfig: Record<ApprovalStatus, { label: string; color: string; icon: string }> = {
   pending:  { label: "Pending", color: "text-amber-600 bg-amber-50 border-amber-200", icon: "⏳" },
@@ -132,6 +144,8 @@ export function ManageTournamentPanel({ tournament, registrations }: { tournamen
     firstPrize: tournament.firstPrize || "",
     secondPrize: tournament.secondPrize || "",
     bkashNumber: tournament.bkashNumber || "",
+    startsAt: tsToDatetimeLocal(tournament.startsAt),
+    registrationDeadline: tsToDatetimeLocal(tournament.registrationDeadline),
   });
 
   const patch = async (body: Record<string, unknown>, key: string) => {
@@ -198,6 +212,8 @@ export function ManageTournamentPanel({ tournament, registrations }: { tournamen
       firstPrize: editForm.firstPrize || null,
       secondPrize: editForm.secondPrize || null,
       bkashNumber: editForm.bkashNumber || null,
+      ...(editForm.startsAt ? { startsAt: new Date(editForm.startsAt).toISOString() } : {}),
+      ...(editForm.registrationDeadline ? { registrationDeadline: new Date(editForm.registrationDeadline).toISOString() } : {}),
     }, "details");
     setShowEditDetails(false);
   };
@@ -273,6 +289,14 @@ export function ManageTournamentPanel({ tournament, registrations }: { tournamen
                 <p className="text-xs text-blue-600 mt-1">Players will send payments to this number during registration.</p>
               </div>
             )}
+            <div>
+              <label className="block text-xs font-semibold mb-1 text-blue-700">Start Date & Time (BD time)</label>
+              <input type="datetime-local" value={editForm.startsAt} onChange={e => setEditForm(p => ({ ...p, startsAt: e.target.value }))} className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold mb-1 text-blue-700">Registration Deadline (BD time)</label>
+              <input type="datetime-local" value={editForm.registrationDeadline} onChange={e => setEditForm(p => ({ ...p, registrationDeadline: e.target.value }))} className={inputClass} />
+            </div>
           </div>
           <div className="flex gap-2">
             <Button size="sm" loading={loading === "details"} onClick={handleSaveDetails}>Save Changes</Button>
@@ -313,8 +337,14 @@ export function ManageTournamentPanel({ tournament, registrations }: { tournamen
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white rounded-2xl border border-border p-5">
           <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">Registration</h3>
-          <p className="font-bold text-lg mb-3">
+          <p className="font-bold text-lg mb-1">
             {tournament.isRegistrationOpen ? <span className="text-secondary">Open ✓</span> : <span className="text-primary">Closed</span>}
+          </p>
+          <p className="text-xs text-muted-foreground mb-1">
+            <span className="font-semibold">Starts:</span> {formatTournamentDate(tournament.startsAt)}
+          </p>
+          <p className="text-xs text-muted-foreground mb-3">
+            <span className="font-semibold">Deadline:</span> {formatTournamentDate(tournament.registrationDeadline)}
           </p>
           <Button size="sm" variant={tournament.isRegistrationOpen ? "outline" : "secondary"}
             loading={loading === "reg"}

@@ -1,4 +1,6 @@
-import { format, formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
+
+const TIMEZONE = "Asia/Dhaka";
 
 type TimestampLike =
   | { toDate(): Date }
@@ -14,20 +16,34 @@ export function toDate(ts: TimestampLike): Date {
   return new Date();
 }
 
+function bdDate(date: Date, opts: Intl.DateTimeFormatOptions): string {
+  return new Intl.DateTimeFormat("en-GB", { timeZone: TIMEZONE, ...opts }).format(date);
+}
+
+function bdTime(date: Date): string {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: TIMEZONE,
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  }).format(date);
+}
+
 export function formatTournamentDate(ts: TimestampLike): string {
-  return format(toDate(ts), "dd MMM yyyy, hh:mm a");
+  const d = toDate(ts);
+  return `${bdDate(d, { day: "2-digit", month: "short", year: "numeric" })}, ${bdTime(d)}`;
 }
 
 export function formatDateOnly(ts: TimestampLike): string {
-  return format(toDate(ts), "dd MMM yyyy");
+  return bdDate(toDate(ts), { day: "2-digit", month: "short", year: "numeric" });
 }
 
 export function formatTimeOnly(ts: TimestampLike): string {
-  return format(toDate(ts), "hh:mm a");
+  return bdTime(toDate(ts));
 }
 
 export function formatShortDate(ts: TimestampLike): string {
-  return format(toDate(ts), "dd MMM yyyy");
+  return bdDate(toDate(ts), { day: "2-digit", month: "short", year: "numeric" });
 }
 
 export function timeAgo(ts: TimestampLike): string {

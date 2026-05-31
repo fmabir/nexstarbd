@@ -34,7 +34,12 @@ export function CreateTournamentForm() {
       const res = await fetch("/api/admin/tournaments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, isFree }),
+        body: JSON.stringify({
+          ...form,
+          isFree,
+          startsAt: new Date(form.startsAt).toISOString(),
+          registrationDeadline: new Date(form.registrationDeadline).toISOString(),
+        }),
       });
       if (!res.ok) throw new Error("Failed");
       showToast("Tournament created!", "success");
