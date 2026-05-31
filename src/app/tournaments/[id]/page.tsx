@@ -147,7 +147,7 @@ export default async function TournamentPage({
             />
 
             <CountdownTimer
-              targetDate={tournament.registrationDeadline.toDate()}
+              targetDate={new Date((tournament.registrationDeadline as unknown as { seconds: number }).seconds * 1000)}
               label="Registration Closes In"
             />
 
