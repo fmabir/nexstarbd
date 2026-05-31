@@ -34,12 +34,7 @@ export function CreateTournamentForm() {
       const res = await fetch("/api/admin/tournaments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          isFree,
-          startsAt: new Date(form.startsAt).toISOString(),
-          registrationDeadline: new Date(form.registrationDeadline).toISOString(),
-        }),
+        body: JSON.stringify({ ...form, isFree }),
       });
       if (!res.ok) throw new Error("Failed");
       showToast("Tournament created!", "success");
@@ -131,7 +126,7 @@ export function CreateTournamentForm() {
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-sm font-semibold mb-1">bKash Send Money Number *</label>
+            <label className="block text-sm font-semibold mb-1">bKash Number (for payments) *</label>
             <input
               required
               type="tel"

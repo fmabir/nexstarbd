@@ -268,7 +268,7 @@ export function ManageTournamentPanel({ tournament, registrations }: { tournamen
             </div>
             {!tournament.isFree && (
               <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold mb-1 text-blue-700">bKash Send Money Number</label>
+                <label className="block text-xs font-semibold mb-1 text-blue-700">bKash Number (for payments)</label>
                 <input type="tel" value={editForm.bkashNumber} onChange={e => setEditForm(p => ({ ...p, bkashNumber: e.target.value }))} className={inputClass} placeholder="+880 1XXX-XXXXXX" />
                 <p className="text-xs text-blue-600 mt-1">Players will send payments to this number during registration.</p>
               </div>
