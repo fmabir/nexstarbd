@@ -151,6 +151,17 @@ export default async function TournamentPage({
               label="Registration Closes In"
             />
 
+            {/* bKash Send Money info — only for paid tournaments */}
+            {!tournament.isFree && tournament.bkashNumber && (
+              <div className="bg-amber-50 border border-amber-300 rounded-xl px-4 py-3 flex items-center gap-3">
+                <span className="text-xl shrink-0">💸</span>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-amber-700">bKash Send Money (Personal)</p>
+                  <p className="font-mono text-lg font-bold text-amber-900 tracking-widest">{tournament.bkashNumber}</p>
+                </div>
+              </div>
+            )}
+
             {/* Register / status button — register only available for ongoing tournaments */}
             <RegistrationStatusButton
               tournamentId={id}
