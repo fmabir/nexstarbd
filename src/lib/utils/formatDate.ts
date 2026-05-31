@@ -1,6 +1,6 @@
 import { formatDistanceToNow } from "date-fns";
 
-const TIMEZONE = "Asia/Dhaka";
+const TIMEZONE = "UTC";
 
 type TimestampLike =
   | { toDate(): Date }
