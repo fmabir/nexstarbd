@@ -1,76 +1,84 @@
 /**
- * One-time migration: subtract 6 hours from all tournament timestamps.
+ * One-time migration to correct tournament timestamps.
  *
- * Run dry-run first to preview:
+ * Step 1 — preview what's stored (no changes):
  *   node fix_tournament_times.js --dry-run
  *
- * Then apply for real:
- *   node fix_tournament_times.js
+ * Step 2 — once you confirm the offset, apply the fix:
+ *   node fix_tournament_times.js --offset 16
+ *
+ * Change 16 to whatever number of hours the displayed time is ahead.
  */
 
 const admin = require("firebase-admin");
 const serviceAccount = require("./src/lib/firebase/serviceAccountKey.json");
 
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
-
 const db = admin.firestore();
-const DRY_RUN = process.argv.includes("--dry-run");
-const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
+
+const args = process.argv.slice(2);
+const DRY_RUN = args.includes("--dry-run");
+const offsetArg = args.find(a => a.startsWith("--offset=") || a === "--offset");
+const OFFSET_HOURS = offsetArg
+  ? Number(args[args.indexOf("--offset") + 1] ?? offsetArg.split("=")[1])
+  : null;
 
 function toMs(ts) {
   if (!ts) return null;
-  const secs = ts._seconds ?? ts.seconds ?? 0;
-  return secs * 1000;
+  return ((ts._seconds ?? ts.seconds ?? 0) * 1000);
 }
 
-function fmtBD(ms) {
+function fmt(ms, tz) {
   return new Date(ms).toLocaleString("en-BD", {
-    timeZone: "Asia/Dhaka",
-    dateStyle: "medium",
-    timeStyle: "short",
+    timeZone: tz,
+    year: "numeric", month: "short", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", hour12: true,
   });
 }
 
 async function run() {
   const snap = await db.collection("tournaments").get();
-  console.log(`\nFound ${snap.docs.length} tournament(s). DRY_RUN=${DRY_RUN}\n`);
-
-  let fixed = 0;
+  console.log(`\nFound ${snap.docs.length} tournament(s).\n`);
 
   for (const doc of snap.docs) {
     const d = doc.data();
-    const startMs  = toMs(d.startsAt);
-    const deadMs   = toMs(d.registrationDeadline);
-
+    const startMs = toMs(d.startsAt);
+    const deadMs  = toMs(d.registrationDeadline);
     if (!startMs) continue;
 
-    const newStartMs = startMs  - SIX_HOURS_MS;
-    const newDeadMs  = deadMs ? deadMs - SIX_HOURS_MS : null;
-
     console.log(`📋 ${d.name}`);
-    console.log(`   startsAt            : ${fmtBD(startMs)}  →  ${fmtBD(newStartMs)}`);
+    console.log(`   startsAt stored as:`);
+    console.log(`     UTC    : ${fmt(startMs, "UTC")}`);
+    console.log(`     BD time: ${fmt(startMs, "Asia/Dhaka")}`);
     if (deadMs) {
-      console.log(`   registrationDeadline: ${fmtBD(deadMs)}  →  ${fmtBD(newDeadMs)}`);
+      console.log(`   registrationDeadline stored as:`);
+      console.log(`     UTC    : ${fmt(deadMs, "UTC")}`);
+      console.log(`     BD time: ${fmt(deadMs, "Asia/Dhaka")}`);
     }
 
-    if (!DRY_RUN) {
+    if (OFFSET_HOURS !== null && !DRY_RUN) {
+      const offsetMs = OFFSET_HOURS * 60 * 60 * 1000;
       const update = {
-        startsAt: admin.firestore.Timestamp.fromMillis(newStartMs),
+        startsAt: admin.firestore.Timestamp.fromMillis(startMs - offsetMs),
       };
-      if (newDeadMs) {
-        update.registrationDeadline = admin.firestore.Timestamp.fromMillis(newDeadMs);
+      if (deadMs) {
+        update.registrationDeadline = admin.firestore.Timestamp.fromMillis(deadMs - offsetMs);
       }
       await doc.ref.update(update);
-      console.log(`   ✅ updated`);
+      const newStartMs = startMs - offsetMs;
+      console.log(`   ✅ fixed → BD time now: ${fmt(newStartMs, "Asia/Dhaka")}`);
+    } else if (OFFSET_HOURS !== null) {
+      const offsetMs = OFFSET_HOURS * 60 * 60 * 1000;
+      console.log(`   [DRY RUN] would become → BD time: ${fmt(startMs - offsetMs, "Asia/Dhaka")}`);
     }
 
-    fixed++;
+    console.log();
   }
 
-  console.log(`\n${DRY_RUN ? "[DRY RUN] Would fix" : "Fixed"} ${fixed} tournament(s).`);
-  if (DRY_RUN) {
-    console.log('Run without --dry-run to apply.\n');
+  if (!OFFSET_HOURS && !DRY_RUN) {
+    console.log("ℹ️  This was a preview only. To apply a fix run:");
+    console.log("   node fix_tournament_times.js --offset 16\n");
   }
 }
 
-run().then(() => process.exit(0)).catch((e) => { console.error(e); process.exit(1); });
+run().then(() => process.exit(0)).catch(e => { console.error(e); process.exit(1); });
