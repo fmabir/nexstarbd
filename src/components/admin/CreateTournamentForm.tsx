@@ -5,6 +5,15 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/context/ToastContext";
 
+// Explicitly converts Bangladesh time (UTC+6) to UTC — browser timezone independent
+function bdToUTC(localStr: string): string {
+  if (!localStr) return "";
+  const [datePart, timePart] = localStr.split("T");
+  const [y, m, d] = datePart.split("-").map(Number);
+  const [h, min] = timePart.split(":").map(Number);
+  return new Date(Date.UTC(y, m - 1, d, h - 6, min)).toISOString();
+}
+
 export function CreateTournamentForm() {
   const router = useRouter();
   const { showToast } = useToast();
@@ -37,8 +46,8 @@ export function CreateTournamentForm() {
         body: JSON.stringify({
           ...form,
           isFree,
-          startsAt: new Date(form.startsAt).toISOString(),
-          registrationDeadline: new Date(form.registrationDeadline).toISOString(),
+          startsAt: bdToUTC(form.startsAt),
+          registrationDeadline: bdToUTC(form.registrationDeadline),
         }),
       });
       if (!res.ok) throw new Error("Failed");

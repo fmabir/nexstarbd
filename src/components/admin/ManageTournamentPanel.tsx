@@ -7,6 +7,14 @@ import { useToast } from "@/context/ToastContext";
 import type { Tournament, Registration, ApprovalStatus, Announcement, AnnouncementType } from "@/lib/types";
 import { formatTournamentDate, timeAgo, toDate } from "@/lib/utils/formatDate";
 
+function bdToUTC(localStr: string): string {
+  if (!localStr) return "";
+  const [datePart, timePart] = localStr.split("T");
+  const [y, m, d] = datePart.split("-").map(Number);
+  const [h, min] = timePart.split(":").map(Number);
+  return new Date(Date.UTC(y, m - 1, d, h - 6, min)).toISOString();
+}
+
 function tsToDatetimeLocal(ts: unknown): string {
   try {
     const date = toDate(ts as Parameters<typeof toDate>[0]);
@@ -212,8 +220,8 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
       firstPrize: editForm.firstPrize || null,
       secondPrize: editForm.secondPrize || null,
       bkashNumber: editForm.bkashNumber || null,
-      ...(editForm.startsAt ? { startsAt: new Date(editForm.startsAt).toISOString() } : {}),
-      ...(editForm.registrationDeadline ? { registrationDeadline: new Date(editForm.registrationDeadline).toISOString() } : {}),
+      ...(editForm.startsAt ? { startsAt: bdToUTC(editForm.startsAt) } : {}),
+      ...(editForm.registrationDeadline ? { registrationDeadline: bdToUTC(editForm.registrationDeadline) } : {}),
     }, "details");
     setShowEditDetails(false);
   };
