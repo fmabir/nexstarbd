@@ -20,6 +20,10 @@ export async function PATCH(
       "name",
       "description",
       "prizePool",
+      "maxSlots",
+      "firstPrize",
+      "secondPrize",
+      "bkashNumber",
       "bannerUrl",
     ];
 
