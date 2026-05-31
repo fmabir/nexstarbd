@@ -146,19 +146,9 @@ export default async function MyRegistrationPage({
                 <span className="text-sm text-muted-foreground">Leader UID</span>
                 <span className="font-mono text-sm">{reg.leaderUid}</span>
               </div>
-              <div className="flex items-center justify-between py-2 border-b border-border">
+              <div className="flex items-center justify-between py-2">
                 <span className="text-sm text-muted-foreground">WhatsApp</span>
                 <span className="text-sm">{reg.whatsapp}</span>
-              </div>
-              <div className="py-2">
-                <span className="text-sm text-muted-foreground block mb-2">Other Players</span>
-                <div className="flex flex-wrap gap-2">
-                  {[reg.player2Uid, reg.player3Uid, reg.player4Uid].map((uid, i) => (
-                    <span key={i} className="bg-gray-100 text-sm font-mono px-3 py-1 rounded-full">
-                      P{i + 2}: {uid}
-                    </span>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
