@@ -112,7 +112,7 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
             📱 Payment Required
           </p>
           <p className="text-sm text-foreground">
-            Send payment to bKash: <span className="font-bold text-lg">{ ts.bkashNumber}</span>
+            Send Money via bKash to: <span className="font-bold text-lg">{ts.bkashNumber}</span>
           </p>
           <p className="text-xs text-muted-foreground">
             After sending payment, enter your transaction ID below to complete registration.
@@ -183,7 +183,7 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
             <label className={labelClass}>Transaction ID *</label>
             <input type="text" value={transactionId} onChange={(e) => setTransactionId(e.target.value)}
               className={inputClass} placeholder="e.g., TXN1234567890" />
-            <p className="text-xs text-muted-foreground mt-1">Enter the transaction ID you received after sending payment to bKash.</p>
+            <p className="text-xs text-muted-foreground mt-1">Enter the transaction ID you received after sending via bKash Send Money.</p>
             {errors.transactionId && <p className={errorClass}>{errors.transactionId}</p>}
           </div>
         </div>
