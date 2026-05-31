@@ -22,11 +22,18 @@ export default async function RegisterPage({
   const t = await getTranslations("registration");
 
   let tournamentName = "Tournament";
+  let bkashNumber: string | null = null;
+  let registrationFee: string | null = null;
+  let isFree = true;
   try {
     const { adminDb } = await import("@/lib/firebase/admin");
     const doc = await adminDb.collection("tournaments").doc(tournamentId).get();
     if (doc.exists) {
-      tournamentName = doc.data()!.name;
+      const data = doc.data()!;
+      tournamentName = data.name;
+      bkashNumber = data.bkashNumber ?? null;
+      registrationFee = data.registrationFee ?? null;
+      isFree = data.isFree ?? true;
     }
   } catch {}
 
@@ -48,6 +55,17 @@ export default async function RegisterPage({
             <p className="text-muted-foreground text-sm mb-6">
               {tournamentName}
             </p>
+
+            {!isFree && bkashNumber && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+                <p className="text-xs font-bold uppercase tracking-wider text-amber-700 mb-2">💳 Payment Required</p>
+                <p className="text-sm text-amber-900">
+                  Send <span className="font-bold">{registrationFee}</span> via bKash <span className="font-semibold">Send Money</span> to:
+                </p>
+                <p className="font-mono text-lg font-bold text-amber-900 mt-1 tracking-wider">{bkashNumber}</p>
+                <p className="text-xs text-amber-700 mt-2">Enter your bKash transaction ID in the form below after payment.</p>
+              </div>
+            )}
 
             <RegistrationForm tournamentId={tournamentId} userId={sessionUser.uid} />
           </div>
