@@ -1,0 +1,83 @@
+- generic [ref=e1]:
+  - generic [active]:
+    - generic [ref=e317]:
+      - generic [ref=e318]:
+        - generic [ref=e319]:
+          - navigation [ref=e320]:
+            - button "previous" [disabled] [ref=e321]:
+              - img "previous" [ref=e322]
+            - generic [ref=e324]:
+              - generic [ref=e325]: 1/
+              - text: "1"
+            - button "next" [disabled] [ref=e326]:
+              - img "next" [ref=e327]
+          - img
+        - generic [ref=e329]:
+          - generic [ref=e330]:
+            - img [ref=e331]
+            - generic "Latest available version is detected (16.2.6)." [ref=e333]: Next.js 16.2.6
+            - generic [ref=e334]: Turbopack
+          - img
+      - dialog "Runtime TypeError" [ref=e336]:
+        - generic [ref=e339]:
+          - generic [ref=e340]:
+            - generic [ref=e341]:
+              - generic [ref=e342]:
+                - generic [ref=e343]: Runtime TypeError
+                - generic [ref=e344]: Server
+              - generic [ref=e345]:
+                - button "Copy Error Info" [ref=e346] [cursor=pointer]:
+                  - img [ref=e347]
+                - button "No related documentation found" [disabled] [ref=e349]:
+                  - img [ref=e350]
+                - button "Attach Node.js inspector" [ref=e352] [cursor=pointer]:
+                  - img [ref=e353]
+            - generic [ref=e362]: tournament.registrationDeadline.toDate is not a function
+          - generic [ref=e363]:
+            - generic [ref=e364]:
+              - paragraph [ref=e366]:
+                - img [ref=e368]
+                - generic [ref=e371]: src\app\tournaments\[id]\page.tsx (150:59) @ TournamentPage
+                - button "Open in editor" [ref=e372] [cursor=pointer]:
+                  - img [ref=e374]
+              - generic [ref=e377]:
+                - generic [ref=e378]: 148 |
+                - generic [ref=e379]: 149 | <CountdownTimer
+                - generic [ref=e380]: "> 150 | targetDate={tournament.registrationDeadline.toDate()}"
+                - generic [ref=e381]: "| ^"
+                - generic [ref=e382]: 151 | label="Registration Closes In"
+                - generic [ref=e383]: 152 | />
+                - generic [ref=e384]: 153 |
+            - generic [ref=e385]:
+              - generic [ref=e386]:
+                - paragraph [ref=e387]:
+                  - text: Call Stack
+                  - generic [ref=e388]: "6"
+                - button "Show 5 ignore-listed frame(s)" [ref=e389] [cursor=pointer]:
+                  - text: Show 5 ignore-listed frame(s)
+                  - img [ref=e390]
+              - generic [ref=e392]:
+                - generic [ref=e393]:
+                  - text: TournamentPage
+                  - button "Open TournamentPage in editor" [ref=e394] [cursor=pointer]:
+                    - img [ref=e395]
+                - text: src\app\tournaments\[id]\page.tsx (150:59)
+        - generic [ref=e397]: "1"
+        - generic [ref=e398]: "2"
+    - generic [ref=e309] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e310]:
+        - img [ref=e311]
+      - generic [ref=e399]:
+        - button "Open issues overlay" [ref=e400]:
+          - generic [ref=e401]:
+            - generic [ref=e402]: "0"
+            - generic [ref=e403]: "1"
+          - generic [ref=e404]: Issue
+        - button "Collapse issues badge" [ref=e405]:
+          - img [ref=e406]
+  - generic [ref=e409]:
+    - img [ref=e410]
+    - heading "This page couldn’t load" [level=1] [ref=e412]
+    - paragraph [ref=e413]: A server error occurred. Reload to try again.
+    - button "Reload" [ref=e416] [cursor=pointer]
+  - paragraph [ref=e417]: ERROR 2177723745

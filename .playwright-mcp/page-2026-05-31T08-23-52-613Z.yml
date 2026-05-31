@@ -1,0 +1,103 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - generic [ref=e5]:
+        - link "NexStarBD NexStarBD Esports Platform" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img "NexStarBD" [ref=e8]
+          - generic [ref=e9]:
+            - paragraph [ref=e10]: NexStarBD
+            - paragraph [ref=e11]: Esports Platform
+        - generic [ref=e12]:
+          - link "Home" [ref=e13] [cursor=pointer]:
+            - /url: /
+          - link "Tournaments" [ref=e14] [cursor=pointer]:
+            - /url: /#upcoming-tournaments
+          - link "Results" [ref=e15] [cursor=pointer]:
+            - /url: /hall-of-fame
+          - link "Rules" [ref=e16] [cursor=pointer]:
+            - /url: /rules
+        - link "Sign In" [ref=e19] [cursor=pointer]:
+          - /url: /login
+  - main [ref=e20]:
+    - generic [ref=e21]:
+      - img "tourney 3" [ref=e22]
+      - link "← Home" [ref=e25] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e26]:
+        - generic [ref=e27]: 🔴 LIVE NOW
+        - heading "tourney 3" [level=1] [ref=e28]
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - paragraph [ref=e33]: Prize Pool
+          - paragraph [ref=e34]: "600"
+        - generic [ref=e35]:
+          - generic [ref=e36]: ⚔️ Squad (BR)
+          - generic [ref=e37]:
+            - paragraph [ref=e38]: Starts
+            - paragraph [ref=e39]: 09:28 PM
+            - paragraph [ref=e40]: 27 May 2026
+      - generic [ref=e42]:
+        - generic [ref=e43]: Slots
+        - generic [ref=e44]: 1/12
+    - generic [ref=e50]:
+      - generic [ref=e52]:
+        - heading "Announcements" [level=2] [ref=e53]
+        - img [ref=e55]
+      - generic [ref=e58]:
+        - heading "Registered Squads" [level=2] [ref=e59]
+        - generic [ref=e60]:
+          - paragraph [ref=e61]: 👥
+          - paragraph [ref=e62]:
+            - link "Sign in" [ref=e63] [cursor=pointer]:
+              - /url: /login?next=/tournaments/WMBhN9QzN5qWsjFp86od
+            - text: and
+            - link "register your squad" [ref=e64] [cursor=pointer]:
+              - /url: /login?next=/register/WMBhN9QzN5qWsjFp86od
+            - text: to see your slot details.
+  - contentinfo [ref=e65]:
+    - generic [ref=e67]:
+      - generic [ref=e68]:
+        - generic [ref=e69]:
+          - generic [ref=e70]:
+            - img "NexStarBD logo" [ref=e71]
+            - generic [ref=e72]: NexStarBD
+          - paragraph [ref=e73]: Bangladesh's free community platform for Free Fire esports tournaments.
+        - generic [ref=e78]:
+          - heading "Navigate" [level=3] [ref=e79]
+          - list [ref=e80]:
+            - listitem [ref=e81]:
+              - link "Home" [ref=e82] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e83]:
+              - link "Tournaments" [ref=e84] [cursor=pointer]:
+                - /url: /#upcoming-tournaments
+            - listitem [ref=e85]:
+              - link "Hall of Fame" [ref=e86] [cursor=pointer]:
+                - /url: /hall-of-fame
+            - listitem [ref=e87]:
+              - link "Rules" [ref=e88] [cursor=pointer]:
+                - /url: /rules
+        - generic [ref=e89]:
+          - heading "Community" [level=3] [ref=e90]
+          - list [ref=e91]:
+            - listitem [ref=e92]:
+              - button "Discord Server (soon)" [ref=e93]:
+                - text: Discord Server
+                - generic [ref=e94]: (soon)
+            - listitem [ref=e95]:
+              - button "Facebook Group (soon)" [ref=e96]:
+                - text: Facebook Group
+                - generic [ref=e97]: (soon)
+            - listitem [ref=e98]:
+              - button "WhatsApp Community (soon)" [ref=e99]:
+                - text: WhatsApp Community
+                - generic [ref=e100]: (soon)
+      - generic [ref=e101]:
+        - generic [ref=e102]: © 2026 NexStarBD. All rights reserved.
+        - generic [ref=e103]:
+          - text: Built for the Bangladesh Free Fire community
+          - generic [ref=e104]: 🇧🇩
+  - button "Open Next.js Dev Tools" [ref=e110] [cursor=pointer]:
+    - img [ref=e111]
