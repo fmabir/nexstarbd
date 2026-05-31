@@ -51,22 +51,6 @@ export function MySquadCard({ registration: reg }: { registration: Registration 
           </div>
         )}
       </div>
-
-      <div className="border-t border-border pt-3">
-        <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">Other Players</p>
-        <div className="grid grid-cols-1 gap-2">
-          {[
-            { label: "P2", uid: reg.player2Uid },
-            { label: "P3", uid: reg.player3Uid },
-            { label: "P4", uid: reg.player4Uid },
-          ].map(({ label, uid }) => (
-            <div key={uid} className="bg-muted rounded-lg px-3 py-2 text-xs flex items-center gap-2">
-              <span className="font-semibold text-muted-foreground shrink-0">{label}</span>
-              <span className="font-mono text-foreground break-all">{uid}</span>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
