@@ -366,15 +366,63 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
         ))}
       </div>
 
+      {/* Schedule — always-visible time editor */}
+      <div className="bg-white rounded-2xl border-2 border-primary/20 p-5 space-y-4">
+        <div className="flex items-center gap-2">
+          <span className="text-lg">🕐</span>
+          <h3 className="font-bold text-base text-foreground uppercase tracking-wide">Schedule</h3>
+          <span className="ml-auto text-xs text-muted-foreground">Changes save immediately</span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+              🎮 Match Start Time
+            </label>
+            <p className="text-xs text-muted-foreground mb-2">Current: <span className="font-semibold text-foreground">{formatTournamentDate(tournament.startsAt)}</span></p>
+            <input
+              type="datetime-local"
+              defaultValue={tsToDatetimeLocal(tournament.startsAt)}
+              key={`startsAt-${tournament.id}`}
+              id="schedule-startsAt"
+              className={`${inputClass} text-sm`}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+              📋 Registration Deadline
+            </label>
+            <p className="text-xs text-muted-foreground mb-2">Current: <span className="font-semibold text-foreground">{formatTournamentDate(tournament.registrationDeadline)}</span></p>
+            <input
+              type="datetime-local"
+              defaultValue={tsToDatetimeLocal(tournament.registrationDeadline)}
+              key={`deadline-${tournament.id}`}
+              id="schedule-deadline"
+              className={`${inputClass} text-sm`}
+            />
+          </div>
+        </div>
+        <Button
+          size="sm"
+          loading={loading === "schedule"}
+          onClick={() => {
+            const startsAtVal = (document.getElementById("schedule-startsAt") as HTMLInputElement)?.value;
+            const deadlineVal = (document.getElementById("schedule-deadline") as HTMLInputElement)?.value;
+            patch({
+              ...(startsAtVal ? { startsAt: new Date(startsAtVal + "Z").toISOString() } : {}),
+              ...(deadlineVal ? { registrationDeadline: new Date(deadlineVal + "Z").toISOString() } : {}),
+            }, "schedule");
+          }}
+        >
+          💾 Save Schedule
+        </Button>
+      </div>
+
       {/* Controls */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white rounded-2xl border border-border p-5">
           <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">Registration</h3>
           <p className="font-bold text-lg mb-1">
             {tournament.isRegistrationOpen ? <span className="text-secondary">Open ✓</span> : <span className="text-primary">Closed</span>}
-          </p>
-          <p className="text-xs text-muted-foreground mb-1">
-            <span className="font-semibold">Starts:</span> {formatTournamentDate(tournament.startsAt)}
           </p>
           <p className="text-xs text-muted-foreground mb-3">
             <span className="font-semibold">Deadline:</span> {formatTournamentDate(tournament.registrationDeadline)}
