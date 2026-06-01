@@ -62,9 +62,7 @@ export function Footer() {
               Community
             </h3>
             <ul className="space-y-2 text-sm">
-              <li><FooterCommunityLink href={process.env.NEXT_PUBLIC_DISCORD_URL || "#"} label="Discord Server" /></li>
-              <li><FooterCommunityLink href={process.env.NEXT_PUBLIC_FACEBOOK_URL || "#"} label="Facebook Group" /></li>
-              <li><FooterCommunityLink href={process.env.NEXT_PUBLIC_WHATSAPP_URL || "#"} label="WhatsApp Community" /></li>
+              <li><FooterCommunityLink href="https://chat.whatsapp.com/Eh3CuMwkzqFCCcC2GYARp4" label="WhatsApp Community" /></li>
             </ul>
           </div>
         </div>
