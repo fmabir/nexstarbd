@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Bebas_Neue, Barlow, Exo_2, Orbitron } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
@@ -65,6 +66,24 @@ export default async function RootLayout({
       lang={locale}
       className={`${bebasNeue.variable} ${barlow.variable} ${exo2.variable} ${orbitron.variable}`}
     >
+      <head>
+        {/* Google Analytics */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-BPMLPR3D58"
+        />
+        <Script
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-BPMLPR3D58');
+            `,
+          }}
+        />
+      </head>
       <body className="font-sans antialiased bg-background text-foreground">
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
