@@ -166,13 +166,11 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
           <p className="text-xs font-bold uppercase tracking-widest text-secondary">Payment Verification</p>
 
           {/* bKash Send Money info */}
-          {ts?.bkashNumber && (
-            <div className="bg-amber-50 border border-amber-300 rounded-xl px-4 py-4 space-y-1">
-              <p className="text-xs font-bold uppercase tracking-wider text-amber-700">💸 Send Money via bKash (Personal)</p>
-              <p className="font-mono text-2xl font-bold text-amber-900 tracking-widest">{ts.bkashNumber}</p>
-              <p className="text-xs text-amber-700">Send money to this bKash number, then enter your transaction ID below.</p>
-            </div>
-          )}
+          <div className="bg-amber-50 border-2 border-amber-400 rounded-xl px-4 py-4 space-y-1">
+            <p className="text-xs font-bold uppercase tracking-wider text-amber-700">💸 bKash Send Money (Personal)</p>
+            <p className="font-mono text-2xl font-bold text-amber-900 tracking-widest">01757788900</p>
+            <p className="text-xs text-amber-700">Send the registration fee to this number, then enter your transaction ID below.</p>
+          </div>
 
           {/* Transaction ID */}
           <div>
