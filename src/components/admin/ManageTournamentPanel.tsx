@@ -10,11 +10,9 @@ import { formatTournamentDate, timeAgo, toDate } from "@/lib/utils/formatDate";
 function tsToDatetimeLocal(ts: unknown): string {
   try {
     const date = toDate(ts as Parameters<typeof toDate>[0]);
-    return new Intl.DateTimeFormat("sv-SE", {
-      timeZone: "UTC",
-      year: "numeric", month: "2-digit", day: "2-digit",
-      hour: "2-digit", minute: "2-digit", hour12: false,
-    }).format(date).replace(" ", "T");
+    // Format in local browser time — matches how new Date(val) interprets datetime-local values
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
   } catch { return ""; }
 }
 
@@ -147,6 +145,10 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
     startsAt: tsToDatetimeLocal(tournament.startsAt),
     registrationDeadline: tsToDatetimeLocal(tournament.registrationDeadline),
   });
+  const [scheduleForm, setScheduleForm] = useState({
+    startsAt: tsToDatetimeLocal(tournament.startsAt),
+    deadline: tsToDatetimeLocal(tournament.registrationDeadline),
+  });
 
   const patch = async (body: Record<string, unknown>, key: string) => {
     setLoading(key);
@@ -212,8 +214,8 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
       firstPrize: editForm.firstPrize || null,
       secondPrize: editForm.secondPrize || null,
       bkashNumber: editForm.bkashNumber || null,
-      ...(editForm.startsAt ? { startsAt: new Date(editForm.startsAt + "Z").toISOString() } : {}),
-      ...(editForm.registrationDeadline ? { registrationDeadline: new Date(editForm.registrationDeadline + "Z").toISOString() } : {}),
+      ...(editForm.startsAt ? { startsAt: new Date(editForm.startsAt).toISOString() } : {}),
+      ...(editForm.registrationDeadline ? { registrationDeadline: new Date(editForm.registrationDeadline).toISOString() } : {}),
     }, "details");
     setShowEditDetails(false);
   };
@@ -366,15 +368,60 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
         ))}
       </div>
 
+      {/* Schedule — always-visible time editor */}
+      <div className="bg-white rounded-2xl border-2 border-primary/20 p-5 space-y-4">
+        <div className="flex items-center gap-2">
+          <span className="text-lg">🕐</span>
+          <h3 className="font-bold text-base text-foreground uppercase tracking-wide">Schedule</h3>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+              🎮 Match Start Time
+            </label>
+            <p className="text-xs text-muted-foreground mb-2">
+              Saved: <span className="font-semibold text-foreground">{formatTournamentDate(tournament.startsAt)}</span>
+            </p>
+            <input
+              type="datetime-local"
+              value={scheduleForm.startsAt}
+              onChange={(e) => setScheduleForm(p => ({ ...p, startsAt: e.target.value }))}
+              className={`${inputClass} text-sm`}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
+              📋 Registration Deadline
+            </label>
+            <p className="text-xs text-muted-foreground mb-2">
+              Saved: <span className="font-semibold text-foreground">{formatTournamentDate(tournament.registrationDeadline)}</span>
+            </p>
+            <input
+              type="datetime-local"
+              value={scheduleForm.deadline}
+              onChange={(e) => setScheduleForm(p => ({ ...p, deadline: e.target.value }))}
+              className={`${inputClass} text-sm`}
+            />
+          </div>
+        </div>
+        <Button
+          size="sm"
+          loading={loading === "schedule"}
+          onClick={() => patch({
+            ...(scheduleForm.startsAt ? { startsAt: new Date(scheduleForm.startsAt).toISOString() } : {}),
+            ...(scheduleForm.deadline ? { registrationDeadline: new Date(scheduleForm.deadline).toISOString() } : {}),
+          }, "schedule")}
+        >
+          💾 Save Schedule
+        </Button>
+      </div>
+
       {/* Controls */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white rounded-2xl border border-border p-5">
           <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">Registration</h3>
           <p className="font-bold text-lg mb-1">
             {tournament.isRegistrationOpen ? <span className="text-secondary">Open ✓</span> : <span className="text-primary">Closed</span>}
-          </p>
-          <p className="text-xs text-muted-foreground mb-1">
-            <span className="font-semibold">Starts:</span> {formatTournamentDate(tournament.startsAt)}
           </p>
           <p className="text-xs text-muted-foreground mb-3">
             <span className="font-semibold">Deadline:</span> {formatTournamentDate(tournament.registrationDeadline)}

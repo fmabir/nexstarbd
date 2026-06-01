@@ -174,6 +174,16 @@ export function RegistrationForm({ tournamentId, userId }: { tournamentId: strin
             </div>
           )}
 
+          {/* bKash number — always visible for paid tournaments */}
+          <div className="bg-amber-50 border-2 border-amber-400 rounded-xl px-4 py-3 flex items-center gap-3">
+            <span className="text-2xl shrink-0">💳</span>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-amber-700 mb-0.5">bKash Send Money (Personal)</p>
+              <p className="font-mono text-xl font-bold text-amber-900 tracking-widest">01757788900</p>
+              <p className="text-xs text-amber-700 mt-0.5">Send the fee to this number, then enter your transaction ID below.</p>
+            </div>
+          </div>
+
           {/* Transaction ID */}
           <div>
             <label className={labelClass}>Transaction ID *</label>

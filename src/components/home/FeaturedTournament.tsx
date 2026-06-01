@@ -75,7 +75,7 @@ function ActiveTournamentCard({ tournament }: { tournament: Tournament }) {
           </div>
         </div>
         <SlotProgressBar filled={tournament.registeredCount} max={tournament.maxSlots} waitlisted={tournament.waitlistCount} />
-        <CountdownTimer compact targetDate={tournament.registrationDeadline.toDate()} label="Closes in" />
+        {tournament.registrationDeadline && <CountdownTimer compact targetDate={tournament.registrationDeadline.toDate()} label="Closes in" />}
         <div className="flex gap-1.5">
           <RegistrationStatusButton tournamentId={tournament.id} canRegister={canRegister} isFull={isFull} isOngoing={isOngoing} size="sm" />
           <Link href={`/tournaments/${tournament.id}`} className="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-foreground font-semibold px-2 py-1.5 rounded-lg text-[10px] transition-colors">
@@ -111,7 +111,7 @@ function ActiveTournamentCard({ tournament }: { tournament: Tournament }) {
           ⚔️ {tournament.mode}
         </span>
         <SlotProgressBar filled={tournament.registeredCount} max={tournament.maxSlots} waitlisted={tournament.waitlistCount} />
-        <CountdownTimer targetDate={tournament.registrationDeadline.toDate()} label="Registration Closes In" />
+        {tournament.registrationDeadline && <CountdownTimer targetDate={tournament.registrationDeadline.toDate()} label="Registration Closes In" />}
         <div className="flex gap-2">
           <RegistrationStatusButton tournamentId={tournament.id} canRegister={canRegister} isFull={isFull} isOngoing={isOngoing} />
           <Link href={`/tournaments/${tournament.id}`} className="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-foreground font-semibold px-4 py-3 rounded-xl text-sm transition-colors">

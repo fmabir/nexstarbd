@@ -37,8 +37,8 @@ export function CreateTournamentForm() {
         body: JSON.stringify({
           ...form,
           isFree,
-          startsAt: new Date(form.startsAt + "Z").toISOString(),
-          registrationDeadline: new Date(form.registrationDeadline + "Z").toISOString(),
+          startsAt: new Date(form.startsAt).toISOString(),
+          registrationDeadline: new Date(form.registrationDeadline).toISOString(),
         }),
       });
       if (!res.ok) throw new Error("Failed");
