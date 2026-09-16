@@ -35,15 +35,15 @@ export default async function RulesPage() {
             return (
               <div
                 key={section}
-                className="bg-card rounded-2xl border border-border overflow-hidden"
+                className="bg-card rounded-2xl p-1.5 shadow-sm"
               >
-                <div className="flex items-center gap-3 px-6 py-4 border-b border-border">
+                <div className="flex items-center gap-3 px-4 pt-1.5 pb-3">
                   <span className="text-2xl">{icons[section]}</span>
                   <h2 className="font-display text-2xl text-foreground tracking-wide">
                     {t(`${section}.title`)}
                   </h2>
                 </div>
-                <ul className="divide-y divide-border">
+                <ul className="bg-panel rounded-xl divide-y divide-border">
                   {rules.map((rule: string, i: number) => (
                     <li key={i} className="flex items-start gap-3 px-6 py-4">
                       <span className="w-6 h-6 rounded-full bg-primary-light text-primary text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">

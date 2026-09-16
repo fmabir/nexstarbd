@@ -16,8 +16,9 @@ function ActiveTournamentCard({ tournament }: { tournament: Tournament }) {
   const canRegister = tournament.isRegistrationOpen;
 
   return (
-    <div className="rounded-3xl border-2 border-border overflow-hidden shadow-sm bg-card">
-      {/* Entry strip — above banner */}
+    <div className="rounded-3xl p-1.5 shadow-sm bg-card">
+      {/* Entry strip + banner share one rounded shell */}
+      <div className="rounded-xl overflow-hidden">
       {tournament.isFree ? (
         <div className="flex items-center justify-center gap-2 py-2 px-4 font-bold text-xs uppercase tracking-widest" style={{ background: "linear-gradient(90deg,#BF8E00,#FFD700,#BF8E00)", color: "#3B2500" }}>
           ✨ FREE ENTRY — No Registration Fee
@@ -41,7 +42,7 @@ function ActiveTournamentCard({ tournament }: { tournament: Tournament }) {
         <div className="absolute top-2 left-2 sm:top-4 sm:left-4">
           {isOngoing ? (
             <span className="inline-flex items-center gap-1.5 bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-full shadow">
-              <span className="w-1.5 h-1.5 bg-card rounded-full animate-pulse" /> LIVE NOW
+              <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE NOW
             </span>
           ) : (
             <span className="inline-flex items-center gap-1.5 bg-secondary text-white text-xs font-bold px-2.5 py-1 rounded-full shadow">
@@ -57,8 +58,10 @@ function ActiveTournamentCard({ tournament }: { tournament: Tournament }) {
         </div>
       </div>
 
+      </div>
+
       {/* Mobile body */}
-      <div className="sm:hidden p-2 space-y-1.5">
+      <div className="sm:hidden bg-panel rounded-xl mt-1.5 p-2 space-y-1.5">
         {/* Prize + mode + start time — single compact row */}
         <div className="flex items-center gap-2">
           <div className="flex-1 min-w-0">
@@ -85,7 +88,7 @@ function ActiveTournamentCard({ tournament }: { tournament: Tournament }) {
       </div>
 
       {/* Desktop body — unchanged original layout */}
-      <div className="hidden sm:block p-4 space-y-3">
+      <div className="hidden sm:block bg-panel rounded-xl mt-1.5 p-4 space-y-3">
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Prize Pool</p>

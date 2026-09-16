@@ -48,6 +48,7 @@
   --card: var(--pink-200);         /* tournament + content cards */
   --card-border: var(--pink-300);
   --field: #ffffff;                /* inputs */
+  --panel: #ffffff;                /* content panel inside a card frame */
   --foreground: var(--green-900);
 }
 
@@ -58,6 +59,7 @@
   --color-card: var(--card);
   --color-card-border: var(--card-border);
   --color-field: var(--field);
+  --color-panel: var(--panel);
 
   /* Pink is the action colour; these two pass AA on white text */
   --color-primary: var(--pink-600);

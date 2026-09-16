@@ -12,7 +12,8 @@ export function WinnerCard({ winner }: { winner: Winner }) {
   const config = positionConfig[winner.position];
 
   return (
-    <div className={`bg-card rounded-2xl border-2 ${config.border} overflow-hidden hover:shadow-lg transition-shadow`}>
+    <div className={`bg-card rounded-2xl p-1.5 border-2 ${config.border} shadow-sm hover:shadow-lg transition-shadow`}>
+      <div className="rounded-xl overflow-hidden">
       {/* Position banner */}
       <div className={`bg-gradient-to-r ${config.bg} px-4 py-2.5 text-white font-display text-lg tracking-wide`}>
         {config.label}
@@ -30,8 +31,10 @@ export function WinnerCard({ winner }: { winner: Winner }) {
         </div>
       )}
 
-      {/* Info */}
-      <div className="p-5">
+      </div>
+
+      {/* Info — white panel */}
+      <div className="bg-panel rounded-xl mt-1.5 p-5">
         <h3 className="font-display text-2xl text-foreground tracking-wide mb-1">
           {winner.squadName}
         </h3>

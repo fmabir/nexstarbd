@@ -22,10 +22,10 @@ export function TournamentCard({ tournament }: { tournament: Tournament }) {
   const canRegister = tournament.isRegistrationOpen;
 
   return (
-    <div className="rounded-2xl border border-border overflow-hidden bg-card hover:shadow-md transition-shadow flex flex-col">
-      {/* Banner */}
+    <div className="rounded-2xl bg-card p-1.5 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+      {/* Banner — sits on the pink frame */}
       <div
-        className="relative w-full shrink-0 overflow-hidden"
+        className="relative w-full shrink-0 overflow-hidden rounded-lg"
         style={{
           height: "68px",
           backgroundImage: `url(${resolveBannerUrl(tournament.bannerUrl, tournament.id)})`,
@@ -50,8 +50,8 @@ export function TournamentCard({ tournament }: { tournament: Tournament }) {
         </div>
       </div>
 
-      {/* Body */}
-      <div className="p-2 flex flex-col gap-1.5 flex-1">
+      {/* Body — white panel keeps the dense info legible */}
+      <div className="bg-panel rounded-lg mt-1.5 p-2 flex flex-col gap-1.5">
         {/* Prize + mode row */}
         <div className="flex items-center justify-between gap-1">
           <span className="text-xs font-bold text-primary leading-none">{tournament.prizePool}</span>
@@ -74,7 +74,7 @@ export function TournamentCard({ tournament }: { tournament: Tournament }) {
         )}
 
         {/* Actions */}
-        <div className="flex gap-1.5 mt-auto pt-0.5">
+        <div className="flex gap-1.5 pt-0.5">
           {canRegister ? (
             <Link
               href={`/register/${tournament.id}`}
