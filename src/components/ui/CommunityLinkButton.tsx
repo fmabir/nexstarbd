@@ -7,7 +7,7 @@ function ComingSoonModal({ label, onClose }: { label: string; onClose: () => voi
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
       <div
-        className="relative bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center"
+        className="relative bg-card rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">

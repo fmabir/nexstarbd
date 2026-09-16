@@ -12,7 +12,7 @@ export function WinnerCard({ winner }: { winner: Winner }) {
   const config = positionConfig[winner.position];
 
   return (
-    <div className={`bg-white rounded-2xl border-2 ${config.border} overflow-hidden hover:shadow-lg transition-shadow`}>
+    <div className={`bg-card rounded-2xl border-2 ${config.border} overflow-hidden hover:shadow-lg transition-shadow`}>
       {/* Position banner */}
       <div className={`bg-gradient-to-r ${config.bg} px-4 py-2.5 text-white font-display text-lg tracking-wide`}>
         {config.label}

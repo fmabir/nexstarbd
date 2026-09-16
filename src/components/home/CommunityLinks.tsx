@@ -9,7 +9,7 @@ export function CommunityLinks() {
   const t = useTranslations("community");
 
   return (
-    <section id="community" className="py-16 bg-white/80 border-t border-border">
+    <section id="community" className="py-16 border-t border-green-200/60">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="font-display text-4xl sm:text-5xl text-foreground tracking-wide mb-2">
           {t("title")}

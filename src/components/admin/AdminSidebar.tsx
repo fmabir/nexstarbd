@@ -33,7 +33,7 @@ export function AdminSidebar() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/banners/lnsbd.png" alt="NexStarBD logo" style={{ height: "68px", width: "auto", display: "block", transform: "translateY(-6px) translateX(6px)" }} />
           <span className="font-brand font-bold text-xl tracking-wide">
-            NexStar<span className="text-primary">B</span><span className="text-green-700">D</span>
+            NexStar<span className="text-pink-300">B</span><span className="text-green-300">D</span>
           </span>
         </Link>
         <p className="text-xs text-gray-500 mt-1 pl-9">Admin Panel</p>

@@ -6,14 +6,38 @@ import { useAuth } from "@/context/AuthContext";
 
 type Mode = "signin" | "signup" | "verify" | "forgot" | "verify-reset" | "success";
 
-const inputClass = "w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-white";
+const inputClass = "w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-card";
 
 function LoginForm() {
   const { user, loading, signInWithEmail, initiateSignup, verifyOtp, resendOtp, sendPasswordResetOtp, resetPasswordWithOtp } = useAuth();
   const [localOverlay, setLocalOverlay] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") ?? "/";
+  const nextParam = searchParams.get("next");
+  const next = nextParam ?? "/";
+
+  /**
+   * One sign-in form, two destinations.
+   *
+   * An explicit ?next= always wins (e.g. someone was bounced here from a
+   * tournament registration page). Otherwise admins land on the dashboard and
+   * players land on the public site.
+   */
+  const destinationFor = (isAdmin: boolean) => {
+    if (nextParam) return nextParam;
+    return isAdmin ? "/admin" : "/";
+  };
+
+  /** Asks the server whether this session is an admin one. */
+  const resolveDestination = async () => {
+    try {
+      const res = await fetch("/api/auth/role");
+      const { isAdmin } = res.ok ? await res.json() : { isAdmin: false };
+      return destinationFor(Boolean(isAdmin));
+    } catch {
+      return destinationFor(false);
+    }
+  };
 
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
@@ -43,8 +67,16 @@ function LoginForm() {
   }, [searchParams]);
 
   useEffect(() => {
-    if (!loading && user) router.replace(next);
-  }, [user, loading, next, router]);
+    if (loading || !user) return;
+    let cancelled = false;
+    resolveDestination().then((dest) => {
+      if (!cancelled) router.replace(dest);
+    });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, loading, nextParam, router]);
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -95,8 +127,12 @@ function LoginForm() {
     try {
       setLocalOverlay("Welcome back! Taking you in…");
       await signInWithEmail(email, password);
+      const dest = await resolveDestination();
+      if (dest.startsWith("/admin")) {
+        setLocalOverlay("Welcome back, admin — opening your dashboard…");
+      }
       await new Promise((r) => setTimeout(r, 900));
-      router.replace(next);
+      router.replace(dest);
     } catch (err) {
       setLocalOverlay(null);
       setError(friendlyError((err as Error).message ?? ""));
@@ -190,7 +226,7 @@ function LoginForm() {
     setError(""); setBusy(true);
     try {
       await resetPasswordWithOtp(email, otp, newPassword);
-      showSuccess("Your password has been reset successfully. Signing you in…", next);
+      showSuccess("Your password has been reset successfully. Signing you in…", await resolveDestination());
     } catch (err) {
       setError(friendlyError((err as Error).message ?? ""));
     } finally {
@@ -214,10 +250,11 @@ function LoginForm() {
   };
 
   const OtpBoxes = () => (
-    <div className="flex gap-2 justify-center" onPaste={handleOtpPaste}>
+    <div className="flex gap-1.5 sm:gap-2 justify-center" onPaste={handleOtpPaste}>
       {otpDigits.map((digit, i) => (
         <input key={i} ref={(el) => { otpRefs.current[i] = el; }}
           type="text" inputMode="numeric" maxLength={1} value={digit}
+          autoComplete={i === 0 ? "one-time-code" : "off"}
           onChange={(e) => handleOtpInput(i, e.target.value)}
           onKeyDown={(e) => handleOtpKeyDown(i, e)}
           onKeyUp={(e) => {
@@ -226,8 +263,7 @@ function LoginForm() {
               setTimeout(() => otpRefs.current[i + 1]?.focus(), 0);
             }
           }}
-          className="w-11 text-center text-xl font-bold border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-white"
-          style={{ height: "52px" }} />
+          className="flex-1 min-w-0 max-w-[3.25rem] h-13 text-center text-xl font-bold border border-border rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-card" />
       ))}
     </div>
   );
@@ -254,12 +290,12 @@ function LoginForm() {
 
   if (localOverlay) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white gap-4">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background gap-4">
         <div className="flex items-center gap-0 mb-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/banners/lnsbd.png" alt="NexStarBD" style={{ height: "72px", width: "auto", transform: "translateY(-6px) translateX(6px)" }} />
           <span className="font-brand font-bold text-3xl tracking-wide">
-            NexStar<span className="text-primary">B</span><span className="text-green-700">D</span>
+            NexStar<span className="text-primary">B</span><span className="text-green-800">D</span>
           </span>
         </div>
         <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -271,8 +307,8 @@ function LoginForm() {
   // Success screen
   if (mode === "success") {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm border border-border p-8 text-center">
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="w-full max-w-sm bg-card rounded-2xl shadow-sm border border-border p-6 sm:p-8 text-center">
           <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -287,8 +323,8 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm border border-border p-8">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+      <div className="w-full max-w-sm bg-card rounded-2xl shadow-sm border border-border p-6 sm:p-8">
 
         {/* Logo */}
         <div className="text-center mb-7">
@@ -296,7 +332,7 @@ function LoginForm() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/banners/lnsbd.png" alt="NexStarBD logo" style={{ height: "88px", width: "auto", display: "block", transform: "translateY(-8px) translateX(8px)" }} />
             <h1 className="font-brand font-bold text-3xl text-foreground tracking-wide">
-              NexStar<span className="text-primary">B</span><span className="text-green-700">D</span>
+              NexStar<span className="text-primary">B</span><span className="text-green-800">D</span>
             </h1>
           </div>
           <p className="text-muted-foreground text-sm mt-1">
@@ -324,7 +360,7 @@ function LoginForm() {
             </button>
             <ResendButton />
             <div className="text-center">
-              <button type="button" onClick={() => switchMode("signup")} className="text-xs text-muted-foreground hover:underline">← Back</button>
+              <button type="button" onClick={() => switchMode("signup")} className="text-xs text-muted-foreground hover:underline py-2 px-2 inline-block">← Back</button>
             </div>
           </form>
         )}
@@ -353,7 +389,7 @@ function LoginForm() {
               </div>
             )}
             <div className="text-center">
-              <button type="button" onClick={() => switchMode("signin")} className="text-xs text-muted-foreground hover:underline">← Back to Sign In</button>
+              <button type="button" onClick={() => switchMode("signin")} className="text-xs text-muted-foreground hover:underline py-2 px-2 inline-block">← Back to Sign In</button>
             </div>
           </form>
         )}
@@ -381,7 +417,7 @@ function LoginForm() {
             </button>
             <ResendButton />
             <div className="text-center">
-              <button type="button" onClick={() => switchMode("forgot")} className="text-xs text-muted-foreground hover:underline">← Back</button>
+              <button type="button" onClick={() => switchMode("forgot")} className="text-xs text-muted-foreground hover:underline py-2 px-2 inline-block">← Back</button>
             </div>
           </form>
         )}
@@ -405,7 +441,7 @@ function LoginForm() {
               <div className="flex items-center justify-between mb-1.5">
                 <label className="block text-sm font-semibold text-foreground">Password</label>
                 {mode === "signin" && (
-                  <button type="button" onClick={handleForgotClick} className="text-xs text-primary hover:underline">
+                  <button type="button" onClick={handleForgotClick} className="text-xs text-primary hover:underline py-1 px-1 -mr-1">
                     Forgot password?
                   </button>
                 )}
@@ -426,11 +462,11 @@ function LoginForm() {
           <div className="mt-5 text-center text-sm text-muted-foreground">
             {mode === "signin" ? (
               <>Don&apos;t have an account?{" "}
-                <button onClick={() => switchMode("signup")} className="text-primary font-semibold hover:underline">Create one</button>
+                <button onClick={() => switchMode("signup")} className="text-primary font-semibold hover:underline py-2 px-1 inline-block">Create one</button>
               </>
             ) : (
               <>Already have an account?{" "}
-                <button onClick={() => switchMode("signin")} className="text-primary font-semibold hover:underline">Sign in</button>
+                <button onClick={() => switchMode("signin")} className="text-primary font-semibold hover:underline py-2 px-1 inline-block">Sign in</button>
               </>
             )}
           </div>

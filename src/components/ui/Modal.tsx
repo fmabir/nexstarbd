@@ -26,7 +26,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto z-10">
+      <div className="relative bg-card rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto z-10">
         {title && (
           <div className="flex items-center justify-between px-6 py-4 border-b border-border">
             <h2 className="font-display text-2xl text-foreground tracking-wide">{title}</h2>

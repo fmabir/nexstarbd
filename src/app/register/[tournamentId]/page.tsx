@@ -40,7 +40,7 @@ export default async function RegisterPage({
   return (
     <>
       <Navbar locale={locale} />
-      <main className="min-h-screen bg-muted py-10">
+      <main className="min-h-screen bg-background py-10">
         <div className="max-w-xl mx-auto px-4 sm:px-6">
           <div className="mb-6">
             <Button href={`/tournaments/${tournamentId}`} variant="ghost" size="sm">
@@ -48,7 +48,7 @@ export default async function RegisterPage({
             </Button>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-border p-6 sm:p-8">
+          <div className="bg-card rounded-2xl shadow-sm border border-border p-6 sm:p-8">
             <h1 className="font-display text-3xl sm:text-4xl text-foreground tracking-wide mb-1">
               {t("title")}
             </h1>

@@ -19,7 +19,7 @@ export function AnnouncementsFeed() {
 
   return (
     <>
-      <section className="py-12 bg-gray-50 border-t border-border">
+      <section className="py-12 border-t border-green-200/60">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">

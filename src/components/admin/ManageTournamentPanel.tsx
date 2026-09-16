@@ -361,7 +361,7 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
           { label: "Waitlisted", value: tournament.waitlistCount, color: "text-amber-600" },
           { label: "Pending", value: registrations.filter(r => r.approvalStatus === "pending").length, color: "text-primary" },
         ].map((s) => (
-          <div key={s.label} className="bg-white rounded-2xl border border-border p-4 text-center">
+          <div key={s.label} className="bg-card rounded-2xl border border-border p-4 text-center">
             <div className={`font-display text-2xl ${s.color}`}>{s.value}</div>
             <div className="text-xs text-muted-foreground font-semibold uppercase tracking-wide mt-0.5">{s.label}</div>
           </div>
@@ -369,7 +369,7 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
       </div>
 
       {/* Schedule — always-visible time editor */}
-      <div className="bg-white rounded-2xl border-2 border-primary/20 p-5 space-y-4">
+      <div className="bg-card rounded-2xl border-2 border-primary/20 p-5 space-y-4">
         <div className="flex items-center gap-2">
           <span className="text-lg">🕐</span>
           <h3 className="font-bold text-base text-foreground uppercase tracking-wide">Schedule</h3>
@@ -418,7 +418,7 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
 
       {/* Controls */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl border border-border p-5">
+        <div className="bg-card rounded-2xl border border-border p-5">
           <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">Registration</h3>
           <p className="font-bold text-lg mb-1">
             {tournament.isRegistrationOpen ? <span className="text-secondary">Open ✓</span> : <span className="text-primary">Closed</span>}
@@ -432,7 +432,7 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
             {tournament.isRegistrationOpen ? "Close Registration" : "Open Registration"}
           </Button>
         </div>
-        <div className="bg-white rounded-2xl border border-border p-5">
+        <div className="bg-card rounded-2xl border border-border p-5">
           <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">Status</h3>
           <p className="font-bold text-lg mb-3 capitalize">{tournament.status}</p>
           <select className="w-full border border-border rounded-lg px-3 py-2 text-sm"
@@ -443,7 +443,7 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
             <option value="cancelled">Cancelled</option>
           </select>
         </div>
-        <div className="bg-white rounded-2xl border border-border p-5">
+        <div className="bg-card rounded-2xl border border-border p-5">
           <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">Room Info</h3>
           <div className="space-y-2 mb-3">
             <input value={roomId} onChange={(e) => setRoomId(e.target.value)}
@@ -485,7 +485,7 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
       )}
 
       {/* Registrations */}
-      <div className="bg-white rounded-2xl border border-border overflow-hidden">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden">
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <h2 className="font-semibold">Squad Applications ({confirmed.length})</h2>
           <span className="text-xs text-muted-foreground">{approved} approved</span>
@@ -506,7 +506,7 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
 
       {/* Waitlist */}
       {waitlisted.length > 0 && (
-        <div className="bg-white rounded-2xl border border-border overflow-hidden">
+        <div className="bg-card rounded-2xl border border-border overflow-hidden">
           <div className="px-6 py-4 border-b border-border">
             <h2 className="font-semibold">Waiting List ({waitlisted.length})</h2>
           </div>
@@ -522,7 +522,7 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
       )}
 
       {/* Announcements */}
-      <div className="bg-white rounded-2xl border border-border overflow-hidden">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden">
         <div className="px-6 py-4 border-b border-border">
           <h2 className="font-semibold">Announcements to Registered Players</h2>
           <p className="text-xs text-muted-foreground mt-0.5">Visible only to squads registered for this tournament</p>

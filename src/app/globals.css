@@ -1,23 +1,103 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── Matte palette ──────────────────────────────────────────
+     Two flat, low-saturation families: sage green for the page and
+     chrome, dusty rose for content cards. Kept deliberately desaturated
+     so it reads matte rather than neon. Retune here; everything else
+     refers to these. */
+
+  /* Sage green */
+  --green-50: #f2f5ef;
+  --green-100: #e4ebdf;
+  --green-200: #cfdcc8;
+  --green-300: #b8cbae;
+  --green-400: #9db491;
+  --green-500: #819a75;
+  --green-600: #67805c;
+  --green-700: #4f6547;
+  --green-800: #3a4a34;
+  --green-900: #26311f;
+
+  /* Dusty rose */
+  --pink-50: #fcf3f3;
+  --pink-100: #f8e6e7;
+  --pink-200: #f1d2d4;
+  --pink-300: #e6b5ba;
+  --pink-400: #d89aa1;
+  --pink-500: #c57e87;
+  --pink-600: #a65c67;
+  --pink-700: #8e4b55;
+  --pink-800: #6b3a42;
+  --pink-900: #4a272d;
+
+  /* Roles */
+  --background: var(--green-300);  /* the page itself */
+  --surface: var(--green-100);     /* navbar, footer, drawer */
+  --card: var(--pink-200);         /* tournament + content cards */
+  --card-border: var(--pink-300);
+  --field: #fdfafa;                /* inputs, kept near-white to read */
+  --foreground: var(--green-900);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-primary: #F42A41;
-  --color-primary-dark: #D41F32;
-  --color-primary-light: #FFF3F4;
-  --color-secondary: #006A4E;
-  --color-secondary-dark: #004D39;
-  --color-secondary-light: #E6F4F0;
-  --color-muted: #F5F5F5;
-  --color-muted-foreground: #6B7280;
-  --color-border: #E5E7EB;
-  --color-card: #ffffff;
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
+  --color-field: var(--field);
+
+  /* Pink is the action colour; these two pass AA on white text */
+  --color-primary: var(--pink-600);
+  --color-primary-dark: var(--pink-700);
+  --color-primary-light: var(--pink-100);
+
+  /* Green is the supporting/structural colour */
+  --color-secondary: var(--green-700);
+  --color-secondary-dark: var(--green-800);
+  --color-secondary-light: var(--green-100);
+
+  --color-muted: var(--green-100);
+  --color-muted-foreground: var(--green-800); /* green-700 fails AA on the green page */
+  --color-border: var(--green-200);
+
+  /* Named ramps so components can reach for a specific step */
+  --color-green-50: var(--green-50);
+  --color-green-100: var(--green-100);
+  --color-green-200: var(--green-200);
+  --color-green-300: var(--green-300);
+  --color-green-400: var(--green-400);
+  --color-green-500: var(--green-500);
+  --color-green-600: var(--green-600);
+  --color-green-700: var(--green-700);
+  --color-green-800: var(--green-800);
+  --color-green-900: var(--green-900);
+  --color-pink-50: var(--pink-50);
+  --color-pink-100: var(--pink-100);
+  --color-pink-200: var(--pink-200);
+  --color-pink-300: var(--pink-300);
+  --color-pink-400: var(--pink-400);
+  --color-pink-500: var(--pink-500);
+  --color-pink-600: var(--pink-600);
+  --color-pink-700: var(--pink-700);
+  --color-pink-800: var(--pink-800);
+  --color-pink-900: var(--pink-900);
+
+  /* Retint the neutral ramp. The app leans on bg-gray-50/100 for hover
+     and text-gray-* for muted copy; cool greys would fight the palette,
+     so every step becomes a green-tinted equivalent. */
+  --color-gray-50: var(--green-50);
+  --color-gray-100: var(--green-100);
+  --color-gray-200: var(--green-200);
+  --color-gray-300: var(--green-300);
+  --color-gray-400: var(--green-400);
+  --color-gray-500: var(--green-500);
+  --color-gray-600: var(--green-600);
+  --color-gray-700: var(--green-700);
+  --color-gray-800: var(--green-800);
+  --color-gray-900: var(--green-900);
+
   --font-sans: var(--font-barlow);
   --font-display: var(--font-bebas);
   --font-brand: var(--font-exo2);
@@ -26,23 +106,33 @@
 
 body {
   background:
-    /* Red diagonal stripe — top-left to bottom-right */
+    /* Matte diagonal stripes — a rose band and a deeper sage band, both
+       barely-there so the flat green reads as the page colour */
     linear-gradient(
       -30deg,
       transparent 0%,
       transparent 30%,
-      rgba(244, 42, 65, 0.10) 30%,
-      rgba(244, 42, 65, 0.10) 36%,
+      rgba(166, 92, 103, 0.09) 30%,
+      rgba(166, 92, 103, 0.09) 36%,
       transparent 36%,
       transparent 62%,
-      rgba(0, 106, 78, 0.10) 62%,
-      rgba(0, 106, 78, 0.10) 68%,
+      rgba(38, 49, 31, 0.07) 62%,
+      rgba(38, 49, 31, 0.07) 68%,
       transparent 68%,
       transparent 100%
     ),
     var(--background);
   background-attachment: fixed;
   color: var(--foreground);
+  /* Never let a stray wide child create a sideways scroll on phones */
+  overflow-x: hidden;
+}
+
+/* iOS Safari janks badly on fixed backgrounds while scrolling — let it scroll */
+@media (max-width: 1024px) {
+  body {
+    background-attachment: scroll;
+  }
 }
 
 /* Smooth scrolling */
@@ -55,10 +145,10 @@ html {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--green-200);
 }
 ::-webkit-scrollbar-thumb {
-  background: #F42A41;
+  background: var(--pink-600);
   border-radius: 3px;
 }
 
@@ -75,6 +165,92 @@ html {
 
 /* Selection color */
 ::selection {
-  background: #F42A41;
+  background: var(--pink-600);
   color: white;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Mobile ergonomics
+   ───────────────────────────────────────────────────────────── */
+
+/* iOS Safari auto-zooms the page whenever a focused form control renders
+   below 16px. Every form in this app uses text-sm (14px), so pin the
+   rendered size to 16px on phones — desktop keeps the smaller design. */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Grey flash on every tap looks broken on a dark gaming UI */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Let the browser keep pinch-zoom (accessibility) but stop the
+   double-tap-to-zoom delay on controls */
+a,
+button,
+[role="button"],
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+/* Respect notches / home indicator on iPhone + gesture-nav Android */
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 0px);
+}
+
+/* Momentum scrolling for the horizontal card rails */
+.scrollbar-hide {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+/* Users who ask for less motion shouldn't get the blink or carousel slides */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .blink {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Matte surface treatment
+   ───────────────────────────────────────────────────────────── */
+
+/* Flat finish — default shadows are cool-grey and glossy against this
+   palette, so soften them and tint them toward the page green. */
+.shadow-sm {
+  box-shadow: 0 1px 2px rgba(38, 49, 31, 0.06);
+}
+.shadow,
+.shadow-md {
+  box-shadow: 0 2px 6px rgba(38, 49, 31, 0.07);
+}
+.shadow-lg {
+  box-shadow: 0 6px 16px rgba(38, 49, 31, 0.09);
+}
+.shadow-2xl {
+  box-shadow: 0 12px 32px rgba(38, 49, 31, 0.13);
+}
+
+/* Form fields sit on pink cards, so keep them near-white to stay legible */
+input,
+select,
+textarea {
+  background-color: var(--field);
 }

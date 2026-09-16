@@ -64,7 +64,7 @@ export default async function TournamentPage({
   return (
     <>
       <Navbar locale={locale} />
-      <main className="min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-background">
 
         {/* Entry strip */}
         {tournament.isFree ? (
@@ -106,7 +106,7 @@ export default async function TournamentPage({
         </div>
 
         {/* Info bar */}
-        <div className="bg-white border-b border-border">
+        <div className="bg-card border-b border-border">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-5 space-y-4">
 
             {/* Prize (left) + Mode & Time (right) — stack on mobile */}

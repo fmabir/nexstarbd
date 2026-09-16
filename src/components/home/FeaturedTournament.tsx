@@ -16,7 +16,7 @@ function ActiveTournamentCard({ tournament }: { tournament: Tournament }) {
   const canRegister = tournament.isRegistrationOpen;
 
   return (
-    <div className="rounded-3xl border-2 border-border overflow-hidden shadow-sm bg-white">
+    <div className="rounded-3xl border-2 border-border overflow-hidden shadow-sm bg-card">
       {/* Entry strip — above banner */}
       {tournament.isFree ? (
         <div className="flex items-center justify-center gap-2 py-2 px-4 font-bold text-xs uppercase tracking-widest" style={{ background: "linear-gradient(90deg,#BF8E00,#FFD700,#BF8E00)", color: "#3B2500" }}>
@@ -41,7 +41,7 @@ function ActiveTournamentCard({ tournament }: { tournament: Tournament }) {
         <div className="absolute top-2 left-2 sm:top-4 sm:left-4">
           {isOngoing ? (
             <span className="inline-flex items-center gap-1.5 bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-full shadow">
-              <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE NOW
+              <span className="w-1.5 h-1.5 bg-card rounded-full animate-pulse" /> LIVE NOW
             </span>
           ) : (
             <span className="inline-flex items-center gap-1.5 bg-secondary text-white text-xs font-bold px-2.5 py-1 rounded-full shadow">
@@ -128,7 +128,7 @@ export function FeaturedTournament() {
 
   if (loading) {
     return (
-      <section className="py-20 bg-white/80 border-t border-border flex justify-center">
+      <section className="py-20 border-t border-green-200/60 flex justify-center">
         <Spinner size="lg" />
       </section>
     );
@@ -136,7 +136,7 @@ export function FeaturedTournament() {
 
   if (active.length === 0) {
     return (
-      <section className="py-20 bg-white/80 border-t border-border text-center">
+      <section className="py-20 border-t border-green-200/60 text-center">
         <p className="text-5xl mb-4">🎮</p>
         <p className="text-lg font-semibold text-foreground">No active tournament right now</p>
         <p className="text-muted-foreground text-sm mt-1">Check back soon for the next one!</p>
@@ -147,7 +147,7 @@ export function FeaturedTournament() {
   const hasOngoing = active[0].status === "ongoing";
 
   return (
-    <section className="py-6 sm:py-12 bg-white/80 border-t border-border">
+    <section className="py-6 sm:py-12 border-t border-green-200/60">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="flex items-center gap-2 mb-4 sm:mb-6">

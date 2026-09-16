@@ -27,7 +27,7 @@ function WinnerCard({ winner }: { winner: Winner }) {
         <p className="font-display text-xl sm:text-2xl text-foreground tracking-wide leading-tight mb-2">{winner.squadName}</p>
         <div className="flex flex-wrap gap-1 mb-3">
           {winner.players.map((p) => (
-            <span key={p} className="text-xs font-medium bg-white/80 border border-black/10 px-2 py-0.5 rounded-full">
+            <span key={p} className="text-xs font-medium bg-field/80 border border-green-900/10 px-2 py-0.5 rounded-full">
               {p}
             </span>
           ))}

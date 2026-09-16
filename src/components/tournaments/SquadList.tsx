@@ -31,7 +31,7 @@ export function SquadList({ tournamentId, maxSlots }: { tournamentId: string; ma
         </p>
         <div className="space-y-1.5">
           {confirmed.map((s) => (
-            <div key={s.id} className="flex items-center gap-3 bg-white border border-border rounded-xl px-3 py-2.5">
+            <div key={s.id} className="flex items-center gap-3 bg-card border border-border rounded-xl px-3 py-2.5">
               <span className="w-7 h-7 rounded-full bg-primary text-white font-display text-sm flex items-center justify-center shrink-0">
                 {s.slotNumber ?? "—"}
               </span>

@@ -26,7 +26,9 @@ export async function verifyAdmin(): Promise<string> {
   const email = ((payload.email as string | undefined) ?? "").toLowerCase();
   const allowed = adminEmails();
 
-  if (allowed.length > 0 && !allowed.includes(email)) {
+  // Fail CLOSED: an unset/empty ADMIN_EMAILS must mean "nobody is an admin",
+  // never "everybody is an admin".
+  if (allowed.length === 0 || !allowed.includes(email)) {
     throw new Error("Forbidden");
   }
 

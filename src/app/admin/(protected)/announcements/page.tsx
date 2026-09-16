@@ -22,12 +22,12 @@ export default async function AdminAnnouncementsPage() {
     <div className="space-y-6">
       <h1 className="font-display text-3xl text-foreground tracking-wide">Announcements</h1>
 
-      <div className="bg-white rounded-2xl border border-border p-6">
+      <div className="bg-card rounded-2xl border border-border p-6">
         <h2 className="font-semibold mb-4">Post Announcement</h2>
         <AnnouncementComposer tournaments={tournaments} />
       </div>
 
-      <div className="bg-white rounded-2xl border border-border overflow-hidden">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden">
         <div className="px-6 py-4 border-b border-border">
           <h2 className="font-semibold">Recent Announcements ({announcements.length})</h2>
         </div>

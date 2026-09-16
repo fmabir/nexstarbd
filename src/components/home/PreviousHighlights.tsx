@@ -15,7 +15,7 @@ const positionStyle: Record<number, { label: string; bar: string }> = {
 function ChampionCard({ winner }: { winner: Winner }) {
   const s = positionStyle[winner.position] ?? positionStyle[3];
   return (
-    <div className="snap-start shrink-0 w-60 bg-white border border-border rounded-2xl overflow-hidden hover:shadow-md transition-shadow">
+    <div className="snap-start shrink-0 w-60 bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md transition-shadow">
       <div className={`h-1.5 ${s.bar}`} />
       {winner.photoUrl ? (
         <div className="relative h-32 bg-gray-100">
@@ -47,7 +47,7 @@ function ChampionCard({ winner }: { winner: Winner }) {
 
 function MvpCard({ mvp }: { mvp: MvpPlayer }) {
   return (
-    <div className="snap-start shrink-0 w-52 bg-white border border-border rounded-2xl overflow-hidden hover:shadow-md transition-shadow">
+    <div className="snap-start shrink-0 w-52 bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md transition-shadow">
       <div className="h-1.5 bg-secondary" />
       <div className="p-4 text-center">
         <div className="relative w-14 h-14 mx-auto mb-3">
@@ -95,7 +95,7 @@ export function PreviousHighlights({ winners, mvpPlayers }: { winners: Winner[];
   ];
 
   return (
-    <section className="py-12 bg-white/80 border-t border-border">
+    <section className="py-12 border-t border-green-200/60">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header + tabs */}

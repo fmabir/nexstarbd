@@ -15,7 +15,7 @@ interface TournamentState {
   bkashNumber: string | null;
 }
 
-const inputClass = "w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-white";
+const inputClass = "w-full border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-card";
 const labelClass = "block text-sm font-semibold text-foreground mb-1.5";
 const errorClass = "text-primary text-xs mt-1";
 

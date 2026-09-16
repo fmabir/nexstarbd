@@ -55,7 +55,7 @@ export function SponsorsAdminPanel({ sponsors }: { sponsors: Sponsor[] }) {
   return (
     <div className="space-y-6">
       <h1 className="font-display text-3xl text-foreground tracking-wide">Sponsors & Partners</h1>
-      <div className="bg-white rounded-2xl border border-border p-6">
+      <div className="bg-card rounded-2xl border border-border p-6">
         <h2 className="font-semibold mb-4">Add Sponsor</h2>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div><label className="block text-sm font-semibold mb-1">Name *</label><input required value={form.name} onChange={set("name")} className={inputClass} placeholder="Gaming Brand" /></div>
@@ -68,7 +68,7 @@ export function SponsorsAdminPanel({ sponsors }: { sponsors: Sponsor[] }) {
         </form>
       </div>
 
-      <div className="bg-white rounded-2xl border border-border overflow-hidden">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden">
         <div className="px-6 py-4 border-b border-border"><h2 className="font-semibold">All Sponsors ({sponsors.length})</h2></div>
         {sponsors.length === 0 ? <div className="text-center py-8 text-muted-foreground text-sm">No sponsors yet.</div> : (
           <div className="divide-y divide-border">

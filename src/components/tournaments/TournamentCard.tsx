@@ -22,7 +22,7 @@ export function TournamentCard({ tournament }: { tournament: Tournament }) {
   const canRegister = tournament.isRegistrationOpen;
 
   return (
-    <div className="rounded-2xl border border-border overflow-hidden bg-white hover:shadow-md transition-shadow flex flex-col">
+    <div className="rounded-2xl border border-border overflow-hidden bg-card hover:shadow-md transition-shadow flex flex-col">
       {/* Banner */}
       <div
         className="relative w-full shrink-0 overflow-hidden"

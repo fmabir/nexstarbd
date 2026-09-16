@@ -24,13 +24,13 @@ export default async function AdminTournamentsPage() {
       </div>
 
       {/* Create form */}
-      <div className="bg-white rounded-2xl border border-border p-6">
+      <div className="bg-card rounded-2xl border border-border p-6">
         <h2 className="font-semibold text-lg mb-4">Create Tournament</h2>
         <CreateTournamentForm />
       </div>
 
       {/* List */}
-      <div className="bg-white rounded-2xl border border-border overflow-hidden">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden">
         <div className="px-6 py-4 border-b border-border">
           <h2 className="font-semibold text-lg">All Tournaments</h2>
         </div>

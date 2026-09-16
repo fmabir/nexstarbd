@@ -41,7 +41,7 @@ export function UpcomingTournaments() {
   if (loading || upcoming.length === 0) return null;
 
   return (
-    <section id="upcoming-tournaments" className="py-12 bg-gray-50/80 border-t border-border">
+    <section id="upcoming-tournaments" className="py-12 border-t border-green-200/60">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="flex items-center justify-between mb-6">
@@ -56,7 +56,7 @@ export function UpcomingTournaments() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {upcoming.map((t) => (
-            <div key={t.id} className="bg-white border border-border rounded-2xl overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+            <div key={t.id} className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md transition-shadow flex flex-col">
 
               {/* Entry strip */}
               {t.isFree ? (

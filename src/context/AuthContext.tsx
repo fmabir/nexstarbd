@@ -12,6 +12,10 @@ import { auth } from "@/lib/firebase/config";
 
 interface AuthContextValue {
   user: User | null;
+  /** True when the signed-in user's email is in the server's ADMIN_EMAILS list. */
+  isAdmin: boolean;
+  /** False until the admin check for the current user has come back. */
+  roleResolved: boolean;
   loading: boolean;
   transitioning: boolean;
   transitionMessage: string;
@@ -30,6 +34,9 @@ const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  // Tagged with the uid it was fetched for, so a previous user's answer can
+  // never be mistaken for the current user's.
+  const [role, setRole] = useState<{ uid: string; isAdmin: boolean } | null>(null);
   const [loading, setLoading] = useState(true);
   const [transitioning, setTransitioning] = useState(false);
   const [transitionMessage, setTransitionMessage] = useState("");
@@ -41,6 +48,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     return unsubscribe;
   }, []);
+
+  // Ask the server which side of the app this user belongs to. The browser
+  // can't know: ADMIN_EMAILS never leaves the server.
+  useEffect(() => {
+    if (!user) return;
+    const uid = user.uid;
+    let cancelled = false;
+    fetch("/api/auth/role")
+      .then((r) => (r.ok ? r.json() : { isAdmin: false }))
+      .then((d) => {
+        if (!cancelled) setRole({ uid, isAdmin: Boolean(d.isAdmin) });
+      })
+      .catch(() => {
+        if (!cancelled) setRole({ uid, isAdmin: false });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  // Derived rather than stored: signing out, or signing in as someone else,
+  // drops back to "not an admin" without another render pass.
+  const isAdmin = Boolean(user && role?.uid === user.uid && role.isAdmin);
+  const roleResolved = !user || role?.uid === user.uid;
 
   const showTransition = (msg: string, ms = 1200) => {
     setTransitionMessage(msg);
@@ -159,7 +190,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={{
-      user, loading, transitioning, transitionMessage,
+      user, isAdmin, roleResolved, loading, transitioning, transitionMessage,
       signOut, signInWithEmail,
       initiateSignup, verifyOtp, resendOtp,
       sendPasswordResetOtp, resetPasswordWithOtp,

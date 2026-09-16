@@ -12,7 +12,7 @@ export function PreviousTournaments() {
   if (tournaments.length === 0) return null;
 
   return (
-    <section className="py-10 bg-white/80 border-t border-border">
+    <section className="py-10 border-t border-green-200/60">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="flex items-center justify-between mb-5">

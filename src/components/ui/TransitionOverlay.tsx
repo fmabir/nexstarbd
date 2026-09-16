@@ -7,7 +7,7 @@ export function TransitionOverlay() {
   if (!transitioning) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white">
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-card">
       <div className="flex items-center gap-0 mb-6">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/banners/lnsbd.png" alt="NexStarBD" style={{ height: "72px", width: "auto", transform: "translateY(-6px) translateX(6px)" }} />

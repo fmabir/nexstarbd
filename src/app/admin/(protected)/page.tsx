@@ -64,7 +64,7 @@ function StatCard({ label, value, sub, href, urgent }: {
   label: string; value: number | string; sub?: string; href?: string; urgent?: boolean;
 }) {
   const card = (
-    <div className={`bg-white rounded-2xl border p-5 flex flex-col gap-1 hover:shadow-md transition-shadow ${urgent && Number(value) > 0 ? "border-primary" : "border-border"}`}>
+    <div className={`bg-card rounded-2xl border p-5 flex flex-col gap-1 hover:shadow-md transition-shadow ${urgent && Number(value) > 0 ? "border-primary" : "border-border"}`}>
       <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</span>
       <span className={`text-3xl font-bold ${urgent && Number(value) > 0 ? "text-primary" : "text-foreground"}`}>{value}</span>
       {sub && <span className="text-xs text-muted-foreground">{sub}</span>}
@@ -135,7 +135,7 @@ export default async function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         {/* Active tournaments */}
-        <div className="bg-white rounded-2xl border border-border p-5">
+        <div className="bg-card rounded-2xl border border-border p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-foreground">Active Tournaments</h2>
             <Link href="/admin/tournaments" className="text-xs text-primary hover:underline">View all →</Link>
@@ -163,7 +163,7 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Recent registrations */}
-        <div className="bg-white rounded-2xl border border-border p-5">
+        <div className="bg-card rounded-2xl border border-border p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-foreground">Recent Registrations</h2>
             <Link href="/admin/tournaments" className="text-xs text-primary hover:underline">View all →</Link>

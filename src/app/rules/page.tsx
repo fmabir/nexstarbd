@@ -18,7 +18,7 @@ export default async function RulesPage() {
   return (
     <>
       <Navbar locale={locale} />
-      <main className="min-h-screen bg-muted">
+      <main className="min-h-screen bg-background">
         {/* Header */}
         <div className="bg-gray-900 text-white py-14">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
@@ -35,7 +35,7 @@ export default async function RulesPage() {
             return (
               <div
                 key={section}
-                className="bg-white rounded-2xl border border-border overflow-hidden"
+                className="bg-card rounded-2xl border border-border overflow-hidden"
               >
                 <div className="flex items-center gap-3 px-6 py-4 border-b border-border">
                   <span className="text-2xl">{icons[section]}</span>

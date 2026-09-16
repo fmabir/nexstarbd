@@ -77,14 +77,14 @@ export function MvpAdminPanel({ mvpPlayers, tournaments }: { mvpPlayers: MvpPlay
   return (
     <div className="space-y-6">
       <h1 className="font-display text-3xl text-foreground tracking-wide">MVP Players</h1>
-      <div className="bg-white rounded-2xl border border-border p-6">
+      <div className="bg-card rounded-2xl border border-border p-6">
         <h2 className="font-semibold mb-4">Add MVP Player</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <FormFields vals={form} target="form" />
           <Button type="submit" loading={loading}>Add MVP</Button>
         </form>
       </div>
-      <div className="bg-white rounded-2xl border border-border overflow-hidden">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden">
         <div className="px-6 py-4 border-b border-border"><h2 className="font-semibold">All MVPs ({mvpPlayers.length})</h2></div>
         {mvpPlayers.length === 0 ? <div className="text-center py-8 text-muted-foreground text-sm">No MVP players yet.</div> : (
           <div className="divide-y divide-border">

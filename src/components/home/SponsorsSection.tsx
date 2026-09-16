@@ -27,7 +27,7 @@ export function SponsorsSection({ sponsors }: { sponsors: Sponsor[] }) {
   );
 
   return (
-    <section className="bg-white border-t border-border">
+    <section className="border-t border-green-200/60">
       {/* Hero Banners — Full-width featured sponsors */}
       {heroBanners.length > 0 && (
         <div className="bg-gradient-to-r from-muted to-muted/50 py-8 border-b border-border">
@@ -40,7 +40,7 @@ export function SponsorsSection({ sponsors }: { sponsors: Sponsor[] }) {
                 <SponsorLink
                   key={sponsor.id}
                   sponsor={sponsor}
-                  className="relative h-24 w-full grayscale hover:grayscale-0 transition-all opacity-80 hover:opacity-100 rounded-lg overflow-hidden bg-white p-3"
+                  className="relative h-24 w-full grayscale hover:grayscale-0 transition-all opacity-80 hover:opacity-100 rounded-lg overflow-hidden bg-card p-3"
                 />
               ))}
             </div>

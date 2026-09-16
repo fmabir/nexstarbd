@@ -109,7 +109,7 @@ export function CreateTournamentForm() {
             onClick={() => setIsFree(v => !v)}
             className={`relative w-11 h-6 rounded-full transition-colors ${isFree ? "bg-yellow-400" : "bg-gray-300"}`}
           >
-            <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${isFree ? "translate-x-5" : "translate-x-0"}`} />
+            <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-card rounded-full shadow transition-transform ${isFree ? "translate-x-5" : "translate-x-0"}`} />
           </div>
           <span className="font-semibold text-sm">
             {isFree ? "✨ Free Entry (no registration fee)" : "Paid Entry"}

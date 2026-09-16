@@ -83,7 +83,7 @@ export default async function MyRegistrationPage({
   return (
     <>
       <Navbar locale={locale} />
-      <main className="min-h-screen bg-gray-50 py-10">
+      <main className="min-h-screen bg-background py-10">
         <div className="max-w-xl mx-auto px-4 sm:px-6 space-y-5">
 
           {/* Header */}
@@ -130,7 +130,7 @@ export default async function MyRegistrationPage({
           </div>
 
           {/* Squad Details */}
-          <div className="bg-white rounded-2xl border border-border p-5">
+          <div className="bg-card rounded-2xl border border-border p-5">
             <h2 className="font-semibold text-foreground mb-4">Squad Details</h2>
 
             <div className="space-y-3">
@@ -177,7 +177,7 @@ export default async function MyRegistrationPage({
             </Link>
             <Link
               href="/"
-              className="flex-1 block text-center bg-white border border-border rounded-xl py-3 text-sm font-semibold text-foreground hover:bg-gray-50 transition-colors"
+              className="flex-1 block text-center bg-card border border-border rounded-xl py-3 text-sm font-semibold text-foreground hover:bg-gray-50 transition-colors"
             >
               Back to Home
             </Link>

@@ -1,6 +1,6 @@
 export function HeroSection({ subtitle }: { subtitle: string }) {
   return (
-    <section className="relative bg-white py-10 sm:py-14 text-center overflow-hidden">
+    <section className="relative py-10 sm:py-14 text-center overflow-hidden">
       {/* Soft blobs */}
       <div className="absolute -top-24 -left-24 w-80 h-80 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-16 -right-16 w-72 h-72 bg-secondary/8 rounded-full blur-3xl pointer-events-none" />
@@ -11,7 +11,7 @@ export function HeroSection({ subtitle }: { subtitle: string }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/banners/lnsbd.png" alt="NexStarBD logo" style={{ height: "108px", width: "auto", display: "block", transform: "translateY(-8px) translateX(8px)" }} />
           <span className="font-brand font-bold text-4xl sm:text-5xl tracking-wide text-foreground">
-            NexStar<span className="text-primary">B</span><span className="text-green-700">D</span>
+            NexStar<span className="text-primary">B</span><span className="text-green-800">D</span>
           </span>
         </div>
 
@@ -22,7 +22,7 @@ export function HeroSection({ subtitle }: { subtitle: string }) {
         {/* Flag stripe */}
         <div className="flex justify-center gap-1.5 mt-5">
           <span className="w-8 h-1.5 rounded-full bg-secondary" />
-          <span className="w-8 h-1.5 rounded-full bg-white border border-border" />
+          <span className="w-8 h-1.5 rounded-full bg-card border border-border" />
           <span className="w-8 h-1.5 rounded-full bg-primary" />
         </div>
       </div>

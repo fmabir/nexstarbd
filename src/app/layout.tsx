@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Bebas_Neue, Barlow, Exo_2, Orbitron } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
@@ -51,6 +51,13 @@ export const metadata: Metadata = {
     description: "Join weekly Free Fire squad battles. Free registration!",
     type: "website",
   },
+};
+
+// The viewport meta tag is emitted by default; this adds the mobile browser
+// chrome colour and keeps pinch-zoom enabled (no maximumScale/userScalable).
+export const viewport: Viewport = {
+  themeColor: "#F42A41",
+  colorScheme: "light",
 };
 
 export default async function RootLayout({

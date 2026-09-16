@@ -35,7 +35,7 @@ export default async function RegistrationsPage() {
         )}
       </div>
 
-      <div className="bg-white rounded-2xl border border-border overflow-hidden">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden">
         <RegistrationsTable tournaments={data.tournaments} registrations={data.registrations} />
       </div>
     </div>

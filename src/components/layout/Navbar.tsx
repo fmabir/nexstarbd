@@ -13,7 +13,7 @@ const navLinks = [
 
 // locale prop kept so callers don't need to change
 export function Navbar({ locale: _locale }: { locale: string }) {
-  const { user, signOut } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -28,6 +28,26 @@ export function Navbar({ locale: _locale }: { locale: string }) {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
+
+  // Lock the page behind the drawer so the background doesn't scroll under it
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileMenuOpen]);
+
+  // Escape closes the drawer
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [mobileMenuOpen]);
 
   // Close mobile menu when clicking outside
   useEffect(() => {
@@ -48,7 +68,7 @@ export function Navbar({ locale: _locale }: { locale: string }) {
       {/* Bangladesh flag accent line */}
       <div className="h-1 bg-gradient-to-r from-secondary via-primary to-secondary" />
 
-      <header className="sticky top-0 z-30 bg-white shadow-sm border-b border-gray-100">
+      <header className="sticky top-0 z-30 bg-surface shadow-sm border-b border-green-200">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Left: Logo + Mobile hamburger */}
@@ -67,7 +87,7 @@ export function Navbar({ locale: _locale }: { locale: string }) {
                 />
                 <div className="hidden sm:block">
                   <p className="font-brand font-bold text-xl text-foreground tracking-tight">
-                    NexStar<span className="text-primary">B</span><span className="text-green-700">D</span>
+                    NexStar<span className="text-primary">B</span><span className="text-green-800">D</span>
                   </p>
                   <p className="text-xs text-muted-foreground font-medium">Esports Platform</p>
                 </div>
@@ -77,8 +97,10 @@ export function Navbar({ locale: _locale }: { locale: string }) {
               <button
                 data-hamburger
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors ml-1"
+                className="md:hidden flex items-center justify-center w-11 h-11 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-colors ml-1"
                 aria-label="Toggle menu"
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-drawer"
               >
                 <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -97,6 +119,14 @@ export function Navbar({ locale: _locale }: { locale: string }) {
                   {link.label}
                 </Link>
               ))}
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  className="ml-1 inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-secondary bg-secondary/10 border border-secondary/20 hover:bg-secondary/15 transition-colors duration-200 rounded-lg whitespace-nowrap"
+                >
+                  <span aria-hidden="true">🛠</span> Admin
+                </Link>
+              )}
             </div>
 
             {/* Profile / Login — right */}
@@ -106,8 +136,9 @@ export function Navbar({ locale: _locale }: { locale: string }) {
                   <>
                     <button
                       onClick={() => setProfileOpen((v) => !v)}
-                      className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
+                      className="flex items-center gap-2 min-h-11 px-3 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
                       aria-label="Profile menu"
+                      aria-expanded={profileOpen}
                     >
                       <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
                         {(user.displayName?.[0] ?? user.email?.[0] ?? "?").toUpperCase()}
@@ -121,7 +152,7 @@ export function Navbar({ locale: _locale }: { locale: string }) {
                     </button>
 
                     {profileOpen && (
-                      <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-lg py-2 z-50">
+                      <div className="absolute right-0 top-full mt-2 w-64 bg-card border border-gray-200 rounded-xl shadow-lg py-2 z-50">
                         {/* User info */}
                         <div className="px-4 py-3 border-b border-gray-100">
                           <div className="flex items-center gap-3">
@@ -136,6 +167,15 @@ export function Navbar({ locale: _locale }: { locale: string }) {
                             </div>
                           </div>
                         </div>
+                        {isAdmin && (
+                          <Link
+                            href="/admin"
+                            onClick={() => setProfileOpen(false)}
+                            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-secondary hover:bg-secondary/5 transition-colors duration-200"
+                          >
+                            <span aria-hidden="true">🛠</span> Admin Dashboard
+                          </Link>
+                        )}
                         {/* Sign out */}
                         <button
                           onClick={async () => { setProfileOpen(false); await signOut(); }}
@@ -149,7 +189,7 @@ export function Navbar({ locale: _locale }: { locale: string }) {
                 ) : (
                   <Link
                     href="/login"
-                    className="inline-flex items-center bg-primary hover:bg-primary-dark text-white font-semibold px-5 py-2 rounded-lg text-sm transition-colors duration-200 shadow-sm hover:shadow-md"
+                    className="inline-flex items-center justify-center min-h-11 bg-primary hover:bg-primary-dark active:bg-primary-dark text-white font-semibold px-5 py-2 rounded-lg text-sm transition-colors duration-200 shadow-sm hover:shadow-md"
                   >
                     Sign In
                   </Link>
@@ -162,7 +202,7 @@ export function Navbar({ locale: _locale }: { locale: string }) {
 
       {/* Mobile drawer menu */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-20 md:hidden">
+        <div className="fixed inset-0 z-40 md:hidden">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/30 transition-opacity duration-200"
@@ -172,14 +212,18 @@ export function Navbar({ locale: _locale }: { locale: string }) {
           {/* Drawer */}
           <div
             data-mobile-menu
-            className="absolute left-0 top-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out"
+            id="mobile-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
+            className="absolute left-0 top-0 h-full w-[min(17rem,85vw)] bg-surface shadow-lg flex flex-col overflow-y-auto overscroll-contain"
           >
             {/* Drawer header with close button */}
             <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100">
               <span className="font-brand font-bold text-lg text-foreground">Menu</span>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                className="flex items-center justify-center w-11 h-11 -mr-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-colors"
                 aria-label="Close menu"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -194,12 +238,21 @@ export function Navbar({ locale: _locale }: { locale: string }) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="px-4 py-3 text-base font-medium text-foreground hover:text-primary hover:bg-gray-50 transition-colors border-l-4 border-transparent hover:border-primary"
+                  className="flex items-center min-h-12 px-4 py-3 text-base font-medium text-foreground hover:text-primary hover:bg-gray-50 active:bg-gray-100 transition-colors border-l-4 border-transparent hover:border-primary"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.label}
                 </Link>
               ))}
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  className="flex items-center gap-2 min-h-12 px-4 py-3 text-base font-semibold text-secondary hover:bg-secondary/5 active:bg-secondary/10 transition-colors border-l-4 border-secondary"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span aria-hidden="true">🛠</span> Admin Dashboard
+                </Link>
+              )}
             </nav>
           </div>
         </div>

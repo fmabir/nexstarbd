@@ -72,7 +72,7 @@ export function WinnersAdminPanel({ winners, tournaments }: { winners: Winner[];
     <div className="space-y-6">
       <h1 className="font-display text-3xl text-foreground tracking-wide">Hall of Fame — Winners</h1>
 
-      <div className="bg-white rounded-2xl border border-border p-6">
+      <div className="bg-card rounded-2xl border border-border p-6">
         <h2 className="font-semibold mb-4">Add Winner</h2>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div><label className="block text-sm font-semibold mb-1">Tournament</label>
@@ -93,7 +93,7 @@ export function WinnersAdminPanel({ winners, tournaments }: { winners: Winner[];
         </form>
       </div>
 
-      <div className="bg-white rounded-2xl border border-border overflow-hidden">
+      <div className="bg-card rounded-2xl border border-border overflow-hidden">
         <div className="px-6 py-4 border-b border-border"><h2 className="font-semibold">All Winners ({winners.length})</h2></div>
         {winners.length === 0 ? <div className="text-center py-8 text-muted-foreground text-sm">No winners yet.</div> : (
           <div className="divide-y divide-border">

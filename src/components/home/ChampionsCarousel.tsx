@@ -13,7 +13,7 @@ export function ChampionsCarousel({ winners }: { winners: Winner[] }) {
   if (winners.length === 0) return null;
 
   return (
-    <section className="py-12 bg-white border-t border-border">
+    <section className="py-12 border-t border-green-200/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -38,7 +38,7 @@ export function ChampionsCarousel({ winners }: { winners: Winner[] }) {
             return (
               <div
                 key={w.id}
-                className="snap-start shrink-0 w-64 bg-white border border-border rounded-2xl overflow-hidden hover:shadow-md transition-shadow"
+                className="snap-start shrink-0 w-64 bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md transition-shadow"
               >
                 {/* Position bar */}
                 <div className={`${style.accent} px-4 py-2 ${style.text}`}>

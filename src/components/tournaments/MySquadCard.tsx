@@ -12,7 +12,7 @@ export function MySquadCard({ registration: reg }: { registration: Registration 
   const badge = statusConfig[reg.approvalStatus];
 
   return (
-    <div className="bg-white rounded-2xl border border-border p-5 space-y-4">
+    <div className="bg-card rounded-2xl border border-border p-5 space-y-4">
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="font-display text-xl text-foreground tracking-wide leading-tight">{reg.squadName}</p>

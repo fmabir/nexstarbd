@@ -15,7 +15,7 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-muted flex flex-col sm:flex-row">
+    <div className="min-h-screen bg-background flex flex-col sm:flex-row">
       {/* Desktop: left sidebar | Mobile: hidden */}
       <AdminSidebar />
 

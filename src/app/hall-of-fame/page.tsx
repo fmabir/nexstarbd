@@ -25,7 +25,7 @@ export default async function HallOfFamePage() {
   return (
     <>
       <Navbar locale={locale} />
-      <main className="min-h-screen bg-muted">
+      <main className="min-h-screen bg-background">
         {/* Header */}
         <div className="bg-gray-900 text-white py-14">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">

@@ -32,7 +32,8 @@ export async function proxy(request: NextRequest) {
       const email = ((payload.email as string | undefined) ?? "").toLowerCase();
       const admins = getAdminEmails();
 
-      if (admins.length > 0 && !admins.includes(email)) {
+      // Fail CLOSED — see verifyAdmin.ts. No configured admins => no access.
+      if (admins.length === 0 || !admins.includes(email)) {
         return NextResponse.redirect(new URL("/?error=forbidden", request.url));
       }
 

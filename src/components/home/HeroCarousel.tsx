@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import type { MvpPlayer, Tournament, Winner } from "@/lib/types";
 import { formatDateOnly, formatTimeOnly } from "@/lib/utils/formatDate";
@@ -262,8 +262,40 @@ export function HeroCarousel({
     setIsAutoPlay(true);
   };
 
+  // Touch swipe — the arrows are desktop-only, so without this the dots are
+  // the only way to move the carousel on a phone.
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const SWIPE_THRESHOLD = 40;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touchStart.current = { x: t.clientX, y: t.clientY };
+    setIsAutoPlay(false);
+  };
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const start = touchStart.current;
+    touchStart.current = null;
+    setIsAutoPlay(true);
+    if (!start) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - start.x;
+    const dy = t.clientY - start.y;
+    // Ignore mostly-vertical drags so page scrolling still works
+    if (Math.abs(dx) < SWIPE_THRESHOLD || Math.abs(dx) < Math.abs(dy)) return;
+    if (dx < 0) next();
+    else prev();
+  };
+
   return (
-    <div className="relative overflow-hidden rounded-2xl mx-3 my-3 sm:mx-6 sm:my-4 shadow-md">
+    <div
+      className="relative overflow-hidden rounded-2xl mx-3 my-3 sm:mx-6 sm:my-4 shadow-md touch-pan-y select-none"
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Highlights"
+    >
       {/* Slide track */}
       <div
         className="flex transition-transform duration-500 ease-in-out"
@@ -295,17 +327,22 @@ export function HeroCarousel({
         ›
       </button>
 
-      {/* Dot indicators */}
-      <div className="absolute bottom-2.5 left-0 right-0 flex justify-center gap-1.5 z-10">
+      {/* Dot indicators — visually small, but each has a ~28px tap area */}
+      <div className="absolute bottom-0 left-0 right-0 flex justify-center items-center gap-0.5 z-10 h-9 px-2">
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => handleManualChange(i)}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              i === current ? "bg-white w-5" : "bg-white/40 w-1.5"
-            }`}
-            aria-label={`Slide ${i + 1}`}
-          />
+            className="flex items-center justify-center h-9 flex-1 min-w-0 max-w-[28px]"
+            aria-label={`Go to slide ${i + 1}`}
+            aria-current={i === current}
+          >
+            <span
+              className={`block h-1.5 rounded-full transition-all duration-300 ${
+                i === current ? "bg-white w-5" : "bg-white/40 w-1.5"
+              }`}
+            />
+          </button>
         ))}
       </div>
     </div>

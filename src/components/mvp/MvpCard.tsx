@@ -4,7 +4,7 @@ import { formatShortDate } from "@/lib/utils/formatDate";
 
 export function MvpCard({ mvp }: { mvp: MvpPlayer }) {
   return (
-    <div className="bg-white border border-border rounded-2xl p-5 hover:shadow-md transition-shadow min-w-[220px] max-w-[260px]">
+    <div className="bg-card border border-border rounded-2xl p-5 hover:shadow-md transition-shadow min-w-[220px] max-w-[260px]">
       {/* Avatar */}
       <div className="relative w-16 h-16 mx-auto mb-3">
         {mvp.photoUrl ? (
