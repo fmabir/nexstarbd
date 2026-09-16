@@ -1,40 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { Bebas_Neue, Barlow, Exo_2, Orbitron } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { AuthProvider } from "@/context/AuthContext";
 import { ToastProvider } from "@/context/ToastContext";
 import { TransitionOverlay } from "@/components/ui/TransitionOverlay";
 import "./globals.css";
-
-const bebasNeue = Bebas_Neue({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-bebas",
-  display: "swap",
-});
-
-const barlow = Barlow({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  variable: "--font-barlow",
-  display: "swap",
-});
-
-const exo2 = Exo_2({
-  weight: ["700", "800", "900"],
-  subsets: ["latin"],
-  variable: "--font-exo2",
-  display: "swap",
-});
-
-const orbitron = Orbitron({
-  weight: ["700", "800", "900"],
-  subsets: ["latin"],
-  variable: "--font-orbitron",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "NexStarBD — Bangladesh Free Fire Community Tournaments",
@@ -56,7 +27,7 @@ export const metadata: Metadata = {
 // The viewport meta tag is emitted by default; this adds the mobile browser
 // chrome colour and keeps pinch-zoom enabled (no maximumScale/userScalable).
 export const viewport: Viewport = {
-  themeColor: "#F42A41",
+  themeColor: "#d3fbe4", // matches the navbar so mobile browser chrome blends in
   colorScheme: "light",
 };
 
@@ -69,10 +40,7 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html
-      lang={locale}
-      className={`${bebasNeue.variable} ${barlow.variable} ${exo2.variable} ${orbitron.variable}`}
-    >
+    <html lang={locale}>
       <head>
         {/* Google Analytics */}
         <Script

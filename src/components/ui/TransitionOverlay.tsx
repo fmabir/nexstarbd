@@ -12,7 +12,7 @@ export function TransitionOverlay() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/banners/lnsbd.png" alt="NexStarBD" style={{ height: "72px", width: "auto", transform: "translateY(-6px) translateX(6px)" }} />
         <span className="font-brand font-bold text-3xl tracking-wide">
-          NexStar<span className="text-primary">B</span><span className="text-secondary">D</span>
+          NexStar<span className="text-pink-800">B</span><span className="text-secondary">D</span>
         </span>
       </div>
       <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4" />

@@ -28,10 +28,10 @@ export async function sendOtpEmail(
 
         <!-- Header -->
         <tr>
-          <td style="background:#141414;padding:20px 32px;border-bottom:2px solid #F42A41;text-align:center">
+          <td style="background:#141414;padding:20px 32px;border-bottom:2px solid #e11d74;text-align:center">
             <img src="https://nexstarbd.com/banners/lnsbd.png" alt="NexStarBD" height="52" style="display:inline-block;vertical-align:middle;transform:translateY(-4px)" />
             <span style="font-size:26px;font-weight:800;color:#ffffff;letter-spacing:0.5px;vertical-align:middle;font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif">
-              NexStar<span style="color:#F42A41">B</span><span style="color:#006A4E">D</span>
+              NexStar<span style="color:#ff8fbc">B</span><span style="color:#5de89b">D</span>
             </span>
           </td>
         </tr>
@@ -52,7 +52,7 @@ export async function sendOtpEmail(
               <tr>
                 <td style="background:#0f0f0f;border:1px solid #2a2a2a;border-radius:12px;padding:28px 16px;text-align:center">
                   <p style="margin:0 0 8px 0;font-size:11px;font-weight:600;letter-spacing:3px;color:#6b7280;text-transform:uppercase">${isReset ? "Password Reset Code" : "Verification Code"}</p>
-                  <p style="margin:0;font-size:42px;font-weight:800;letter-spacing:12px;color:#F42A41;font-variant-numeric:tabular-nums">${otp}</p>
+                  <p style="margin:0;font-size:42px;font-weight:800;letter-spacing:12px;color:#e11d74;font-variant-numeric:tabular-nums">${otp}</p>
                 </td>
               </tr>
             </table>
@@ -62,7 +62,7 @@ export async function sendOtpEmail(
               <tr>
                 <td align="center">
                   <a href="${verifyUrl}"
-                    style="display:inline-block;background:#F42A41;color:#ffffff;font-size:15px;font-weight:700;padding:14px 36px;border-radius:10px;text-decoration:none;letter-spacing:0.3px;font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif">
+                    style="display:inline-block;background:#e11d74;color:#ffffff;font-size:15px;font-weight:700;padding:14px 36px;border-radius:10px;text-decoration:none;letter-spacing:0.3px;font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif">
                     ${isReset ? "Reset Password →" : "Verify Email →"}
                   </a>
                 </td>
@@ -82,7 +82,7 @@ export async function sendOtpEmail(
         <!-- Footer -->
         <tr>
           <td style="background:#141414;padding:16px 32px;border-top:1px solid #2a2a2a;text-align:center">
-            <p style="margin:0;font-size:12px;color:#4b5563">© 2026 NexStarBD · <a href="https://nexstarbd.com" style="color:#F42A41;text-decoration:none">nexstarbd.com</a></p>
+            <p style="margin:0;font-size:12px;color:#4b5563">© 2026 NexStarBD · <a href="https://nexstarbd.com" style="color:#e11d74;text-decoration:none">nexstarbd.com</a></p>
           </td>
         </tr>
 

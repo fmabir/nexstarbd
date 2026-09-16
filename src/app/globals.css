@@ -1,42 +1,53 @@
 @import "tailwindcss";
 
 :root {
-  /* ── Matte palette ──────────────────────────────────────────
-     Two flat, low-saturation families: sage green for the page and
-     chrome, dusty rose for content cards. Kept deliberately desaturated
-     so it reads matte rather than neon. Retune here; everything else
-     refers to these. */
+  /* ── Bright palette ─────────────────────────────────────────
+     Vivid spring green for the page, vivid pink for cards. Retune
+     here; every component reads these. */
 
-  /* Sage green */
-  --green-50: #f2f5ef;
-  --green-100: #e4ebdf;
-  --green-200: #cfdcc8;
-  --green-300: #b8cbae;
-  --green-400: #9db491;
-  --green-500: #819a75;
-  --green-600: #67805c;
-  --green-700: #4f6547;
-  --green-800: #3a4a34;
-  --green-900: #26311f;
+  /* Bright green */
+  --green-50: #ecfdf3;
+  --green-100: #d3fbe4;
+  --green-200: #a8f5c8;
+  --green-300: #5de89b;
+  --green-400: #32d583;
+  --green-500: #12b76a;
+  --green-600: #059e5b;
+  --green-700: #027a48;
+  --green-800: #056034;
+  --green-900: #072f1c;
 
-  /* Dusty rose */
-  --pink-50: #fcf3f3;
-  --pink-100: #f8e6e7;
-  --pink-200: #f1d2d4;
-  --pink-300: #e6b5ba;
-  --pink-400: #d89aa1;
-  --pink-500: #c57e87;
-  --pink-600: #a65c67;
-  --pink-700: #8e4b55;
-  --pink-800: #6b3a42;
-  --pink-900: #4a272d;
+  /* Bright pink */
+  --pink-50: #fff1f7;
+  --pink-100: #ffe0ee;
+  --pink-200: #ffb3d1;
+  --pink-300: #ff8fbc;
+  --pink-400: #fb6ba6;
+  --pink-500: #f63d8b;
+  --pink-600: #e11d74;
+  --pink-700: #be125f;
+  --pink-800: #9d174d;
+  --pink-900: #6d0f38;
+
+  /* Neutrals: green-tinted but calm, so muted copy stays readable
+     while the brand ramps above stay vivid. */
+  --n-50: #f2fbf6;
+  --n-100: #e3f5ea;
+  --n-200: #c8e6d3;
+  --n-300: #a3cdb4;
+  --n-400: #74a98a;
+  --n-500: #4f8567;
+  --n-600: #3b6b50;
+  --n-700: #2c523d;
+  --n-800: #1e3a2b;
+  --n-900: #0f2418;
 
   /* Roles */
   --background: var(--green-300);  /* the page itself */
   --surface: var(--green-100);     /* navbar, footer, drawer */
   --card: var(--pink-200);         /* tournament + content cards */
   --card-border: var(--pink-300);
-  --field: #fdfafa;                /* inputs, kept near-white to read */
+  --field: #ffffff;                /* inputs */
   --foreground: var(--green-900);
 }
 
@@ -58,9 +69,9 @@
   --color-secondary-dark: var(--green-800);
   --color-secondary-light: var(--green-100);
 
-  --color-muted: var(--green-100);
-  --color-muted-foreground: var(--green-800); /* green-700 fails AA on the green page */
-  --color-border: var(--green-200);
+  --color-muted: var(--n-100);
+  --color-muted-foreground: var(--n-800);
+  --color-border: var(--n-200);
 
   /* Named ramps so components can reach for a specific step */
   --color-green-50: var(--green-50);
@@ -87,21 +98,23 @@
   /* Retint the neutral ramp. The app leans on bg-gray-50/100 for hover
      and text-gray-* for muted copy; cool greys would fight the palette,
      so every step becomes a green-tinted equivalent. */
-  --color-gray-50: var(--green-50);
-  --color-gray-100: var(--green-100);
-  --color-gray-200: var(--green-200);
-  --color-gray-300: var(--green-300);
-  --color-gray-400: var(--green-400);
-  --color-gray-500: var(--green-500);
-  --color-gray-600: var(--green-600);
-  --color-gray-700: var(--green-700);
-  --color-gray-800: var(--green-800);
-  --color-gray-900: var(--green-900);
+  --color-gray-50: var(--n-50);
+  --color-gray-100: var(--n-100);
+  --color-gray-200: var(--n-200);
+  --color-gray-300: var(--n-300);
+  --color-gray-400: var(--n-400);
+  --color-gray-500: var(--n-500);
+  --color-gray-600: var(--n-600);
+  --color-gray-700: var(--n-700);
+  --color-gray-800: var(--n-800);
+  --color-gray-900: var(--n-900);
 
-  --font-sans: var(--font-barlow);
-  --font-display: var(--font-bebas);
-  --font-brand: var(--font-exo2);
-  --font-esports: var(--font-orbitron);
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-brand: var(--font-display);
+  --font-esports: var(--font-display);
 }
 
 body {
@@ -112,12 +125,12 @@ body {
       -30deg,
       transparent 0%,
       transparent 30%,
-      rgba(166, 92, 103, 0.09) 30%,
-      rgba(166, 92, 103, 0.09) 36%,
+      rgba(225, 29, 116, 0.12) 30%,
+      rgba(225, 29, 116, 0.12) 36%,
       transparent 36%,
       transparent 62%,
-      rgba(38, 49, 31, 0.07) 62%,
-      rgba(38, 49, 31, 0.07) 68%,
+      rgba(2, 122, 72, 0.12) 62%,
+      rgba(2, 122, 72, 0.12) 68%,
       transparent 68%,
       transparent 100%
     ),
@@ -229,28 +242,55 @@ textarea {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Matte surface treatment
+   Surfaces & type
    ───────────────────────────────────────────────────────────── */
 
-/* Flat finish — default shadows are cool-grey and glossy against this
-   palette, so soften them and tint them toward the page green. */
+/* Keep shadows lively, just tinted green so they sit on the palette
+   instead of greying it down. */
 .shadow-sm {
-  box-shadow: 0 1px 2px rgba(38, 49, 31, 0.06);
+  box-shadow: 0 1px 3px rgba(7, 47, 28, 0.12);
 }
 .shadow,
 .shadow-md {
-  box-shadow: 0 2px 6px rgba(38, 49, 31, 0.07);
+  box-shadow: 0 4px 10px rgba(7, 47, 28, 0.14);
 }
 .shadow-lg {
-  box-shadow: 0 6px 16px rgba(38, 49, 31, 0.09);
+  box-shadow: 0 10px 24px rgba(7, 47, 28, 0.16);
 }
 .shadow-2xl {
-  box-shadow: 0 12px 32px rgba(38, 49, 31, 0.13);
+  box-shadow: 0 20px 48px rgba(7, 47, 28, 0.22);
 }
 
-/* Form fields sit on pink cards, so keep them near-white to stay legible */
+/* Inputs stay white so they read on pink cards */
 input,
 select,
 textarea {
   background-color: var(--field);
+}
+
+/* The old display face was a condensed all-caps font, so headings were
+   written with wide tracking. A normal UI font wants the opposite: iOS sets
+   large titles tight and heavy. These override the tracking-* utilities the
+   headings still carry. */
+.font-display {
+  font-weight: 700;
+  letter-spacing: -0.021em;
+}
+
+.font-brand {
+  font-weight: 700;
+  letter-spacing: -0.018em;
+}
+
+.font-esports {
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* Match Apple's optical sizing: the bigger the text, the tighter it sets */
+h1,
+.text-4xl,
+.text-5xl,
+.text-6xl {
+  letter-spacing: -0.024em;
 }

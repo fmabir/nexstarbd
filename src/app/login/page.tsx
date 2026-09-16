@@ -295,7 +295,7 @@ function LoginForm() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/banners/lnsbd.png" alt="NexStarBD" style={{ height: "72px", width: "auto", transform: "translateY(-6px) translateX(6px)" }} />
           <span className="font-brand font-bold text-3xl tracking-wide">
-            NexStar<span className="text-primary">B</span><span className="text-green-800">D</span>
+            NexStar<span className="text-pink-800">B</span><span className="text-green-800">D</span>
           </span>
         </div>
         <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -332,7 +332,7 @@ function LoginForm() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/banners/lnsbd.png" alt="NexStarBD logo" style={{ height: "88px", width: "auto", display: "block", transform: "translateY(-8px) translateX(8px)" }} />
             <h1 className="font-brand font-bold text-3xl text-foreground tracking-wide">
-              NexStar<span className="text-primary">B</span><span className="text-green-800">D</span>
+              NexStar<span className="text-pink-800">B</span><span className="text-green-800">D</span>
             </h1>
           </div>
           <p className="text-muted-foreground text-sm mt-1">

@@ -11,7 +11,7 @@ export function HeroSection({ subtitle }: { subtitle: string }) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/banners/lnsbd.png" alt="NexStarBD logo" style={{ height: "108px", width: "auto", display: "block", transform: "translateY(-8px) translateX(8px)" }} />
           <span className="font-brand font-bold text-4xl sm:text-5xl tracking-wide text-foreground">
-            NexStar<span className="text-primary">B</span><span className="text-green-800">D</span>
+            NexStar<span className="text-pink-800">B</span><span className="text-green-800">D</span>
           </span>
         </div>
 

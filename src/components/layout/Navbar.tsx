@@ -87,7 +87,7 @@ export function Navbar({ locale: _locale }: { locale: string }) {
                 />
                 <div className="hidden sm:block">
                   <p className="font-brand font-bold text-xl text-foreground tracking-tight">
-                    NexStar<span className="text-primary">B</span><span className="text-green-800">D</span>
+                    NexStar<span className="text-pink-800">B</span><span className="text-green-800">D</span>
                   </p>
                   <p className="text-xs text-muted-foreground font-medium">Esports Platform</p>
                 </div>

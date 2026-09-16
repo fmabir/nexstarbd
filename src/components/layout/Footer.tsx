@@ -17,7 +17,7 @@ export function Footer() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/banners/lnsbd.png" alt="NexStarBD logo" style={{ height: "72px", width: "auto", display: "block", transform: "translateY(-6px) translateX(6px)" }} />
               <span className="font-brand font-bold text-2xl tracking-wide text-foreground">
-                NexStar<span className="text-primary">B</span><span className="text-green-800">D</span>
+                NexStar<span className="text-pink-800">B</span><span className="text-green-800">D</span>
               </span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">
