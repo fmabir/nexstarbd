@@ -86,7 +86,7 @@ export function FooterCommunityLink({
       <>
         <button
           onClick={() => setShowModal(true)}
-          className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+          className="text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1 min-h-11"
         >
           {label}
           <span className="text-xs text-muted-foreground/60">(soon)</span>
@@ -98,7 +98,7 @@ export function FooterCommunityLink({
 
   return (
     <a href={href} target="_blank" rel="noopener noreferrer"
-      className="text-muted-foreground hover:text-primary transition-colors">
+      className="text-muted-foreground hover:text-primary transition-colors inline-flex items-center min-h-11">
       {label}
     </a>
   );

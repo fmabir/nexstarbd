@@ -15,10 +15,10 @@ const navLinks = [
 export function Navbar({ locale: _locale }: { locale: string }) {
   const { user, isAdmin, signOut } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on outside click
+  // Close the profile dropdown on an outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
@@ -29,233 +29,190 @@ export function Navbar({ locale: _locale }: { locale: string }) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // Lock the page behind the drawer so the background doesn't scroll under it
+  // Hold the page still behind the open sheet
   useEffect(() => {
-    if (!mobileMenuOpen) return;
+    if (!menuOpen) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = prev;
     };
-  }, [mobileMenuOpen]);
+  }, [menuOpen]);
 
-  // Escape closes the drawer
+  // Escape closes either overlay
   useEffect(() => {
-    if (!mobileMenuOpen) return;
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setMobileMenuOpen(false);
+      if (e.key !== "Escape") return;
+      setMenuOpen(false);
+      setProfileOpen(false);
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [mobileMenuOpen]);
+  }, []);
 
-  // Close mobile menu when clicking outside
-  useEffect(() => {
-    if (!mobileMenuOpen) return;
-    function handleClick(e: MouseEvent) {
-      const drawer = document.querySelector('[data-mobile-menu]');
-      const hamburger = document.querySelector('[data-hamburger]');
-      if (drawer && !drawer.contains(e.target as Node) && !hamburger?.contains(e.target as Node)) {
-        setMobileMenuOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [mobileMenuOpen]);
+  const sheetLinks = isAdmin
+    ? [...navLinks, { href: "/admin", label: "Admin Dashboard" }]
+    : navLinks;
 
   return (
     <>
-      {/* Bangladesh flag accent line */}
-      <div className="h-1 bg-gradient-to-r from-secondary via-primary to-secondary" />
+      {/*
+        Apple's bar: slim, translucent, and blurred so the page tints it as it
+        scrolls underneath. saturate lifts the colour the blur washes out.
+      */}
+      <header className="sticky top-0 z-40">
+        <div className="bg-surface/70 backdrop-blur-xl backdrop-saturate-[180%] border-b border-green-900/10">
+          <nav className="max-w-6xl mx-auto px-2 sm:px-6">
+            <div className="relative flex items-center justify-between h-11 sm:h-12">
 
-      <header className="sticky top-0 z-30 bg-surface shadow-sm border-b border-green-200">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-20">
-            {/* Left: Logo + Mobile hamburger */}
-            <div className="flex items-center gap-2 shrink-0">
-              {/* Logo */}
-              <Link href="/" className="flex items-center shrink-0 group gap-2 sm:gap-3">
+              {/* Left — menu button (mobile only) */}
+              <button
+                onClick={() => setMenuOpen((v) => !v)}
+                className="md:hidden flex flex-col items-center justify-center w-11 h-11 -ml-1 shrink-0"
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={menuOpen}
+                aria-controls="nav-sheet"
+              >
+                <span
+                  className={`block w-[17px] h-[1.5px] bg-foreground rounded-full transition-transform duration-300 ease-out ${
+                    menuOpen ? "translate-y-[3.25px] rotate-45" : ""
+                  }`}
+                />
+                <span
+                  className={`block w-[17px] h-[1.5px] bg-foreground rounded-full mt-[5px] transition-transform duration-300 ease-out ${
+                    menuOpen ? "-translate-y-[3.25px] -rotate-45" : ""
+                  }`}
+                />
+              </button>
+
+              {/* Brand — centred on mobile, flush left on desktop */}
+              <Link
+                href="/"
+                className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 flex items-center gap-1.5 shrink-0 h-11"
+                aria-label="NexStarBD home"
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/banners/lnsbd.png"
-                  alt="NexStarBD"
-                  className="w-auto"
-                  style={{
-                    height: "clamp(40px, 5vw, 56px)",
-                    display: "block",
-                  }}
+                  alt=""
+                  aria-hidden="true"
+                  className="w-auto h-[26px] sm:h-[28px] block"
                 />
-                <div className="hidden sm:block">
-                  <p className="font-brand font-bold text-xl text-foreground tracking-tight">
-                    NexStar<span className="text-pink-800">B</span><span className="text-green-800">D</span>
-                  </p>
-                  <p className="text-xs text-muted-foreground font-medium">Esports Platform</p>
-                </div>
+                <span className="font-brand text-[15px] sm:text-base text-foreground">
+                  NexStar<span className="text-pink-800">B</span><span className="text-green-800">D</span>
+                </span>
               </Link>
 
-              {/* Mobile hamburger menu */}
-              <button
-                data-hamburger
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden flex items-center justify-center w-11 h-11 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-colors ml-1"
-                aria-label="Toggle menu"
-                aria-expanded={mobileMenuOpen}
-                aria-controls="mobile-drawer"
-              >
-                <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-            </div>
+              {/* Centre — links (desktop) */}
+              <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-[13px] tracking-[-0.01em] text-foreground/75 hover:text-foreground transition-colors duration-200 whitespace-nowrap"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    className="text-[13px] tracking-[-0.01em] text-primary hover:text-primary-dark transition-colors duration-200 whitespace-nowrap"
+                  >
+                    Admin
+                  </Link>
+                )}
+              </div>
 
-            {/* Nav links — center */}
-            <div className="hidden md:flex items-center gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-primary hover:bg-gray-50 transition-colors duration-200 rounded-lg whitespace-nowrap"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              {isAdmin && (
-                <Link
-                  href="/admin"
-                  className="ml-1 inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-secondary bg-secondary/10 border border-secondary/20 hover:bg-secondary/15 transition-colors duration-200 rounded-lg whitespace-nowrap"
-                >
-                  <span aria-hidden="true">🛠</span> Admin
-                </Link>
-              )}
-            </div>
-
-            {/* Profile / Login — right */}
-            <div className="flex items-center gap-3 md:gap-4">
-              <div className="shrink-0 relative" ref={profileRef}>
+              {/* Right — account */}
+              <div className="flex items-center shrink-0 ml-auto md:ml-0" ref={profileRef}>
                 {user ? (
-                  <>
+                  <div className="relative">
                     <button
                       onClick={() => setProfileOpen((v) => !v)}
-                      className="flex items-center gap-2 min-h-11 px-3 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
-                      aria-label="Profile menu"
+                      className="flex items-center justify-center w-11 h-11 md:w-auto md:h-auto md:gap-2 md:px-2 md:py-1.5 rounded-full transition-colors duration-200"
+                      aria-label="Account menu"
                       aria-expanded={profileOpen}
                     >
-                      <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
+                      <span className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center text-[12px] font-semibold">
                         {(user.displayName?.[0] ?? user.email?.[0] ?? "?").toUpperCase()}
-                      </div>
-                      <span className="hidden sm:inline text-sm font-medium text-foreground">
+                      </span>
+                      <span className="hidden md:inline text-[13px] text-foreground/75 max-w-[10rem] truncate">
                         {user.displayName || user.email?.split("@")[0]}
                       </span>
-                      <svg className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${profileOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                      </svg>
                     </button>
 
                     {profileOpen && (
-                      <div className="absolute right-0 top-full mt-2 w-64 bg-card border border-gray-200 rounded-xl shadow-lg py-2 z-50">
-                        {/* User info */}
-                        <div className="px-4 py-3 border-b border-gray-100">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
-                              {(user.displayName?.[0] ?? user.email?.[0] ?? "?").toUpperCase()}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              {user.displayName && (
-                                <p className="text-sm font-semibold text-foreground truncate">{user.displayName}</p>
-                              )}
-                              <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                            </div>
-                          </div>
+                      <div className="absolute right-0 top-full mt-1.5 w-60 rounded-2xl bg-surface/95 backdrop-blur-xl border border-green-900/10 shadow-lg overflow-hidden">
+                        <div className="px-4 py-3 border-b border-green-900/10">
+                          {user.displayName && (
+                            <p className="text-[13px] font-semibold text-foreground truncate">{user.displayName}</p>
+                          )}
+                          <p className="text-[12px] text-muted-foreground truncate">{user.email}</p>
                         </div>
                         {isAdmin && (
                           <Link
                             href="/admin"
                             onClick={() => setProfileOpen(false)}
-                            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-secondary hover:bg-secondary/5 transition-colors duration-200"
+                            className="flex items-center min-h-11 px-4 text-[13px] text-foreground hover:bg-green-900/5 transition-colors"
                           >
-                            <span aria-hidden="true">🛠</span> Admin Dashboard
+                            Admin Dashboard
                           </Link>
                         )}
-                        {/* Sign out */}
                         <button
                           onClick={async () => { setProfileOpen(false); await signOut(); }}
-                          className="w-full text-left px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors duration-200"
+                          className="flex items-center w-full min-h-11 px-4 text-[13px] text-primary hover:bg-green-900/5 transition-colors"
                         >
                           Sign Out
                         </button>
                       </div>
                     )}
-                  </>
+                  </div>
                 ) : (
                   <Link
                     href="/login"
-                    className="inline-flex items-center justify-center min-h-11 bg-primary hover:bg-primary-dark active:bg-primary-dark text-white font-semibold px-5 py-2 rounded-lg text-sm transition-colors duration-200 shadow-sm hover:shadow-md"
+                    className="group inline-flex items-center justify-center h-11 -mr-1 px-1"
                   >
-                    Sign In
+                    <span className="inline-flex items-center justify-center h-8 px-4 rounded-full bg-primary group-hover:bg-primary-dark text-white text-[13px] font-medium transition-colors duration-200">
+                      Sign In
+                    </span>
                   </Link>
                 )}
               </div>
             </div>
-          </div>
-        </nav>
-      </header>
+          </nav>
+        </div>
 
-      {/* Mobile drawer menu */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 md:hidden">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/30 transition-opacity duration-200"
-            onClick={() => setMobileMenuOpen(false)}
-          />
-
-          {/* Drawer */}
-          <div
-            data-mobile-menu
-            id="mobile-drawer"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Menu"
-            className="absolute left-0 top-0 h-full w-[min(17rem,85vw)] bg-surface shadow-lg flex flex-col overflow-y-auto overscroll-contain"
-          >
-            {/* Drawer header with close button */}
-            <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100">
-              <span className="font-brand font-bold text-lg text-foreground">Menu</span>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-center w-11 h-11 -mr-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-colors"
-                aria-label="Close menu"
+        {/* Mobile sheet — drops out from under the bar rather than sliding in
+            from the side, the way Apple's small-screen nav opens. */}
+        <div
+          id="nav-sheet"
+          className={`md:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
+            menuOpen ? "max-h-[70vh] opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="bg-surface/95 backdrop-blur-xl border-b border-green-900/10 px-5 pb-3">
+            {sheetLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center min-h-[52px] text-[19px] tracking-[-0.02em] font-medium text-foreground border-b border-green-900/[0.07] last:border-b-0"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Navigation links */}
-            <nav className="flex flex-col py-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="flex items-center min-h-12 px-4 py-3 text-base font-medium text-foreground hover:text-primary hover:bg-gray-50 active:bg-gray-100 transition-colors border-l-4 border-transparent hover:border-primary"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              {isAdmin && (
-                <Link
-                  href="/admin"
-                  className="flex items-center gap-2 min-h-12 px-4 py-3 text-base font-semibold text-secondary hover:bg-secondary/5 active:bg-secondary/10 transition-colors border-l-4 border-secondary"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <span aria-hidden="true">🛠</span> Admin Dashboard
-                </Link>
-              )}
-            </nav>
+                {link.label}
+              </Link>
+            ))}
           </div>
         </div>
+      </header>
+
+      {/* Dimmer for the page behind the sheet */}
+      {menuOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-30 bg-green-900/20"
+          onClick={() => setMenuOpen(false)}
+          aria-hidden="true"
+        />
       )}
     </>
   );
