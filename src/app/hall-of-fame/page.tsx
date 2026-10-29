@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { WinnerCard } from "@/components/hall-of-fame/WinnerCard";
+import { MobileHallOfFame } from "@/components/mobile/hall-of-fame/MobileHallOfFame";
 import type { Winner } from "@/lib/types";
 
 async function getWinners(): Promise<Winner[]> {
@@ -25,30 +26,34 @@ export default async function HallOfFamePage() {
   return (
     <>
       <Navbar locale={locale} />
-      <main className="min-h-screen bg-background">
-        {/* Header */}
-        <div className="bg-gray-900 text-white py-14">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-            <h1 className="font-display text-5xl sm:text-6xl tracking-wide mb-3">
-              {t("title")}
-            </h1>
-            <p className="text-gray-400">{t("subtitle")}</p>
-          </div>
-        </div>
+      <main>
+        <MobileHallOfFame title={t("title")} subtitle={t("subtitle")} emptyText={t("noWinners")} winners={winners} />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          {winners.length === 0 ? (
-            <div className="text-center py-16">
-              <p className="text-5xl mb-4">🏆</p>
-              <p className="text-muted-foreground">{t("noWinners")}</p>
+        <div className="hidden md:block min-h-screen bg-background">
+          {/* Header */}
+          <div className="bg-gray-900 text-white py-14">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+              <h1 className="font-display text-5xl sm:text-6xl tracking-wide mb-3">
+                {t("title")}
+              </h1>
+              <p className="text-gray-400">{t("subtitle")}</p>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {winners.map((w) => (
-                <WinnerCard key={w.id} winner={w} />
-              ))}
-            </div>
-          )}
+          </div>
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            {winners.length === 0 ? (
+              <div className="text-center py-16">
+                <p className="text-5xl mb-4">🏆</p>
+                <p className="text-muted-foreground">{t("noWinners")}</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {winners.map((w) => (
+                  <WinnerCard key={w.id} winner={w} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </main>
       <Footer />

@@ -61,7 +61,8 @@ function ToastContainer({
   onDismiss: (id: string) => void;
 }) {
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 items-center w-full max-w-sm px-4">
+    // Phones: sit above the tab bar instead of under it
+    <div className="fixed bottom-[calc(var(--m-tabbar-h)+env(safe-area-inset-bottom)+12px)] md:bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 items-center w-full max-w-sm px-4">
       {toasts.map((toast) => (
         <div
           key={toast.id}

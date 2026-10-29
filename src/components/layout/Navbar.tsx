@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { MobileNav } from "@/components/mobile/layout/MobileNav";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -15,7 +16,6 @@ const navLinks = [
 export function Navbar({ locale: _locale }: { locale: string }) {
   const { user, isAdmin, signOut } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
   // Close the profile dropdown on an outside click
@@ -29,63 +29,28 @@ export function Navbar({ locale: _locale }: { locale: string }) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // Hold the page still behind the open sheet
-  useEffect(() => {
-    if (!menuOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [menuOpen]);
-
-  // Escape closes either overlay
+  // Escape closes the profile dropdown
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key !== "Escape") return;
-      setMenuOpen(false);
-      setProfileOpen(false);
+      if (e.key === "Escape") setProfileOpen(false);
     }
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, []);
-
-  const sheetLinks = isAdmin
-    ? [...navLinks, { href: "/admin", label: "Admin Dashboard" }]
-    : navLinks;
 
   return (
     <>
       {/*
         Apple's bar: slim, translucent, and blurred so the page tints it as it
         scrolls underneath. saturate lifts the colour the blur washes out.
+        Desktop only — phones get MobileNav's top bar and tab bar.
       */}
-      <header className="sticky top-0 z-40">
+      <header className="hidden md:block sticky top-0 z-40">
         <div className="bg-surface/70 backdrop-blur-xl backdrop-saturate-[180%] border-b border-green-900/10">
           <nav className="max-w-6xl mx-auto px-2 sm:px-6">
             <div className="relative flex items-center justify-between h-11 sm:h-12">
 
-              {/* Left — menu button (mobile only) */}
-              <button
-                onClick={() => setMenuOpen((v) => !v)}
-                className="md:hidden flex flex-col items-center justify-center w-11 h-11 -ml-1 shrink-0"
-                aria-label={menuOpen ? "Close menu" : "Open menu"}
-                aria-expanded={menuOpen}
-                aria-controls="nav-sheet"
-              >
-                <span
-                  className={`block w-[17px] h-[1.5px] bg-foreground rounded-full transition-transform duration-300 ease-out ${
-                    menuOpen ? "translate-y-[3.25px] rotate-45" : ""
-                  }`}
-                />
-                <span
-                  className={`block w-[17px] h-[1.5px] bg-foreground rounded-full mt-[5px] transition-transform duration-300 ease-out ${
-                    menuOpen ? "-translate-y-[3.25px] -rotate-45" : ""
-                  }`}
-                />
-              </button>
-
-              {/* Brand — centred on mobile, flush left on desktop */}
+              {/* Brand */}
               <Link
                 href="/"
                 className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 flex items-center gap-1.5 shrink-0 h-11"
@@ -182,38 +147,9 @@ export function Navbar({ locale: _locale }: { locale: string }) {
             </div>
           </nav>
         </div>
-
-        {/* Mobile sheet — drops out from under the bar rather than sliding in
-            from the side, the way Apple's small-screen nav opens. */}
-        <div
-          id="nav-sheet"
-          className={`md:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
-            menuOpen ? "max-h-[70vh] opacity-100" : "max-h-0 opacity-0"
-          }`}
-        >
-          <div className="bg-surface/95 backdrop-blur-xl border-b border-green-900/10 px-5 pb-3">
-            {sheetLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center min-h-[52px] text-[19px] tracking-[-0.02em] font-medium text-foreground border-b border-green-900/[0.07] last:border-b-0"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        </div>
       </header>
 
-      {/* Dimmer for the page behind the sheet */}
-      {menuOpen && (
-        <div
-          className="md:hidden fixed inset-0 z-30 bg-green-900/20"
-          onClick={() => setMenuOpen(false)}
-          aria-hidden="true"
-        />
-      )}
+      <MobileNav />
     </>
   );
 }

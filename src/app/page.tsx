@@ -9,6 +9,7 @@ import { PreviousTournaments } from "@/components/home/PreviousTournaments";
 import { PreviousHighlights } from "@/components/home/PreviousHighlights";
 import { CommunityLinks } from "@/components/home/CommunityLinks";
 import { SponsorsSection } from "@/components/home/SponsorsSection";
+import { MobileHome } from "@/components/mobile/home/MobileHome";
 import { serialize } from "@/lib/utils/serialize";
 import type { Winner, MvpPlayer, Tournament, Sponsor } from "@/lib/types";
 
@@ -42,28 +43,33 @@ export default async function HomePage() {
     <>
       <Navbar locale={locale} />
       <main>
-        {/* Hero carousel — leaderboards, upcoming tournaments, ad */}
-        <HeroCarousel winners={winners} mvpPlayers={mvpPlayers} upcomingTournaments={upcomingTournaments} />
+        {/* Phone layout — its own design, same sections */}
+        <MobileHome winners={winners} mvpPlayers={mvpPlayers} upcomingTournaments={upcomingTournaments} sponsors={sponsors} />
 
-        {/* Section 1 — Current tournament (big, registration CTA) */}
-        <FeaturedTournament />
+        <div className="hidden md:block">
+          {/* Hero carousel — leaderboards, upcoming tournaments, ad */}
+          <HeroCarousel winners={winners} mvpPlayers={mvpPlayers} upcomingTournaments={upcomingTournaments} />
 
-        {/* Section 1.5 — Latest announcements */}
-        <AnnouncementsFeed />
+          {/* Section 1 — Current tournament (big, registration CTA) */}
+          <FeaturedTournament />
 
-        {/* Section 2 — Other upcoming tournaments */}
-        <UpcomingTournaments />
+          {/* Section 1.5 — Latest announcements */}
+          <AnnouncementsFeed />
 
-        {/* Section 3 — Completed tournaments (small result cards) */}
-        <PreviousTournaments />
+          {/* Section 2 — Other upcoming tournaments */}
+          <UpcomingTournaments />
 
-        {/* Section 4 — Previous champions + MVP carousel */}
-        <PreviousHighlights winners={winners} mvpPlayers={mvpPlayers} />
+          {/* Section 3 — Completed tournaments (small result cards) */}
+          <PreviousTournaments />
 
-        {/* Section 5 — Sponsors (organized by type: hero, standard, sidebar) */}
-        <SponsorsSection sponsors={sponsors} />
+          {/* Section 4 — Previous champions + MVP carousel */}
+          <PreviousHighlights winners={winners} mvpPlayers={mvpPlayers} />
 
-        <CommunityLinks />
+          {/* Section 5 — Sponsors (organized by type: hero, standard, sidebar) */}
+          <SponsorsSection sponsors={sponsors} />
+
+          <CommunityLinks />
+        </div>
       </main>
       <Footer />
     </>

@@ -79,7 +79,7 @@ export function UpcomingTournaments() {
                 />
                 <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%)" }} />
                 <div style={{ position: "absolute", bottom: 10, left: 12, right: 12 }}>
-                  <h3 className="font-display text-lg text-white tracking-wide leading-tight line-clamp-1 drop-shadow">
+                  <h3 className="font-display text-lg text-white tracking-wide leading-tight line-clamp-2 drop-shadow">
                     {t.name}
                   </h3>
                 </div>

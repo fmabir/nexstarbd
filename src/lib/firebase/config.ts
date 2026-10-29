@@ -24,10 +24,15 @@ if (
   process.env.NEXT_PUBLIC_USE_EMULATOR === "true" &&
   typeof window !== "undefined"
 ) {
+  // Same host the page came from, so a phone on the LAN reaches the
+  // emulators on the dev machine instead of looking on itself
+  const host = window.location.hostname;
   try {
-    connectFirestoreEmulator(db, "localhost", 8080);
-    connectAuthEmulator(auth, "http://localhost:9099");
-    connectStorageEmulator(storage, "localhost", 9199);
+    connectFirestoreEmulator(db, host, 8080);
+    // No warning banner: it pins over the bottom of the screen, where the
+    // phone layout's tab bar lives (the console still says emulator mode)
+    connectAuthEmulator(auth, `http://${host}:9099`, { disableWarnings: true });
+    connectStorageEmulator(storage, host, 9199);
   } catch {
     // Already connected
   }

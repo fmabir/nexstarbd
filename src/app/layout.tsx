@@ -1,11 +1,45 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import { Barlow_Semi_Condensed, Fraunces, Inter, Kaushan_Script } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { AuthProvider } from "@/context/AuthContext";
 import { ToastProvider } from "@/context/ToastContext";
 import { TransitionOverlay } from "@/components/ui/TransitionOverlay";
 import "./globals.css";
+
+// Inter — body text, buttons, navigation and most of the interface (font-sans)
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+// Fraunces — decorative headings, board titles and big score numbers
+// (font-display on desktop, font-m-display on phones). Variable, with
+// optical sizing so large titles get the display cut automatically.
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  axes: ["opsz"],
+  variable: "--font-fraunces",
+  display: "swap",
+});
+
+// Only for the "BD" in the phone wordmark, which keeps its original letters
+const barlow = Barlow_Semi_Condensed({
+  subsets: ["latin"],
+  weight: "700",
+  variable: "--font-barlow",
+  display: "swap",
+});
+
+// Brush handwriting for "NexStar" in the phone wordmark (font-m-hand)
+const kaushan = Kaushan_Script({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-hand",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "NexStarBD — Bangladesh Free Fire Community Tournaments",
@@ -27,7 +61,12 @@ export const metadata: Metadata = {
 // The viewport meta tag is emitted by default; this adds the mobile browser
 // chrome colour and keeps pinch-zoom enabled (no maximumScale/userScalable).
 export const viewport: Viewport = {
-  themeColor: "#d3fbe4", // matches the navbar so mobile browser chrome blends in
+  // Browser chrome matches the bar under it: the white phone shell below md,
+  // the light-green navbar above it
+  themeColor: [
+    { media: "(max-width: 767px)", color: "#ffffff" },
+    { color: "#d3fbe4" },
+  ],
   colorScheme: "light",
 };
 
@@ -40,7 +79,7 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} className={`${inter.variable} ${fraunces.variable} ${barlow.variable} ${kaushan.variable}`}>
       <head>
         {/* Google Analytics */}
         <Script

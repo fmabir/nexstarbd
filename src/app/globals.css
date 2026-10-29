@@ -50,6 +50,49 @@
   --field: #ffffff;                /* inputs */
   --panel: #ffffff;                /* content panel inside a card frame */
   --foreground: var(--green-900);
+
+  /* ── Phone palette (below md) ──────────────────────────────
+     The phone layout is its own design: a white, flat app shell with the
+     logo's colours — ink text, signal red for actions, green for live and
+     approved, gold for prizes. Only m-* utilities read these, so the
+     desktop palette above is untouched.
+     Medal colours come in pairs: the bright one for fills (badges, bars),
+     the *-text one for type, dark enough to read on white. */
+  --m-bg: #ffffff;
+  --m-surface: #ffffff;
+  --m-raised: #f2f4f7;
+  --m-line: #e4e7ec;
+  --m-line-strong: #d0d5dd;
+  --m-text: #0c111d;
+  --m-dim: #475467;
+  --m-faint: #667085;
+  --m-red: #e11d2e;
+  --m-red-press: #c01424;
+  --m-red-text: #d11a2a;
+  --m-green: #15803d;
+  --m-green-text: #15803d;
+  --m-amber: #f5a524;
+  --m-amber-text: #b54708;
+  --m-gold: #f5c04a;
+  --m-gold-text: #a15c07;
+  --m-silver: #c9ced6;
+  --m-silver-text: #667085;
+  --m-bronze: #d58c5a;
+  --m-bronze-text: #a4501f;
+  --m-blue: #2563eb;
+  --m-violet: #7c3aed;
+
+  /* Section bands: each kind of section has its own soft tint so the
+     page reads as distinct blocks; cards stay white on top of them. */
+  --m-tint-red: #fff1f2;
+  --m-tint-blue: #eef4ff;
+  --m-tint-green: #ebfaf1;
+  --m-tint-slate: #f3f4f7;
+  --m-tint-gold: #fff7e3;
+  --m-tint-violet: #f4f0ff;
+
+  /* Room the floating tab bar takes at the bottom (bar + its margin) */
+  --m-tabbar-h: 80px;
 }
 
 @theme inline {
@@ -111,12 +154,50 @@
   --color-gray-800: var(--n-800);
   --color-gray-900: var(--n-900);
 
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+  /* Inter for the interface; Fraunces for headings and big numbers. Both are
+     loaded in layout.tsx; the system stacks cover Bangla and slow loads. */
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
   --font-brand: var(--font-display);
   --font-esports: var(--font-display);
+
+  /* Phone palette — see the m-* block in :root */
+  --color-m-bg: var(--m-bg);
+  --color-m-surface: var(--m-surface);
+  --color-m-raised: var(--m-raised);
+  --color-m-line: var(--m-line);
+  --color-m-line-strong: var(--m-line-strong);
+  --color-m-text: var(--m-text);
+  --color-m-dim: var(--m-dim);
+  --color-m-faint: var(--m-faint);
+  --color-m-red: var(--m-red);
+  --color-m-red-press: var(--m-red-press);
+  --color-m-red-text: var(--m-red-text);
+  --color-m-green: var(--m-green);
+  --color-m-green-text: var(--m-green-text);
+  --color-m-amber: var(--m-amber);
+  --color-m-amber-text: var(--m-amber-text);
+  --color-m-gold: var(--m-gold);
+  --color-m-gold-text: var(--m-gold-text);
+  --color-m-silver: var(--m-silver);
+  --color-m-silver-text: var(--m-silver-text);
+  --color-m-bronze: var(--m-bronze);
+  --color-m-bronze-text: var(--m-bronze-text);
+  --color-m-blue: var(--m-blue);
+  --color-m-violet: var(--m-violet);
+  --color-m-tint-red: var(--m-tint-red);
+  --color-m-tint-blue: var(--m-tint-blue);
+  --color-m-tint-green: var(--m-tint-green);
+  --color-m-tint-slate: var(--m-tint-slate);
+  --color-m-tint-gold: var(--m-tint-gold);
+  --color-m-tint-violet: var(--m-tint-violet);
+
+  /* Phone headings and score numbers: the same Fraunces as desktop */
+  --font-m-display: var(--font-display);
+  /* Phone wordmark: hand-lettered "NexStar", original condensed "BD" */
+  --font-m-hand: var(--font-hand), cursive;
+  --font-m-bd: var(--font-barlow), var(--font-sans);
 }
 
 body {
@@ -270,6 +351,12 @@ textarea {
   background-color: var(--field);
 }
 
+/* …except phone-layout fields, which are filled grey. Unlayered like the
+   rule above, so it has to be a class to win. */
+.m-field {
+  background-color: var(--m-raised);
+}
+
 /* The old display face was a condensed all-caps font, so headings were
    written with wide tracking. A normal UI font wants the opposite: iOS sets
    large titles tight and heavy. These override the tracking-* utilities the
@@ -296,3 +383,72 @@ h1,
 .text-6xl {
   letter-spacing: -0.024em;
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Phone shell (below md)
+   Pages mark their phone tree with .m-app and the tab bar with .m-tabbar;
+   the body follows them, so the admin area keeps the light page.
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  body:has(.m-app) {
+    background: var(--m-bg);
+    color: var(--m-text);
+  }
+
+  /* Keep the last row of content clear of the fixed tab bar */
+  body:has(.m-tabbar) {
+    padding-bottom: calc(var(--m-tabbar-h) + env(safe-area-inset-bottom));
+  }
+
+  body:has(.m-app) ::selection {
+    background: var(--m-red);
+    color: #fff;
+  }
+}
+
+/* Native <details> chevron off — the rules accordion draws its own */
+.m-details > summary {
+  list-style: none;
+}
+.m-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+@keyframes m-sheet-in {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes m-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.m-sheet-in { animation: m-sheet-in 280ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+.m-fade-in { animation: m-fade-in 200ms ease-out; }
+
+/* Home hero banner motion — the squad floats, glows drift, sparkles
+   twinkle and light streaks cross. The reduced-motion rule above stops
+   all of it. */
+@keyframes m-float {
+  from { transform: translateY(0); }
+  to { transform: translateY(-7px); }
+}
+.m-float { animation: m-float 3.6s ease-in-out infinite alternate; }
+
+@keyframes m-aurora {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(22px, -12px) scale(1.18); }
+}
+.m-aurora { animation: m-aurora 11s ease-in-out infinite alternate; }
+
+@keyframes m-twinkle {
+  from { opacity: 0.25; transform: scale(0.6) rotate(0deg); }
+  to { opacity: 1; transform: scale(1) rotate(25deg); }
+}
+.m-twinkle { animation: m-twinkle 2.2s ease-in-out infinite alternate; }
+
+@keyframes m-streak {
+  0% { transform: translateX(-160%) rotate(-24deg); opacity: 0; }
+  10% { opacity: 1; }
+  45%, 100% { transform: translateX(520%) rotate(-24deg); opacity: 0; }
+}
+.m-streak { animation: m-streak 5.5s ease-in infinite; }

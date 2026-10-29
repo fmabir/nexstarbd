@@ -1,7 +1,14 @@
+import type { Viewport } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminMobileNav } from "@/components/admin/AdminMobileNav";
+
+// The public site's phone shell is white; admin stays on the light-green
+// page at every width, so its browser chrome does too.
+export const viewport: Viewport = {
+  themeColor: "#d3fbe4",
+};
 
 export default async function AdminLayout({
   children,

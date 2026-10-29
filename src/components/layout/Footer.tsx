@@ -1,80 +1,84 @@
 import Link from "next/link";
 import { FooterCommunityLink } from "@/components/ui/CommunityLinkButton";
+import { MobileFooter } from "@/components/mobile/layout/MobileFooter";
 
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-surface border-t border-green-200">
-      {/* Flag stripe */}
-      <div className="h-1 bg-gradient-to-r from-secondary via-primary to-secondary" />
+    <>
+      <MobileFooter />
+      <footer className="hidden md:block bg-surface border-t border-green-200">
+        {/* Flag stripe */}
+        <div className="h-1 bg-gradient-to-r from-secondary via-primary to-secondary" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 safe-bottom">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8">
-          {/* Brand */}
-          <div className="col-span-2 sm:col-span-1">
-            <div className="flex items-center gap-0 mb-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/banners/lnsbd.png" alt="NexStarBD logo" style={{ height: "72px", width: "auto", display: "block", transform: "translateY(-6px) translateX(6px)" }} />
-              <span className="font-brand font-bold text-2xl tracking-wide text-foreground">
-                NexStar<span className="text-pink-800">B</span><span className="text-green-800">D</span>
-              </span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 safe-bottom">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8">
+            {/* Brand */}
+            <div className="col-span-2 sm:col-span-1">
+              <div className="flex items-center gap-0 mb-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/banners/lnsbd.png" alt="NexStarBD logo" style={{ height: "72px", width: "auto", display: "block", transform: "translateY(-6px) translateX(6px)" }} />
+                <span className="font-brand font-bold text-2xl tracking-wide text-foreground">
+                  NexStar<span className="text-pink-800">B</span><span className="text-green-800">D</span>
+                </span>
+              </div>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Bangladesh&apos;s free community platform for Free Fire esports
+                tournaments.
+              </p>
+              {/* Flag dots */}
+              <div className="flex gap-1.5 mt-4">
+                <span className="w-3 h-3 rounded-full bg-secondary" />
+                <span className="w-3 h-3 rounded-full bg-card border border-border" />
+                <span className="w-3 h-3 rounded-full bg-primary" />
+              </div>
             </div>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              Bangladesh&apos;s free community platform for Free Fire esports
-              tournaments.
-            </p>
-            {/* Flag dots */}
-            <div className="flex gap-1.5 mt-4">
-              <span className="w-3 h-3 rounded-full bg-secondary" />
-              <span className="w-3 h-3 rounded-full bg-card border border-border" />
-              <span className="w-3 h-3 rounded-full bg-primary" />
+
+            {/* Links */}
+            <div>
+              <h3 className="font-semibold text-sm uppercase tracking-wider text-secondary mb-3">
+                Navigate
+              </h3>
+              <ul className="space-y-0.5 text-sm">
+                {[
+                  { href: "/", label: "Home" },
+                  { href: "/#upcoming-tournaments", label: "Tournaments" },
+                  { href: "/hall-of-fame", label: "Hall of Fame" },
+                  { href: "/rules", label: "Rules" },
+                ].map((l) => (
+                  <li key={l.href}>
+                    <Link
+                      href={l.href}
+                      className="inline-flex items-center min-h-11 text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Community */}
+            <div>
+              <h3 className="font-semibold text-sm uppercase tracking-wider text-primary mb-3">
+                Community
+              </h3>
+              <ul className="space-y-0.5 text-sm">
+                <li><FooterCommunityLink href="https://chat.whatsapp.com/Eh3CuMwkzqFCCcC2GYARp4" label="WhatsApp Community" /></li>
+              </ul>
             </div>
           </div>
 
-          {/* Links */}
-          <div>
-            <h3 className="font-semibold text-sm uppercase tracking-wider text-secondary mb-3">
-              Navigate
-            </h3>
-            <ul className="space-y-0.5 text-sm">
-              {[
-                { href: "/", label: "Home" },
-                { href: "/#upcoming-tournaments", label: "Tournaments" },
-                { href: "/hall-of-fame", label: "Hall of Fame" },
-                { href: "/rules", label: "Rules" },
-              ].map((l) => (
-                <li key={l.href}>
-                  <Link
-                    href={l.href}
-                    className="inline-flex items-center min-h-11 text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Community */}
-          <div>
-            <h3 className="font-semibold text-sm uppercase tracking-wider text-primary mb-3">
-              Community
-            </h3>
-            <ul className="space-y-0.5 text-sm">
-              <li><FooterCommunityLink href="https://chat.whatsapp.com/Eh3CuMwkzqFCCcC2GYARp4" label="WhatsApp Community" /></li>
-            </ul>
+          <div className="mt-10 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+            <span>© {year} NexStarBD. All rights reserved.</span>
+            <span className="flex items-center gap-1.5">
+              Built for the Bangladesh Free Fire community
+              <span className="text-base">🇧🇩</span>
+            </span>
           </div>
         </div>
-
-        <div className="mt-10 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <span>© {year} NexStarBD. All rights reserved.</span>
-          <span className="flex items-center gap-1.5">
-            Built for the Bangladesh Free Fire community
-            <span className="text-base">🇧🇩</span>
-          </span>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </>
   );
 }

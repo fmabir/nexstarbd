@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AnnouncementCard } from "@/components/announcements/AnnouncementCard";
+import { MobileMyRegistration } from "@/components/mobile/registration/MobileMyRegistration";
 import { serialize } from "@/lib/utils/serialize";
 import type { Registration, Tournament, Announcement } from "@/lib/types";
 
@@ -83,104 +84,108 @@ export default async function MyRegistrationPage({
   return (
     <>
       <Navbar locale={locale} />
-      <main className="min-h-screen bg-background py-10">
-        <div className="max-w-xl mx-auto px-4 sm:px-6 space-y-5">
+      <main>
+        <MobileMyRegistration registration={reg} tournament={tournament} announcements={announcements} />
 
-          {/* Header */}
-          <div>
-            <Link
-              href={`/tournaments/${reg.tournamentId}`}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              ← Back to Tournament
-            </Link>
-            <h1 className="font-display text-3xl text-foreground tracking-wide mt-3">My Registration</h1>
-            {tournament && (
-              <p className="text-muted-foreground text-sm mt-0.5">{tournament.name}</p>
-            )}
-          </div>
+        <div className="hidden md:block min-h-screen bg-background py-10">
+          <div className="max-w-xl mx-auto px-4 sm:px-6 space-y-5">
 
-          {/* Status Card */}
-          <div className={`rounded-2xl border-2 ${ui.bg} p-6`}>
-            <div className="flex items-center gap-3 mb-2">
-              <span className="text-3xl">{ui.icon}</span>
-              <div>
-                <span className={`inline-block text-sm font-bold px-3 py-1 rounded-full ${ui.badge} mb-1`}>
-                  {ui.label}
-                </span>
-                <p className={`text-sm font-medium ${ui.text}`}>{ui.desc}</p>
-              </div>
-            </div>
-
-            {reg.slotNumber && reg.approvalStatus === "approved" && (
-              <div className="mt-3 pt-3 border-t border-current/20">
-                <p className={`text-sm font-semibold ${ui.text}`}>
-                  Slot #{reg.slotNumber} confirmed
-                </p>
-              </div>
-            )}
-
-            {reg.isWaitlisted && (
-              <div className="mt-3 pt-3 border-t border-current/20">
-                <p className={`text-sm font-semibold ${ui.text}`}>
-                  You are on the waiting list
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Squad Details */}
-          <div className="bg-card rounded-2xl border border-border p-5">
-            <h2 className="font-semibold text-foreground mb-4">Squad Details</h2>
-
-            <div className="space-y-3">
-              <div className="flex items-center justify-between py-2 border-b border-border">
-                <span className="text-sm text-muted-foreground">Squad Name</span>
-                <span className="font-bold text-foreground">{reg.squadName}</span>
-              </div>
-              <div className="flex items-center justify-between py-2 border-b border-border">
-                <span className="text-sm text-muted-foreground">Leader</span>
-                <span className="font-semibold">{reg.leaderName}</span>
-              </div>
-              <div className="flex items-center justify-between py-2 border-b border-border">
-                <span className="text-sm text-muted-foreground">Leader UID</span>
-                <span className="font-mono text-sm">{reg.leaderUid}</span>
-              </div>
-              <div className="flex items-center justify-between py-2">
-                <span className="text-sm text-muted-foreground">WhatsApp</span>
-                <span className="text-sm">{reg.whatsapp}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Announcements */}
-          {announcements.length > 0 && (
+            {/* Header */}
             <div>
-              <h2 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                Tournament Announcements
-              </h2>
+              <Link
+                href={`/tournaments/${reg.tournamentId}`}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                ← Back to Tournament
+              </Link>
+              <h1 className="font-display text-3xl text-foreground tracking-wide mt-3">My Registration</h1>
+              {tournament && (
+                <p className="text-muted-foreground text-sm mt-0.5">{tournament.name}</p>
+              )}
+            </div>
+
+            {/* Status Card */}
+            <div className={`rounded-2xl border-2 ${ui.bg} p-6`}>
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-3xl">{ui.icon}</span>
+                <div>
+                  <span className={`inline-block text-sm font-bold px-3 py-1 rounded-full ${ui.badge} mb-1`}>
+                    {ui.label}
+                  </span>
+                  <p className={`text-sm font-medium ${ui.text}`}>{ui.desc}</p>
+                </div>
+              </div>
+
+              {reg.slotNumber && reg.approvalStatus === "approved" && (
+                <div className="mt-3 pt-3 border-t border-current/20">
+                  <p className={`text-sm font-semibold ${ui.text}`}>
+                    Slot #{reg.slotNumber} confirmed
+                  </p>
+                </div>
+              )}
+
+              {reg.isWaitlisted && (
+                <div className="mt-3 pt-3 border-t border-current/20">
+                  <p className={`text-sm font-semibold ${ui.text}`}>
+                    You are on the waiting list
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Squad Details */}
+            <div className="bg-card rounded-2xl border border-border p-5">
+              <h2 className="font-semibold text-foreground mb-4">Squad Details</h2>
+
               <div className="space-y-3">
-                {announcements.map((a) => (
-                  <AnnouncementCard key={a.id} announcement={a} />
-                ))}
+                <div className="flex items-center justify-between py-2 border-b border-border">
+                  <span className="text-sm text-muted-foreground">Squad Name</span>
+                  <span className="font-bold text-foreground">{reg.squadName}</span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-border">
+                  <span className="text-sm text-muted-foreground">Leader</span>
+                  <span className="font-semibold">{reg.leaderName}</span>
+                </div>
+                <div className="flex items-center justify-between py-2 border-b border-border">
+                  <span className="text-sm text-muted-foreground">Leader UID</span>
+                  <span className="font-mono text-sm">{reg.leaderUid}</span>
+                </div>
+                <div className="flex items-center justify-between py-2">
+                  <span className="text-sm text-muted-foreground">WhatsApp</span>
+                  <span className="text-sm">{reg.whatsapp}</span>
+                </div>
               </div>
             </div>
-          )}
 
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Link
-              href={`/tournaments/${reg.tournamentId}`}
-              className="flex-1 block text-center bg-primary hover:bg-primary-dark text-white rounded-xl py-3 text-sm font-bold transition-colors"
-            >
-              Go to Tournament Dashboard →
-            </Link>
-            <Link
-              href="/"
-              className="flex-1 block text-center bg-card border border-border rounded-xl py-3 text-sm font-semibold text-foreground hover:bg-gray-50 transition-colors"
-            >
-              Back to Home
-            </Link>
+            {/* Announcements */}
+            {announcements.length > 0 && (
+              <div>
+                <h2 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                  Tournament Announcements
+                </h2>
+                <div className="space-y-3">
+                  {announcements.map((a) => (
+                    <AnnouncementCard key={a.id} announcement={a} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                href={`/tournaments/${reg.tournamentId}`}
+                className="flex-1 block text-center bg-primary hover:bg-primary-dark text-white rounded-xl py-3 text-sm font-bold transition-colors"
+              >
+                Go to Tournament Dashboard →
+              </Link>
+              <Link
+                href="/"
+                className="flex-1 block text-center bg-card border border-border rounded-xl py-3 text-sm font-semibold text-foreground hover:bg-gray-50 transition-colors"
+              >
+                Back to Home
+              </Link>
+            </div>
           </div>
         </div>
       </main>
