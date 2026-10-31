@@ -5,7 +5,8 @@
     "rules": "Rules",
     "hallOfFame": "Hall of Fame",
     "community": "Community",
-    "admin": "Admin"
+    "admin": "Admin",
+    "results": "Results"
   },
   "hero": {
     "title": "Bangladesh Free Fire Community Tournament",
@@ -87,6 +88,19 @@
     "thirdPlace": "3rd Place",
     "prize": "Prize",
     "noWinners": "No previous tournament results yet."
+  },
+  "results": {
+    "title": "Results",
+    "subtitle": "Match results, scoreboards and photos from our tournaments",
+    "lockedTitle": "Results are for members",
+    "lockedText": "Sign in or create a free account to see match results, scoreboards and photos.",
+    "signIn": "Sign in or create account",
+    "empty": "No results posted yet",
+    "emptyText": "Check back after the next match.",
+    "error": "Couldn't load results",
+    "retry": "Try again",
+    "hallOfFame": "Hall of Fame",
+    "hallOfFameText": "Every champion and MVP"
   },
   "mvp": {
     "title": "MVP Players",

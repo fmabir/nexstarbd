@@ -70,6 +70,31 @@ export interface Announcement {
   updatedAt: Timestamp;
 }
 
+export type ResultPostStatus = "draft" | "published";
+
+export interface ResultPhoto {
+  /** Document id in `resultPhotos`; served by /api/results/photos/[id] */
+  id: string;
+  width: number;
+  height: number;
+}
+
+/** A post on the members-only Results page: text, photos, or both. */
+export interface ResultPost {
+  id: string;
+  title: string | null;
+  body: string;
+  tournamentId: string | null;
+  tournamentName: string | null;
+  photos: ResultPhoto[];
+  status: ResultPostStatus;
+  /** Admin side only; left out of the members' feed */
+  postedByEmail?: string;
+  publishedAt: Timestamp | null;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
 export interface Winner {
   id: string;
   tournamentId: string;

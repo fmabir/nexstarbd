@@ -34,6 +34,16 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Results posts are members-only, so unlike the collections above they
+    // are closed to the browser: /api/results serves them to signed-in users
+    match /resultPosts/{id} {
+      allow read, write: if false;
+    }
+
+    match /resultPhotos/{id} {
+      allow read, write: if false;
+    }
+
     match /users/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow write: if false;

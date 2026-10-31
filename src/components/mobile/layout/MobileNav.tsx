@@ -24,7 +24,12 @@ const tabs = [
     Icon: CrosshairIcon,
     match: (p: string) => ["/tournaments", "/register", "/my-registration"].some((s) => p.startsWith(s)),
   },
-  { href: "/hall-of-fame", label: "Results", Icon: TrophyIcon, match: (p: string) => p.startsWith("/hall-of-fame") },
+  {
+    href: "/results",
+    label: "Results",
+    Icon: TrophyIcon,
+    match: (p: string) => ["/results", "/hall-of-fame"].some((s) => p.startsWith(s)),
+  },
   { href: "/rules", label: "Rules", Icon: RulesIcon, match: (p: string) => p.startsWith("/rules") },
 ];
 

@@ -9,6 +9,7 @@ export const navItems = [
   { href: "/admin/tournaments", label: "Tournaments", short: "Tournaments", icon: "🏆", exact: false },
   { href: "/admin/registrations", label: "All Registrations", short: "Registrations", icon: "📋", exact: false },
   { href: "/admin/announcements", label: "Announcements", short: "Announce", icon: "📢", exact: false },
+  { href: "/admin/results", label: "Results", short: "Results", icon: "🏁", exact: false },
   { href: "/admin/winners", label: "Winners", short: "Winners", icon: "🥇", exact: false },
   { href: "/admin/mvp", label: "MVP Players", short: "MVP", icon: "⭐", exact: false },
   { href: "/admin/sponsors", label: "Sponsors", short: "Sponsors", icon: "🤝", exact: false },

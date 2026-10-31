@@ -44,6 +44,7 @@ export function Footer() {
                 {[
                   { href: "/", label: "Home" },
                   { href: "/#upcoming-tournaments", label: "Tournaments" },
+                  { href: "/results", label: "Results" },
                   { href: "/hall-of-fame", label: "Hall of Fame" },
                   { href: "/rules", label: "Rules" },
                 ].map((l) => (

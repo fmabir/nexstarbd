@@ -8,7 +8,7 @@ import { MobileNav } from "@/components/mobile/layout/MobileNav";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/#upcoming-tournaments", label: "Tournaments" },
-  { href: "/hall-of-fame", label: "Results" },
+  { href: "/results", label: "Results" },
   { href: "/rules", label: "Rules" },
 ];
 
