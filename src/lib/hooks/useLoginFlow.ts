@@ -12,7 +12,7 @@ export type LoginMode = "signin" | "signup" | "verify" | "forgot" | "verify-rese
  * phone layout run the same flow.
  */
 export function useLoginFlow() {
-  const { user, loading, signInWithEmail, initiateSignup, verifyOtp, resendOtp, sendPasswordResetOtp, resetPasswordWithOtp } = useAuth();
+  const { user, loading, ensureSession, signInWithEmail, initiateSignup, verifyOtp, resendOtp, sendPasswordResetOtp, resetPasswordWithOtp } = useAuth();
   const [localOverlay, setLocalOverlay] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -72,7 +72,9 @@ export function useLoginFlow() {
   useEffect(() => {
     if (loading || !user) return;
     let cancelled = false;
-    resolveDestination().then((dest) => {
+    // Already signed in: make sure the server agrees before sending them on,
+    // or a protected page would bounce them straight back here
+    ensureSession().catch(() => false).then(resolveDestination).then((dest) => {
       if (!cancelled) router.replace(dest);
     });
     return () => {

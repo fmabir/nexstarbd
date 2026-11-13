@@ -14,6 +14,18 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // The secrets taken out of the two public collections above: room
+    // ID/password, and squads' WhatsApp, bKash and transaction ID. Server
+    // only; it hands them to admins, the squad itself and approved squads.
+    // (No rule would also mean no access — these make that explicit.)
+    match /tournamentRooms/{id} {
+      allow read, write: if false;
+    }
+
+    match /registrationPrivate/{id} {
+      allow read, write: if false;
+    }
+
     match /announcements/{id} {
       allow read: if true;
       allow write: if false;

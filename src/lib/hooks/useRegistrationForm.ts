@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { auth } from "@/lib/firebase/config";
 
 export interface TournamentState {
   name: string;
@@ -68,9 +69,11 @@ export function useRegistrationForm(tournamentId: string, userId: string) {
 
     setSubmitting(true);
     try {
+      // The server takes the player's identity from this token, not from the body
+      const token = await auth.currentUser?.getIdToken();
       const res = await fetch("/api/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         body: JSON.stringify({ tournamentId, userId, squadName, leaderName, leaderUid, whatsapp, bkash, transactionId: transactionId || null }),
       });
 

@@ -9,6 +9,7 @@ import { serialize } from "@/lib/utils/serialize";
 import { formatDateOnly, formatTimeOnly } from "@/lib/utils/formatDate";
 import { resolveBannerUrl } from "@/lib/utils/bannerUrl";
 import { getSessionUser } from "@/lib/server/session";
+import { getRoomInfo, withPrivateFields, withoutRoom } from "@/lib/server/privateData";
 import type { Tournament, Registration, TournamentStatus } from "@/lib/types";
 import Link from "next/link";
 import { RegistrationStatusButton } from "@/components/tournaments/RegistrationStatusButton";
@@ -37,7 +38,8 @@ export default async function TournamentPage({
     const { adminDb } = await import("@/lib/firebase/admin");
     const doc = await adminDb.collection("tournaments").doc(id).get();
     if (doc.exists) {
-      tournament = serialize({ id: doc.id, ...doc.data() } as unknown as Tournament);
+      // Never hand room details to the page unless this squad is approved (below)
+      tournament = withoutRoom(serialize({ id: doc.id, ...doc.data() } as unknown as Tournament));
     }
 
     if (tournament) {
@@ -51,9 +53,15 @@ export default async function TournamentPage({
           .limit(1)
           .get();
         if (!snap.empty) {
-          myRegistration = serialize({ id: snap.docs[0].id, ...snap.docs[0].data() } as unknown as Registration);
+          // Their own squad, so include its contact and payment details
+          const [mine] = await withPrivateFields(adminDb, [{ id: snap.docs[0].id, ...snap.docs[0].data() } as unknown as Registration]);
+          myRegistration = serialize(mine);
         }
       }
+    }
+
+    if (tournament && myRegistration?.approvalStatus === "approved") {
+      tournament = { ...tournament, ...(await getRoomInfo(adminDb, id, doc.data())) };
     }
   } catch {}
 

@@ -1,5 +1,25 @@
 import { type NextRequest } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
+import { registrationPrivateRef } from "@/lib/server/privateData";
+import { getSessionUser } from "@/lib/server/session";
+
+/**
+ * Who is registering. Taken from the request's credentials, never from the
+ * body: an ID token as "Authorization: Bearer …" (what the form sends), or
+ * the session cookie.
+ */
+async function requestUser(request: NextRequest) {
+  const token = request.headers.get("authorization")?.match(/^Bearer (.+)$/)?.[1];
+  if (token) {
+    try {
+      const { adminAuth } = await import("@/lib/firebase/admin");
+      return await adminAuth.verifyIdToken(token);
+    } catch {
+      return null;
+    }
+  }
+  return getSessionUser();
+}
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -30,12 +50,14 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
-  const { tournamentId, userId, squadName, leaderName, leaderUid, whatsapp, bkash, transactionId } = body;
-
-  if (!userId?.trim()) {
+  const user = await requestUser(request);
+  if (!user) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const userId = user.uid;
+
+  const body = await request.json();
+  const { tournamentId, squadName, leaderName, leaderUid, whatsapp, bkash, transactionId } = body;
 
   if (!tournamentId || !squadName?.trim() || !leaderName?.trim() || !leaderUid?.trim() || !whatsapp?.trim()) {
     return Response.json({ error: "All required fields must be provided" }, { status: 400 });
@@ -71,19 +93,24 @@ export async function POST(request: NextRequest) {
       const regRef = adminDb.collection("registrations").doc();
       tx.set(regRef, {
         tournamentId,
-        userId: userId.trim(),
+        userId,
         squadName: squadName.trim(),
         leaderName: leaderName.trim(),
         leaderUid: newUid,
-        whatsapp: whatsapp.trim(),
-        bkash: bkash?.trim() || null,
-        transactionId: transactionId?.trim() || null,
         allUids: [newUid],
         slotNumber,
         isWaitlisted,
         approvalStatus: "pending",
         registeredAt: FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
+      });
+      // Contact and payment details: admin and the squad's own player only
+      tx.set(registrationPrivateRef(adminDb, regRef.id), {
+        whatsapp: whatsapp.trim(),
+        bkash: bkash?.trim() || null,
+        transactionId: transactionId?.trim() || null,
+        tournamentId,
+        userId,
       });
 
       tx.update(tournamentRef, {

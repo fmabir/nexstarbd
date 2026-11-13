@@ -1,36 +1,13 @@
-import { cookies } from "next/headers";
-import { jwtVerify, createRemoteJWKSet } from "jose";
+import { isAdminEmail } from "./auth";
+import { getSessionUser } from "./session";
 
-const PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!;
-const JWKS = createRemoteJWKSet(
-  new URL("https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com")
-);
-
-function adminEmails(): string[] {
-  return (process.env.ADMIN_EMAILS ?? "")
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
-}
-
+/**
+ * Throws "Unauthorized" when nobody is signed in and "Forbidden" when the
+ * signed-in user isn't in ADMIN_EMAILS; returns the admin's email otherwise.
+ */
 export async function verifyAdmin(): Promise<string> {
-  const cookieStore = await cookies();
-  const session = cookieStore.get("__session")?.value;
-  if (!session) throw new Error("Unauthorized");
-
-  const { payload } = await jwtVerify(session, JWKS, {
-    audience: PROJECT_ID,
-    issuer: `https://securetoken.google.com/${PROJECT_ID}`,
-  });
-
-  const email = ((payload.email as string | undefined) ?? "").toLowerCase();
-  const allowed = adminEmails();
-
-  // Fail CLOSED: an unset/empty ADMIN_EMAILS must mean "nobody is an admin",
-  // never "everybody is an admin".
-  if (allowed.length === 0 || !allowed.includes(email)) {
-    throw new Error("Forbidden");
-  }
-
-  return email || "admin";
+  const user = await getSessionUser();
+  if (!user) throw new Error("Unauthorized");
+  if (!isAdminEmail(user.email)) throw new Error("Forbidden");
+  return user.email!.toLowerCase();
 }

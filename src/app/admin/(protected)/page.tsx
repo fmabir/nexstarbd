@@ -1,8 +1,19 @@
 import { getAdminDb } from "@/lib/firebase/admin";
+import { connection } from "next/server";
+import { migratePrivateData } from "@/lib/server/privateData";
 import Link from "next/link";
 
 async function getDashboardStats() {
+  // Only when an admin actually opens the page — never while the site is being built
+  await connection();
   const db = getAdminDb();
+
+  // One-off move of room and contact details out of public documents; a no-op once done
+  try {
+    await migratePrivateData(db);
+  } catch (err) {
+    console.error("migratePrivateData failed:", err);
+  }
 
   const [tournamentsSnap, registrationsSnap, announcementsSnap, winnersSnap, mvpSnap, sponsorsSnap] =
     await Promise.all([

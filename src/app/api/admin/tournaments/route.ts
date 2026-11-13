@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     await verifyAdmin();
     const body = await request.json();
-    const { name, description, mode, prizePool, firstPrize, secondPrize, isFree, registrationFee, startsAt, registrationDeadline } = body;
+    const { name, description, mode, prizePool, firstPrize, secondPrize, isFree, registrationFee, bkashNumber, startsAt, registrationDeadline } = body;
 
     if (!name || !mode || !prizePool || !startsAt || !registrationDeadline) {
       return Response.json({ error: "Missing required fields" }, { status: 400 });
@@ -34,6 +34,8 @@ export async function POST(request: NextRequest) {
       bannerUrl,
       isFree: isFree === true,
       registrationFee: isFree ? null : (registrationFee || null),
+      // The number paid squads send their fee to (the form always sent it; it was being dropped)
+      bkashNumber: isFree ? null : (bkashNumber || null),
       firstPrize: firstPrize || null,
       secondPrize: secondPrize || null,
       registeredCount: 0,

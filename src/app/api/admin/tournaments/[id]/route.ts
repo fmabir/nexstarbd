@@ -1,6 +1,7 @@
 import { type NextRequest } from "next/server";
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { verifyAdmin } from "@/lib/server/verifyAdmin";
+import { deleteRoomInfo, setRoomInfo } from "@/lib/server/privateData";
 
 export async function PATCH(
   request: NextRequest,
@@ -15,8 +16,6 @@ export async function PATCH(
     const allowed = [
       "status",
       "isRegistrationOpen",
-      "roomId",
-      "roomPassword",
       "name",
       "description",
       "prizePool",
@@ -36,6 +35,14 @@ export async function PATCH(
     if (body.registrationDeadline) update.registrationDeadline = Timestamp.fromDate(new Date(body.registrationDeadline));
 
     await adminDb.collection("tournaments").doc(id).update(update);
+
+    // Room details never go on the public tournament document
+    if ("roomId" in body || "roomPassword" in body) {
+      await setRoomInfo(adminDb, id, {
+        ...("roomId" in body ? { roomId: body.roomId || null } : {}),
+        ...("roomPassword" in body ? { roomPassword: body.roomPassword || null } : {}),
+      });
+    }
     return Response.json({ ok: true });
   } catch (err) {
     const msg = err instanceof Error ? err.message : "error";
@@ -54,6 +61,7 @@ export async function DELETE(
     const { id } = await params;
     const { adminDb } = await import("@/lib/firebase/admin");
     await adminDb.collection("tournaments").doc(id).delete();
+    await deleteRoomInfo(adminDb, id);
     return Response.json({ ok: true });
   } catch {
     return Response.json({ error: "Server error" }, { status: 500 });

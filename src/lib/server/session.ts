@@ -1,12 +1,7 @@
 import { cookies } from "next/headers";
+import { SESSION_COOKIE, verifySession } from "./auth";
 
+/** The signed-in user, from the session cookie; null when signed out or expired. */
 export async function getSessionUser() {
-  const token = (await cookies()).get("__session")?.value;
-  if (!token) return null;
-  try {
-    const { adminAuth } = await import("@/lib/firebase/admin");
-    return await adminAuth.verifyIdToken(token);
-  } catch {
-    return null;
-  }
+  return verifySession((await cookies()).get(SESSION_COOKIE)?.value);
 }

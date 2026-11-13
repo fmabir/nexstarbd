@@ -1,6 +1,7 @@
 import { RegistrationsTable } from "@/components/admin/RegistrationsTable";
 import type { Tournament, Registration } from "@/lib/types";
 import { serialize } from "@/lib/utils/serialize";
+import { withPrivateFields } from "@/lib/server/privateData";
 
 async function getData() {
   const { adminDb } = await import("@/lib/firebase/admin");
@@ -11,7 +12,11 @@ async function getData() {
   ]);
 
   const tournaments = tournamentsSnap.docs.map((d) => ({ id: d.id, ...d.data() } as unknown as Tournament));
-  const registrations = registrationsSnap.docs.map((d) => ({ id: d.id, ...d.data() } as unknown as Registration));
+  // Contact and payment details live outside the public registration
+  const registrations = await withPrivateFields(
+    adminDb,
+    registrationsSnap.docs.map((d) => ({ id: d.id, ...d.data() } as unknown as Registration))
+  );
 
   return serialize({ tournaments, registrations });
 }

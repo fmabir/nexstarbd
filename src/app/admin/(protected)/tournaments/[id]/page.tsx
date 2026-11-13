@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { ManageTournamentPanel } from "@/components/admin/ManageTournamentPanel";
 import { serialize } from "@/lib/utils/serialize";
+import { getRoomInfo, withPrivateFields } from "@/lib/server/privateData";
 import type { Tournament, Registration, Announcement } from "@/lib/types";
 
 async function getData(id: string) {
@@ -15,8 +16,9 @@ async function getData(id: string) {
 
     if (!tournamentDoc.exists) return null;
 
-    const registrations = regsSnap.docs
-      .map((d) => ({ id: d.id, ...d.data() } as unknown as Registration))
+    // Admins see contact and payment details, which live outside the public registration
+    const registrations = (await withPrivateFields(adminDb, regsSnap.docs
+      .map((d) => ({ id: d.id, ...d.data() } as unknown as Registration))))
       .sort((a, b) => {
         const aMs = (a.registeredAt as unknown as { seconds?: number })?.seconds ?? 0;
         const bMs = (b.registeredAt as unknown as { seconds?: number })?.seconds ?? 0;
@@ -32,7 +34,11 @@ async function getData(id: string) {
       });
 
     return serialize({
-      tournament: { id: tournamentDoc.id, ...tournamentDoc.data() } as unknown as Tournament,
+      tournament: {
+        id: tournamentDoc.id,
+        ...tournamentDoc.data(),
+        ...(await getRoomInfo(adminDb, tournamentDoc.id, tournamentDoc.data())),
+      } as unknown as Tournament,
       registrations,
       announcements,
     });

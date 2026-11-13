@@ -1,7 +1,15 @@
 import { type NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { FieldValue } from "firebase-admin/firestore";
+import { SESSION_COOKIE, SESSION_MAX_AGE_MS } from "@/lib/server/auth";
+import { getSessionUser } from "@/lib/server/session";
 
+/** Whether the browser's session cookie is still good. The client re-creates it when it isn't. */
+export async function GET() {
+  return Response.json({ valid: (await getSessionUser()) !== null });
+}
+
+/** Swaps a fresh ID token for a two-week session cookie and records the user's profile. */
 export async function POST(request: NextRequest) {
   const { token } = await request.json();
   if (!token) {
@@ -11,14 +19,15 @@ export async function POST(request: NextRequest) {
   try {
     const { adminAuth, adminDb } = await import("@/lib/firebase/admin");
     const decoded = await adminAuth.verifyIdToken(token);
+    const sessionCookie = await adminAuth.createSessionCookie(token, { expiresIn: SESSION_MAX_AGE_MS });
 
     const cookieStore = await cookies();
-    cookieStore.set("__session", token, {
+    cookieStore.set(SESSION_COOKIE, sessionCookie, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24, // 1 day
+      maxAge: SESSION_MAX_AGE_MS / 1000,
     });
 
     // Upsert user profile document
@@ -52,6 +61,6 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE() {
   const cookieStore = await cookies();
-  cookieStore.delete("__session");
+  cookieStore.delete(SESSION_COOKIE);
   return Response.json({ ok: true });
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   onAuthStateChanged,
   signOut as firebaseSignOut,
@@ -17,6 +18,11 @@ interface AuthContextValue {
   /** False until the admin check for the current user has come back. */
   roleResolved: boolean;
   loading: boolean;
+  /**
+   * Makes sure the server has a session cookie for the signed-in user, making
+   * a new one if it's missing or expired. Resolves true when it had to.
+   */
+  ensureSession: () => Promise<boolean>;
   transitioning: boolean;
   transitionMessage: string;
   signOut: () => Promise<void>;
@@ -40,6 +46,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [transitioning, setTransitioning] = useState(false);
   const [transitionMessage, setTransitionMessage] = useState("");
+  const router = useRouter();
+  // The session request in flight, so sign-in and ensureSession never post twice
+  const sessionRequest = useRef<Promise<void> | null>(null);
+
+  const postSession = useCallback((token: string) => {
+    const req = fetch("/api/auth/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    }).then((res) => {
+      if (!res.ok) throw new Error("Failed to create session");
+    });
+    sessionRequest.current = req;
+    req.then(
+      () => { if (sessionRequest.current === req) sessionRequest.current = null; },
+      () => { if (sessionRequest.current === req) sessionRequest.current = null; }
+    );
+    return req;
+  }, []);
+
+  // Firebase can still have the user signed in while the server's session
+  // cookie is gone or expired (cookies cleared, two weeks up, or a cookie
+  // from before session cookies). Server checks would then treat them as
+  // signed out — and /admin would bounce to the login page and back — so
+  // make a new one from a fresh ID token.
+  const ensureSession = useCallback(async () => {
+    const current = auth.currentUser;
+    if (!current) return false;
+    if (sessionRequest.current) {
+      try {
+        await sessionRequest.current;
+        return false;
+      } catch {
+        // fall through and check for ourselves
+      }
+    }
+    const check = await fetch("/api/auth/session")
+      .then((r) => (r.ok ? r.json() : { valid: false }))
+      .catch(() => ({ valid: false }));
+    if (check.valid) return false;
+    await postSession(await current.getIdToken());
+    return true;
+  }, [postSession]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -55,7 +104,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user) return;
     const uid = user.uid;
     let cancelled = false;
-    fetch("/api/auth/role")
+    ensureSession()
+      .catch(() => false)
+      .then((renewed) => {
+        // Pages the server drew while the cookie was missing showed a signed-out view
+        if (renewed && !cancelled) router.refresh();
+        return fetch("/api/auth/role");
+      })
       .then((r) => (r.ok ? r.json() : { isAdmin: false }))
       .then((d) => {
         if (!cancelled) setRole({ uid, isAdmin: Boolean(d.isAdmin) });
@@ -66,7 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [user]);
+  }, [user, ensureSession, router]);
 
   // Derived rather than stored: signing out, or signing in as someone else,
   // drops back to "not an admin" without another render pass.
@@ -94,12 +149,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } else {
       token = await auth.currentUser!.getIdToken();
     }
-    const res = await fetch("/api/auth/session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
-    });
-    if (!res.ok) throw new Error("Failed to create session");
+    await postSession(token);
   };
 
   const signOut = async () => {
@@ -190,7 +240,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={{
-      user, isAdmin, roleResolved, loading, transitioning, transitionMessage,
+      user, isAdmin, roleResolved, loading, ensureSession, transitioning, transitionMessage,
       signOut, signInWithEmail,
       initiateSignup, verifyOtp, resendOtp,
       sendPasswordResetOtp, resetPasswordWithOtp,
