@@ -1,11 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  /* ── Bright palette ─────────────────────────────────────────
-     Vivid spring green for the page, vivid pink for cards. Retune
-     here; every component reads these. */
+  /* Shared palette matches admin.module.css: blue actions, gold prizes, semantic statuses. */
 
-  /* Bright green */
+  /* Semantic green ramp */
   --green-50: #ecfdf3;
   --green-100: #d3fbe4;
   --green-200: #a8f5c8;
@@ -17,7 +15,7 @@
   --green-800: #056034;
   --green-900: #072f1c;
 
-  /* Bright pink */
+  /* Legacy pink ramp, retained for component compatibility */
   --pink-50: #fff1f7;
   --pink-100: #ffe0ee;
   --pink-200: #ffb3d1;
@@ -29,52 +27,45 @@
   --pink-800: #9d174d;
   --pink-900: #6d0f38;
 
-  /* Neutrals: green-tinted but calm, so muted copy stays readable
-     while the brand ramps above stay vivid. */
-  --n-50: #f2fbf6;
-  --n-100: #e3f5ea;
-  --n-200: #c8e6d3;
-  --n-300: #a3cdb4;
-  --n-400: #74a98a;
-  --n-500: #4f8567;
-  --n-600: #3b6b50;
-  --n-700: #2c523d;
-  --n-800: #1e3a2b;
-  --n-900: #0f2418;
+  /* Neutral surfaces and readable text. */
+  --n-50: #f8fafc;
+  --n-100: #edf2f8;
+  --n-200: #e2e9f2;
+  --n-300: #cdd8e6;
+  --n-400: #98a2b3;
+  --n-500: #667085;
+  --n-600: #55555f;
+  --n-700: #344054;
+  --n-800: #1d2939;
+  --n-900: #17171c;
 
   /* Roles */
-  --background: var(--green-300);  /* the page itself */
-  --surface: var(--green-100);     /* navbar, footer, drawer */
-  --card: var(--pink-200);         /* tournament + content cards */
-  --card-border: var(--pink-300);
+  --background: #f5f8fc;  /* page */
+  --surface: #ffffff;     /* navigation and dialogs */
+  --card: #ffffff;         /* content cards */
+  --card-border: #e2e9f2;
   --field: #ffffff;                /* inputs */
   --panel: #ffffff;                /* content panel inside a card frame */
-  --foreground: var(--green-900);
+  --foreground: #17171c;
 
-  /* ── Phone palette (below md) ──────────────────────────────
-     The phone layout is its own design: a white, flat app shell with the
-     logo's colours — ink text, signal red for actions, green for live and
-     approved, gold for prizes. Only m-* utilities read these, so the
-     desktop palette above is untouched.
-     Medal colours come in pairs: the bright one for fills (badges, bars),
-     the *-text one for type, dark enough to read on white. */
-  --m-bg: #ffffff;
+  /* Shared player tokens. Red is reserved for errors and rejection. */
+  --m-bg: #f5f8fc;
   --m-surface: #ffffff;
-  --m-raised: #f2f4f7;
-  --m-line: #e4e7ec;
-  --m-line-strong: #d0d5dd;
-  --m-text: #0c111d;
-  --m-dim: #475467;
+  --m-raised: #edf2f8;
+  --m-line: #e2e9f2;
+  --m-line-strong: #cdd8e6;
+  --m-text: #17171c;
+  --m-dim: #55555f;
   --m-faint: #667085;
-  --m-red: #e11d2e;
-  --m-red-press: #c01424;
-  --m-red-text: #d11a2a;
-  --m-green: #15803d;
-  --m-green-text: #15803d;
+  --m-red: #d0281c;
+  --m-red-press: #b42318;
+  --m-red-text: #d0281c;
+  --m-green: #157f3b;
+  --m-green-text: #157f3b;
   --m-amber: #f5a524;
-  --m-amber-text: #b54708;
+  --m-amber-text: #b45309;
   --m-gold: #f5c04a;
-  --m-gold-text: #a15c07;
+  --m-gold-text: #a8760a;
   --m-silver: #c9ced6;
   --m-silver-text: #667085;
   --m-bronze: #d58c5a;
@@ -88,11 +79,11 @@
   --m-tint-blue: #eef4ff;
   --m-tint-green: #ebfaf1;
   --m-tint-slate: #f3f4f7;
-  --m-tint-gold: #fff7e3;
+  --m-tint-gold: #fbf3dd;
   --m-tint-violet: #f4f0ff;
 
   /* Room the floating tab bar takes at the bottom (bar + its margin) */
-  --m-tabbar-h: 80px;
+  --m-tabbar-h: 72px;
 }
 
 @theme inline {
@@ -104,18 +95,22 @@
   --color-field: var(--field);
   --color-panel: var(--panel);
 
-  /* Pink is the action colour; these two pass AA on white text */
-  --color-primary: var(--pink-600);
-  --color-primary-dark: var(--pink-700);
-  --color-primary-light: var(--pink-100);
+  /* Same accent values as the admin tokens. */
+  --color-primary: #2563b4;
+  --color-primary-dark: #1e5094;
+  --color-primary-light: #eaf3ff;
+  --color-gold: #a8760a;
+  --color-gold-light: #fbf3dd;
+  --color-danger: #d0281c;
+  --color-danger-light: #fdecea;
 
   /* Green is the supporting/structural colour */
-  --color-secondary: var(--green-700);
+  --color-secondary: #157f3b;
   --color-secondary-dark: var(--green-800);
-  --color-secondary-light: var(--green-100);
+  --color-secondary-light: #e7f6ec;
 
   --color-muted: var(--n-100);
-  --color-muted-foreground: var(--n-800);
+  --color-muted-foreground: var(--n-600);
   --color-border: var(--n-200);
 
   /* Named ramps so components can reach for a specific step */
@@ -154,11 +149,10 @@
   --color-gray-800: var(--n-800);
   --color-gray-900: var(--n-900);
 
-  /* Inter for the interface; Fraunces for headings and big numbers. Both are
-     loaded in layout.tsx; the system stacks cover Bangla and slow loads. */
-  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont,
+  /* One UI typeface; system fallbacks cover Bangla and slow loads. */
+  --font-sans: var(--font-inter), var(--font-bengali), -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-display: var(--font-inter), var(--font-bengali), -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   --font-brand: var(--font-display);
   --font-esports: var(--font-display);
 
@@ -194,41 +188,15 @@
   --color-m-tint-violet: var(--m-tint-violet);
 
   /* Phone headings and score numbers: the same Fraunces as desktop */
-  --font-m-display: var(--font-display);
-  /* Phone wordmark: hand-lettered "NexStar", original condensed "BD" */
-  --font-m-hand: var(--font-hand), cursive;
-  --font-m-bd: var(--font-barlow), var(--font-sans);
+  --font-m-display: var(--font-inter), var(--font-bengali), -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  /* Phone wordmark: hand-lettered "Nexuster", original condensed "BD" */
+  --font-m-hand: var(--font-inter), sans-serif;
+  --font-m-bd: var(--font-inter), sans-serif;
 }
 
 body {
-  background:
-    /* Matte diagonal stripes — a rose band and a deeper sage band, both
-       barely-there so the flat green reads as the page colour */
-    linear-gradient(
-      -30deg,
-      transparent 0%,
-      transparent 30%,
-      rgba(225, 29, 116, 0.12) 30%,
-      rgba(225, 29, 116, 0.12) 36%,
-      transparent 36%,
-      transparent 62%,
-      rgba(2, 122, 72, 0.12) 62%,
-      rgba(2, 122, 72, 0.12) 68%,
-      transparent 68%,
-      transparent 100%
-    ),
-    var(--background);
-  background-attachment: fixed;
+  background: var(--background);
   color: var(--foreground);
-  /* Never let a stray wide child create a sideways scroll on phones */
-  overflow-x: hidden;
-}
-
-/* iOS Safari janks badly on fixed backgrounds while scrolling — let it scroll */
-@media (max-width: 1024px) {
-  body {
-    background-attachment: scroll;
-  }
 }
 
 /* Smooth scrolling */
@@ -241,10 +209,10 @@ html {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--green-200);
+  background: var(--n-100);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--pink-600);
+  background: var(--color-primary);
   border-radius: 3px;
 }
 
@@ -257,11 +225,11 @@ html {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
 }
-.blink { animation: blink-text 1.4s ease-in-out infinite; }
+.blink { animation: none; }
 
 /* Selection color */
 ::selection {
-  background: var(--pink-600);
+  background: var(--color-primary);
   color: white;
 }
 
@@ -328,23 +296,22 @@ textarea {
    Surfaces & type
    ───────────────────────────────────────────────────────────── */
 
-/* Keep shadows lively, just tinted green so they sit on the palette
-   instead of greying it down. */
+/* Quiet elevation shared by cards and dialogs. */
 .shadow-sm {
-  box-shadow: 0 1px 3px rgba(7, 47, 28, 0.12);
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05);
 }
 .shadow,
 .shadow-md {
-  box-shadow: 0 4px 10px rgba(7, 47, 28, 0.14);
+  box-shadow: 0 4px 10px rgba(16, 24, 40, 0.07);
 }
 .shadow-lg {
-  box-shadow: 0 10px 24px rgba(7, 47, 28, 0.16);
+  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.09);
 }
 .shadow-2xl {
-  box-shadow: 0 20px 48px rgba(7, 47, 28, 0.22);
+  box-shadow: 0 20px 48px rgba(16, 24, 40, 0.12);
 }
 
-/* Inputs stay white so they read on pink cards */
+/* Inputs use white surfaces on every screen. */
 input,
 select,
 textarea {
@@ -354,7 +321,7 @@ textarea {
 /* …except phone-layout fields, which are filled grey. Unlayered like the
    rule above, so it has to be a class to win. */
 .m-field {
-  background-color: var(--m-raised);
+  background-color: #fff;
 }
 
 /* The old display face was a condensed all-caps font, so headings were
@@ -401,7 +368,7 @@ h1,
   }
 
   body:has(.m-app) ::selection {
-    background: var(--m-red);
+    background: var(--color-primary);
     color: #fff;
   }
 }
@@ -452,3 +419,28 @@ h1,
   45%, 100% { transform: translateX(520%) rotate(-24deg); opacity: 0; }
 }
 .m-streak { animation: m-streak 5.5s ease-in infinite; }
+
+/* Shared player layouts. Their responsive widths are identical across routes. */
+@layer components {
+.player-container { width: 100%; max-width: 1168px; margin-inline: auto; padding: 16px 16px 28px; }
+.player-narrow { width: 100%; max-width: 720px; margin-inline: auto; padding: 12px 0 28px; }
+.player-section { padding-block: 12px; }
+.player-section > div { min-width: 0; }
+}
+:where(a, button, input, select, textarea, summary):focus-visible { outline: 3px solid #2563b4; outline-offset: 4px; }
+button:not(:disabled), summary { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+@layer components {
+@media (min-width: 768px) {
+  .player-container { padding: 24px 28px 36px; }
+  .player-narrow { padding-top: 20px; }
+}
+}
+
+/* Light, quiet surfaces across player and organiser screens. */
+@layer components {
+  .player-container { min-height: 65vh; }
+  .player-section { padding-block: 12px; }
+}
+html[lang="bn"] { line-height: 1.65; }
+html[lang="bn"] :where(h1, h2, h3, button, a) { letter-spacing: normal; }

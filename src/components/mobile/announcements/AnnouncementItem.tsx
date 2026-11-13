@@ -1,3 +1,5 @@
+
+import { useUiText } from "@/components/i18n/ui-text";
 import type { Announcement, AnnouncementType } from "@/lib/types";
 import { timeAgo } from "@/lib/utils/formatDate";
 import { Chip, mCard, type ChipTone } from "@/components/mobile/ui/primitives";
@@ -12,23 +14,23 @@ const typeLook: Record<AnnouncementType, { label: string; tone: ChipTone }> = {
 
 /** One announcement as a list row. `clamp` trims long bodies in previews. */
 export function AnnouncementItem({ announcement: a, clamp = false }: { announcement: Announcement; clamp?: boolean }) {
+  const ui = useUiText();
+
   const look = typeLook[a.type] ?? typeLook.info;
 
   return (
     <article className="py-3.5">
       <div className="flex items-center gap-2 mb-1.5">
         <Chip tone={look.tone} dot>
-          {look.label}
+          {ui(look.label)}
         </Chip>
         {a.isPinned && (
           <span className="inline-flex items-center gap-1 text-[12px] font-medium text-m-dim">
-            <PinIcon size={14} />
-            Pinned
-          </span>
+            <PinIcon size={14} />{ui("Pinned")}</span>
         )}
         <span className="ml-auto text-[12px] text-m-faint whitespace-nowrap">{timeAgo(a.createdAt)}</span>
       </div>
-      {a.title && <h3 className="text-[15px] font-semibold leading-snug text-m-text">{a.title}</h3>}
+      {a.title && <h3 className="text-[15px] font-semibold leading-snug text-m-text">{ui(a.title)}</h3>}
       <p className={`mt-0.5 text-[14px] leading-relaxed text-m-dim whitespace-pre-line ${clamp ? "line-clamp-3" : ""}`}>
         {a.body}
       </p>

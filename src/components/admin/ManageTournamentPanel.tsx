@@ -1,8 +1,27 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/Button";
+import {
+  AdminButton,
+  ApprovalBadge,
+  Badge,
+  Card,
+  Checkbox,
+  DetailRow,
+  EmptyState,
+  Field,
+  PageHeader,
+  RowAction,
+  Segmented,
+  Stat,
+  TournamentStatusBadge,
+  fieldClass,
+  textareaClass,
+} from "./ui";
+import { CheckIcon, ClockIcon, DownloadIcon, EditIcon, KeyIcon, PinIcon, ResetIcon, TrashIcon, XIcon } from "./icons";
 import { useToast } from "@/context/ToastContext";
 import type { Tournament, Registration, ApprovalStatus, Announcement, AnnouncementType } from "@/lib/types";
 import { formatTournamentDate, timeAgo, toDate } from "@/lib/utils/formatDate";
@@ -15,12 +34,6 @@ function tsToDatetimeLocal(ts: unknown): string {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
   } catch { return ""; }
 }
-
-const statusConfig: Record<ApprovalStatus, { label: string; color: string; icon: string }> = {
-  pending:  { label: "Pending", color: "text-amber-600 bg-amber-50 border-amber-200", icon: "⏳" },
-  approved: { label: "Approved", color: "text-secondary bg-secondary-light border-secondary", icon: "✅" },
-  rejected: { label: "Rejected", color: "text-primary bg-primary-light border-primary", icon: "❌" },
-};
 
 function exportToCSV(tournament: Tournament, registrations: Registration[]) {
   const headers = tournament.isFree
@@ -55,76 +68,69 @@ function RegistrationCard({
   waitIndex: number | null; selected: boolean;
   onSelect: (id: string) => void; showCheckbox: boolean;
 }) {
-  const cfg = statusConfig[reg.approvalStatus];
+  const ui = useUiText();
+
   const slotLabel = waitIndex !== null ? `W${waitIndex}` : reg.slotNumber ? `#${reg.slotNumber}` : "—";
   const registeredAt = reg.registeredAt
     ? new Date(typeof (reg.registeredAt as { seconds?: number }).seconds === "number" ? (reg.registeredAt as { seconds: number }).seconds * 1000 : reg.registeredAt as unknown as number).toLocaleString("en-BD", { dateStyle: "medium", timeStyle: "short" })
     : null;
+  const busy = loading === reg.id;
 
   return (
-    <div className={`p-5 space-y-4 ${selected ? "bg-primary/5" : ""}`}>
-      <div className="flex items-start justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-2 flex-wrap">
-          {showCheckbox && (
-            <input type="checkbox" checked={selected} onChange={() => onSelect(reg.id)}
-              className="w-4 h-4 accent-primary cursor-pointer" />
-          )}
-          <span className="font-display text-lg text-foreground">{reg.squadName}</span>
-          <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Slot {slotLabel}</span>
-          <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${cfg.color}`}>{cfg.icon} {cfg.label}</span>
+    <div className={`px-5 sm:px-6 py-4 ${selected ? "bg-(--ad-accent-soft)/60" : ""}`}>
+      <div className="flex items-start gap-3">
+        {showCheckbox && (
+          <span className="pt-0.5">
+            <Checkbox checked={selected} onChange={() => onSelect(reg.id)} />
+          </span>
+        )}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[15px] font-semibold text-(--ad-text)">{reg.squadName}</span>
+            <Badge>{ui("Slot")}{slotLabel}</Badge>
+            <ApprovalBadge status={reg.approvalStatus} />
+            {registeredAt && <span className="text-xs text-(--ad-faint) ml-auto">{registeredAt}</span>}
+          </div>
+
+          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 mt-2">
+            <DetailRow label={ui("Leader")} value={reg.leaderName} />
+            <DetailRow label={ui("Leader UID")} value={reg.leaderUid} mono />
+            <DetailRow label={ui("WhatsApp")} value={reg.whatsapp} />
+            <DetailRow label={ui("bKash")} value={reg.bkash || "not provided"} />
+            {reg.transactionId && (
+              <>
+                <DetailRow label={ui("Transaction ID")} value={reg.transactionId} mono />
+                <div className="flex items-center py-1">
+                  <Badge tone="success">
+                    <CheckIcon size={13} />{ui("Payment verified")}</Badge>
+                </div>
+              </>
+            )}
+          </dl>
+
+          <div className="flex gap-2 flex-wrap mt-3">
+            {reg.approvalStatus !== "approved" && (
+              <AdminButton size="sm" variant="success" loading={busy} onClick={() => onApprove(reg.id, "approved")}>
+                {!busy && <CheckIcon size={15} />}{ui("Approve")}</AdminButton>
+            )}
+            {reg.approvalStatus !== "rejected" && (
+              <AdminButton size="sm" variant="dangerSoft" disabled={busy} onClick={() => onApprove(reg.id, "rejected")}>
+                <XIcon size={15} />{ui("Reject")}</AdminButton>
+            )}
+            {reg.approvalStatus !== "pending" && (
+              <AdminButton size="sm" variant="ghost" disabled={busy} onClick={() => onApprove(reg.id, "pending")}>
+                <ResetIcon size={15} />{ui("Reset to pending")}</AdminButton>
+            )}
+          </div>
         </div>
-        {registeredAt && <span className="text-xs text-muted-foreground shrink-0">{registeredAt}</span>}
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
-        {[
-          ["Leader Name", reg.leaderName],
-          ["Leader UID", reg.leaderUid],
-          ["WhatsApp", reg.whatsapp],
-          ["bKash", reg.bkash || "not provided"],
-        ].map(([label, value]) => (
-          <div key={label} className="flex justify-between gap-2 border-b border-border pb-1">
-            <span className="text-muted-foreground shrink-0">{label}</span>
-            <span className={`font-semibold text-right break-all ${label?.includes("UID") ? "font-mono" : ""}`}>{value}</span>
-          </div>
-        ))}
-      </div>
-      {reg.transactionId && (
-        <div className="pt-2 border-t border-border">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-muted-foreground text-sm">Transaction ID</span>
-            <span className="font-mono text-sm font-semibold">{reg.transactionId}</span>
-          </div>
-          <div className="flex items-center gap-2 mt-1">
-            <span className="w-2 h-2 bg-secondary rounded-full" />
-            <span className="text-xs text-secondary font-semibold">✓ Payment Verified</span>
-          </div>
-        </div>
-      )}
-      <div className="flex gap-2 flex-wrap">
-        {reg.approvalStatus !== "approved" && (
-          <button disabled={loading === reg.id} onClick={() => onApprove(reg.id, "approved")}
-            className="text-xs font-bold px-3 py-1.5 rounded-lg bg-secondary text-white hover:bg-secondary/80 disabled:opacity-50 transition-colors">
-            {loading === reg.id ? "…" : "✓ Approve"}
-          </button>
-        )}
-        {reg.approvalStatus !== "rejected" && (
-          <button disabled={loading === reg.id} onClick={() => onApprove(reg.id, "rejected")}
-            className="text-xs font-bold px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary/80 disabled:opacity-50 transition-colors">
-            {loading === reg.id ? "…" : "✗ Reject"}
-          </button>
-        )}
-        {reg.approvalStatus !== "pending" && (
-          <button disabled={loading === reg.id} onClick={() => onApprove(reg.id, "pending")}
-            className="text-xs font-bold px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 disabled:opacity-50 transition-colors">
-            {loading === reg.id ? "…" : "↺ Reset"}
-          </button>
-        )}
       </div>
     </div>
   );
 }
 
 export function ManageTournamentPanel({ tournament, registrations, announcements }: { tournament: Tournament; registrations: Registration[]; announcements: Announcement[] }) {
+  const ui = useUiText();
+
   const router = useRouter();
   const { showToast } = useToast();
   const [loading, setLoading] = useState<string | null>(null);
@@ -158,9 +164,9 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
         body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error();
-      showToast("Updated!", "success");
+      showToast(ui("Updated!"), "success");
       router.refresh();
-    } catch { showToast("Update failed", "error"); }
+    } catch { showToast(ui("Update failed"), "error"); }
     finally { setLoading(null); }
   };
 
@@ -172,9 +178,9 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
         body: JSON.stringify({ approvalStatus }),
       });
       if (!res.ok) throw new Error();
-      showToast(approvalStatus === "approved" ? "Squad approved!" : approvalStatus === "rejected" ? "Squad rejected" : "Status updated", "success");
+      showToast(ui(approvalStatus === "approved" ? "Squad approved!" : approvalStatus === "rejected" ? "Squad rejected" : "Status updated"), "success");
       router.refresh();
-    } catch { showToast("Failed to update", "error"); }
+    } catch { showToast(ui("Failed to update"), "error"); }
     finally { setLoading(null); }
   };
 
@@ -188,10 +194,10 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
           body: JSON.stringify({ approvalStatus: "approved" }),
         })
       ));
-      showToast(`${selectedIds.size} squad${selectedIds.size > 1 ? "s" : ""} approved!`, "success");
+      showToast(ui(`${selectedIds.size} squad${selectedIds.size > 1 ? "s" : ""} approved!`), "success");
       setSelectedIds(new Set());
       router.refresh();
-    } catch { showToast("Bulk approve failed", "error"); }
+    } catch { showToast(ui("Bulk approve failed"), "error"); }
     finally { setBulkLoading(false); }
   };
 
@@ -200,9 +206,9 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
     try {
       const res = await fetch(`/api/admin/tournaments/${tournament.id}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
-      showToast("Tournament deleted", "success");
+      showToast(ui("Tournament deleted"), "success");
       router.push("/admin/tournaments");
-    } catch { showToast("Delete failed", "error"); setLoading(null); }
+    } catch { showToast(ui("Delete failed"), "error"); setLoading(null); }
   };
 
   const handleSaveDetails = async () => {
@@ -237,10 +243,10 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
         body: JSON.stringify({ ...annForm, tournamentId: tournament.id }),
       });
       if (!res.ok) throw new Error();
-      showToast("Announcement posted!", "success");
+      showToast(ui("Announcement posted!"), "success");
       setAnnForm({ title: "", body: "", type: "info", isPinned: false });
       router.refresh();
-    } catch { showToast("Failed to post", "error"); }
+    } catch { showToast(ui("Failed to post"), "error"); }
     finally { setAnnLoading(false); }
   };
 
@@ -251,9 +257,9 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
         method: "DELETE", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
       });
-      showToast("Deleted", "success");
+      showToast(ui("Deleted"), "success");
       router.refresh();
-    } catch { showToast("Delete failed", "error"); }
+    } catch { showToast(ui("Delete failed"), "error"); }
     finally { setDeletingAnn(null); }
   };
 
@@ -261,239 +267,183 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
   const confirmed = registrations.filter(r => !r.isWaitlisted);
   const waitlisted = registrations.filter(r => r.isWaitlisted);
   const approved = registrations.filter(r => r.approvalStatus === "approved").length;
-  const inputClass = "w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary";
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3 flex-wrap">
-        <div className="flex items-start gap-3 flex-1">
-          <Button href="/admin/tournaments" variant="ghost" size="sm" className="shrink-0 mt-1">← Back</Button>
-          <h1 className="font-display text-xl sm:text-3xl text-foreground tracking-wide leading-tight">{tournament.name}</h1>
-        </div>
-        <div className="flex gap-2 shrink-0">
-          <button onClick={() => exportToCSV(tournament, registrations)}
-            className="text-xs font-semibold px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors">
-            ⬇ Export CSV
-          </button>
-          <button onClick={() => setShowEditDetails(v => !v)}
-            className="text-xs font-semibold px-3 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 transition-colors">
-            ✏ Edit Details
-          </button>
-          <button onClick={() => setShowDeleteConfirm(true)}
-            className="text-xs font-semibold px-3 py-2 rounded-lg bg-primary-light hover:bg-primary/20 text-primary transition-colors">
-            🗑 Delete
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        back={{ href: "/admin/tournaments", label: "All tournaments" }}
+        title={ui(tournament.name)}
+        description={
+          <span className="inline-flex flex-wrap items-center gap-2">
+            <TournamentStatusBadge status={tournament.status} />
+            <span>{ui(formatTournamentDate(tournament.startsAt))}</span>
+            <span>· {tournament.mode}</span>
+            <span>· {ui(tournament.isFree ? "Free entry" : `Entry ${tournament.registrationFee ?? ""}`)}</span>
+          </span>
+        }
+        actions={
+          <>
+            <AdminButton size="sm" variant="secondary" onClick={() => exportToCSV(tournament, registrations)}>
+              <DownloadIcon size={15} />{ui("Export CSV")}</AdminButton>
+            <AdminButton size="sm" variant="secondary" onClick={() => setShowEditDetails(v => !v)}>
+              <EditIcon size={15} />{ui("Edit details")}</AdminButton>
+            <AdminButton size="sm" variant="dangerSoft" onClick={() => setShowDeleteConfirm(true)}>
+              <TrashIcon size={15} />{ui("Delete")}</AdminButton>
+          </>
+        }
+      />
 
-      {/* Edit Details panel */}
+      {/* Edit details */}
       {showEditDetails && (
-        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 space-y-4">
-          <h3 className="font-semibold text-blue-800">Edit Tournament Details</h3>
+        <Card title={ui("Edit tournament details")} className="border-(--ad-accent)/40">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold mb-1 text-blue-700">Tournament Name</label>
-              <input value={editForm.name} onChange={e => setEditForm(p => ({ ...p, name: e.target.value }))} className={inputClass} />
-            </div>
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold mb-1 text-blue-700">Description</label>
+            <Field label={ui("Tournament name")} wide>
+              <input value={editForm.name} onChange={e => setEditForm(p => ({ ...p, name: e.target.value }))} className={fieldClass} />
+            </Field>
+            <Field label={ui("Description")} wide>
               <textarea value={editForm.description} onChange={e => setEditForm(p => ({ ...p, description: e.target.value }))}
-                rows={2} className={`${inputClass} resize-none`} />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold mb-1 text-blue-700">Prize Pool</label>
-              <input value={editForm.prizePool} onChange={e => setEditForm(p => ({ ...p, prizePool: e.target.value }))} className={inputClass} placeholder="৳5,000" />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold mb-1 text-blue-700">Max Slots</label>
-              <input type="number" value={editForm.maxSlots} onChange={e => setEditForm(p => ({ ...p, maxSlots: e.target.value }))} className={inputClass} />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold mb-1 text-blue-700">1st Prize</label>
-              <input value={editForm.firstPrize} onChange={e => setEditForm(p => ({ ...p, firstPrize: e.target.value }))} className={inputClass} placeholder="৳3,000" />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold mb-1 text-blue-700">2nd Prize</label>
-              <input value={editForm.secondPrize} onChange={e => setEditForm(p => ({ ...p, secondPrize: e.target.value }))} className={inputClass} placeholder="৳1,500" />
-            </div>
+                rows={2} className={`${textareaClass} resize-none`} />
+            </Field>
+            <Field label={ui("Prize pool")}>
+              <input value={editForm.prizePool} onChange={e => setEditForm(p => ({ ...p, prizePool: e.target.value }))} className={fieldClass} placeholder="৳5,000" />
+            </Field>
+            <Field label={ui("Max slots")}>
+              <input type="number" value={editForm.maxSlots} onChange={e => setEditForm(p => ({ ...p, maxSlots: e.target.value }))} className={fieldClass} />
+            </Field>
+            <Field label={ui("1st prize")}>
+              <input value={editForm.firstPrize} onChange={e => setEditForm(p => ({ ...p, firstPrize: e.target.value }))} className={fieldClass} placeholder="৳3,000" />
+            </Field>
+            <Field label={ui("2nd prize")}>
+              <input value={editForm.secondPrize} onChange={e => setEditForm(p => ({ ...p, secondPrize: e.target.value }))} className={fieldClass} placeholder="৳1,500" />
+            </Field>
             {!tournament.isFree && (
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold mb-1 text-blue-700">bKash Send Money Number</label>
-                <input type="tel" value={editForm.bkashNumber} onChange={e => setEditForm(p => ({ ...p, bkashNumber: e.target.value }))} className={inputClass} placeholder="+880 1XXX-XXXXXX" />
-                <p className="text-xs text-blue-600 mt-1">Players will send payments to this number during registration.</p>
-              </div>
+              <Field label={ui("bKash Send Money number")} hint={ui("Players will send payments to this number during registration.")} wide>
+                <input type="tel" value={editForm.bkashNumber} onChange={e => setEditForm(p => ({ ...p, bkashNumber: e.target.value }))} className={fieldClass} placeholder={ui("+880 1XXX-XXXXXX")} />
+              </Field>
             )}
-            <div>
-              <label className="block text-xs font-semibold mb-1 text-blue-700">Start Date & Time (BD time)</label>
-              <input type="datetime-local" value={editForm.startsAt} onChange={e => setEditForm(p => ({ ...p, startsAt: e.target.value }))} className={inputClass} />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold mb-1 text-blue-700">Registration Deadline (BD time)</label>
-              <input type="datetime-local" value={editForm.registrationDeadline} onChange={e => setEditForm(p => ({ ...p, registrationDeadline: e.target.value }))} className={inputClass} />
-            </div>
+            <Field label={ui("Start date & time (BD time)")}>
+              <input type="datetime-local" value={editForm.startsAt} onChange={e => setEditForm(p => ({ ...p, startsAt: e.target.value }))} className={fieldClass} />
+            </Field>
+            <Field label={ui("Registration deadline (BD time)")}>
+              <input type="datetime-local" value={editForm.registrationDeadline} onChange={e => setEditForm(p => ({ ...p, registrationDeadline: e.target.value }))} className={fieldClass} />
+            </Field>
           </div>
-          <div className="flex gap-2">
-            <Button size="sm" loading={loading === "details"} onClick={handleSaveDetails}>Save Changes</Button>
-            <Button size="sm" variant="ghost" onClick={() => setShowEditDetails(false)}>Cancel</Button>
+          <div className="flex gap-2 mt-5">
+            <AdminButton loading={loading === "details"} onClick={handleSaveDetails}>{ui("Save changes")}</AdminButton>
+            <AdminButton variant="ghost" onClick={() => setShowEditDetails(false)}>{ui("Cancel")}</AdminButton>
           </div>
-        </div>
+        </Card>
       )}
 
       {/* Delete confirmation */}
       {showDeleteConfirm && (
-        <div className="bg-primary-light border border-primary rounded-2xl p-5">
-          <p className="font-semibold text-primary mb-1">Delete this tournament?</p>
-          <p className="text-sm text-muted-foreground mb-4">This cannot be undone. All registration data will remain in the database.</p>
+        <div className="rounded-2xl bg-(--ad-danger-soft) border border-(--ad-danger)/30 px-5 py-4">
+          <p className="text-sm font-semibold text-(--ad-danger)">{ui("Delete this tournament?")}</p>
+          <p className="text-[13px] text-(--ad-dim) mt-0.5 mb-4">{ui("This cannot be undone. All registration data will remain in the database.")}</p>
           <div className="flex gap-2">
-            <Button size="sm" loading={loading === "delete"} onClick={handleDelete}
-              className="bg-primary hover:bg-primary-dark text-white">Yes, Delete</Button>
-            <Button size="sm" variant="ghost" onClick={() => setShowDeleteConfirm(false)}>Cancel</Button>
+            <AdminButton size="sm" variant="danger" loading={loading === "delete"} onClick={handleDelete}>{ui("Yes, delete")}</AdminButton>
+            <AdminButton size="sm" variant="ghost" onClick={() => setShowDeleteConfirm(false)}>{ui("Cancel")}</AdminButton>
           </div>
         </div>
       )}
 
       {/* Quick stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {[
-          { label: "Registered", value: `${tournament.registeredCount}/${tournament.maxSlots}`, color: "text-foreground" },
-          { label: "Approved", value: approved, color: "text-secondary" },
-          { label: "Waitlisted", value: tournament.waitlistCount, color: "text-amber-600" },
-          { label: "Pending", value: registrations.filter(r => r.approvalStatus === "pending").length, color: "text-primary" },
-        ].map((s) => (
-          <div key={s.label} className="bg-card rounded-2xl border border-border p-4 text-center">
-            <div className={`font-display text-2xl ${s.color}`}>{s.value}</div>
-            <div className="text-xs text-muted-foreground font-semibold uppercase tracking-wide mt-0.5">{s.label}</div>
-          </div>
-        ))}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <Stat label={ui("Registered")} value={`${tournament.registeredCount}/${tournament.maxSlots}`} />
+        <Stat label={ui("Approved")} value={approved} tone="success" />
+        <Stat label={ui("Waitlisted")} value={tournament.waitlistCount} tone={tournament.waitlistCount > 0 ? "warn" : "neutral"} />
+        <Stat label={ui("Pending")} value={pendingRegs.length} tone={pendingRegs.length > 0 ? "warn" : "neutral"} />
       </div>
 
-      {/* Schedule — always-visible time editor */}
-      <div className="bg-card rounded-2xl border-2 border-primary/20 p-5 space-y-4">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">🕐</span>
-          <h3 className="font-bold text-base text-foreground uppercase tracking-wide">Schedule</h3>
-        </div>
+      {/* Controls */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card title={ui("Registration")}>
+          <div className="flex items-center justify-between gap-2 mb-1">
+            {ui(tournament.isRegistrationOpen ? <Badge tone="success" dot>{ui("Open")}</Badge> : <Badge tone="danger" dot>{ui("Closed")}</Badge>)}
+          </div>
+          <p className="text-xs text-(--ad-dim) mb-4">{ui("Deadline:")}<span className="font-semibold text-(--ad-text)">{ui(formatTournamentDate(tournament.registrationDeadline))}</span>
+          </p>
+          <AdminButton size="sm" variant={tournament.isRegistrationOpen ? "secondary" : "primary"}
+            loading={loading === "reg"}
+            onClick={() => patch({ isRegistrationOpen: !tournament.isRegistrationOpen }, "reg")}>
+            {ui(tournament.isRegistrationOpen ? "Close registration" : "Open registration")}
+          </AdminButton>
+        </Card>
+
+        <Card title={ui("Status")}>
+          <div className="mb-3"><TournamentStatusBadge status={tournament.status} /></div>
+          <select className={fieldClass} aria-label={ui("Tournament status")}
+            value={tournament.status} onChange={(e) => patch({ status: e.target.value }, "status")}>
+            <option value="upcoming">{ui("Upcoming")}</option>
+            <option value="ongoing">{ui("Ongoing (LIVE)")}</option>
+            <option value="completed">{ui("Completed")}</option>
+            <option value="cancelled">{ui("Cancelled")}</option>
+          </select>
+          <p className="text-xs text-(--ad-faint) mt-2">{ui("Changes save as soon as you pick.")}</p>
+        </Card>
+
+        <Card title={ui(<span className="inline-flex items-center gap-2"><KeyIcon size={16} />{ui("Room info")}</span>)}>
+          <div className="space-y-2 mb-3">
+            <input value={roomId} onChange={(e) => setRoomId(e.target.value)} className={fieldClass} placeholder={ui("Room ID")} aria-label={ui("Room ID")} />
+            <input value={roomPassword} onChange={(e) => setRoomPassword(e.target.value)} className={fieldClass} placeholder={ui("Room password")} aria-label={ui("Room password")} />
+          </div>
+          <AdminButton size="sm" loading={loading === "room"}
+            onClick={() => patch({ roomId: roomId || null, roomPassword: roomPassword || null }, "room")}>{ui("Save room info")}</AdminButton>
+        </Card>
+      </div>
+
+      {/* Schedule */}
+      <Card title={ui(<span className="inline-flex items-center gap-2"><ClockIcon size={16} />{ui("Schedule")}</span>)} description="Times are in your browser's local time.">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
-              🎮 Match Start Time
-            </label>
-            <p className="text-xs text-muted-foreground mb-2">
-              Saved: <span className="font-semibold text-foreground">{formatTournamentDate(tournament.startsAt)}</span>
-            </p>
-            <input
-              type="datetime-local"
-              value={scheduleForm.startsAt}
-              onChange={(e) => setScheduleForm(p => ({ ...p, startsAt: e.target.value }))}
-              className={`${inputClass} text-sm`}
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">
-              📋 Registration Deadline
-            </label>
-            <p className="text-xs text-muted-foreground mb-2">
-              Saved: <span className="font-semibold text-foreground">{formatTournamentDate(tournament.registrationDeadline)}</span>
-            </p>
-            <input
-              type="datetime-local"
-              value={scheduleForm.deadline}
-              onChange={(e) => setScheduleForm(p => ({ ...p, deadline: e.target.value }))}
-              className={`${inputClass} text-sm`}
-            />
-          </div>
+          <Field label={ui("Match start time")} hint={ui(`Saved: ${formatTournamentDate(tournament.startsAt)}`)}>
+            <input type="datetime-local" value={scheduleForm.startsAt}
+              onChange={(e) => setScheduleForm(p => ({ ...p, startsAt: e.target.value }))} className={fieldClass} />
+          </Field>
+          <Field label={ui("Registration deadline")} hint={ui(`Saved: ${formatTournamentDate(tournament.registrationDeadline)}`)}>
+            <input type="datetime-local" value={scheduleForm.deadline}
+              onChange={(e) => setScheduleForm(p => ({ ...p, deadline: e.target.value }))} className={fieldClass} />
+          </Field>
         </div>
-        <Button
+        <AdminButton
           size="sm"
+          className="mt-4"
           loading={loading === "schedule"}
           onClick={() => patch({
             ...(scheduleForm.startsAt ? { startsAt: new Date(scheduleForm.startsAt).toISOString() } : {}),
             ...(scheduleForm.deadline ? { registrationDeadline: new Date(scheduleForm.deadline).toISOString() } : {}),
           }, "schedule")}
-        >
-          💾 Save Schedule
-        </Button>
-      </div>
-
-      {/* Controls */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-card rounded-2xl border border-border p-5">
-          <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">Registration</h3>
-          <p className="font-bold text-lg mb-1">
-            {tournament.isRegistrationOpen ? <span className="text-secondary">Open ✓</span> : <span className="text-primary">Closed</span>}
-          </p>
-          <p className="text-xs text-muted-foreground mb-3">
-            <span className="font-semibold">Deadline:</span> {formatTournamentDate(tournament.registrationDeadline)}
-          </p>
-          <Button size="sm" variant={tournament.isRegistrationOpen ? "outline" : "secondary"}
-            loading={loading === "reg"}
-            onClick={() => patch({ isRegistrationOpen: !tournament.isRegistrationOpen }, "reg")}>
-            {tournament.isRegistrationOpen ? "Close Registration" : "Open Registration"}
-          </Button>
-        </div>
-        <div className="bg-card rounded-2xl border border-border p-5">
-          <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">Status</h3>
-          <p className="font-bold text-lg mb-3 capitalize">{tournament.status}</p>
-          <select className="w-full border border-border rounded-lg px-3 py-2 text-sm"
-            value={tournament.status} onChange={(e) => patch({ status: e.target.value }, "status")}>
-            <option value="upcoming">Upcoming</option>
-            <option value="ongoing">Ongoing (LIVE)</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-        </div>
-        <div className="bg-card rounded-2xl border border-border p-5">
-          <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">Room Info</h3>
-          <div className="space-y-2 mb-3">
-            <input value={roomId} onChange={(e) => setRoomId(e.target.value)}
-              className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
-              placeholder="Room ID" />
-            <input value={roomPassword} onChange={(e) => setRoomPassword(e.target.value)}
-              className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
-              placeholder="Room Password" />
-          </div>
-          <Button size="sm" loading={loading === "room"}
-            onClick={() => patch({ roomId: roomId || null, roomPassword: roomPassword || null }, "room")}>
-            Save Room Info
-          </Button>
-        </div>
-      </div>
+        >{ui("Save schedule")}</AdminButton>
+      </Card>
 
       {/* Bulk approve bar */}
       {pendingRegs.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-3 flex items-center justify-between flex-wrap gap-3">
-          <div className="flex items-center gap-3">
-            <input type="checkbox"
-              checked={selectedIds.size === pendingRegs.length && pendingRegs.length > 0}
-              onChange={() => {
-                if (selectedIds.size === pendingRegs.length) setSelectedIds(new Set());
-                else setSelectedIds(new Set(pendingRegs.map(r => r.id)));
-              }}
-              className="w-4 h-4 accent-primary cursor-pointer" />
-            <span className="text-sm font-medium text-amber-800">
-              {selectedIds.size > 0 ? `${selectedIds.size} selected` : `${pendingRegs.length} pending approval`}
-            </span>
-          </div>
+        <div className="sticky top-28 lg:top-3 z-20 rounded-2xl bg-(--ad-warn-soft) border border-(--ad-warn)/25 px-5 py-3 flex items-center justify-between flex-wrap gap-3 shadow-sm">
+          <Checkbox
+            checked={selectedIds.size === pendingRegs.length && pendingRegs.length > 0}
+            onChange={() => {
+              if (selectedIds.size === pendingRegs.length) setSelectedIds(new Set());
+              else setSelectedIds(new Set(pendingRegs.map(r => r.id)));
+            }}
+            label={
+              ui(<span className="font-semibold text-(--ad-warn)">
+                {ui(selectedIds.size > 0 ? `${selectedIds.size} selected` : `${pendingRegs.length} pending approval — select all`)}
+              </span>)
+            }
+          />
           {selectedIds.size > 0 && (
-            <Button size="sm" loading={bulkLoading} onClick={handleBulkApprove}
-              className="bg-secondary hover:bg-secondary-dark text-white">
-              ✓ Approve Selected ({selectedIds.size})
-            </Button>
+            <AdminButton size="sm" variant="success" loading={bulkLoading} onClick={handleBulkApprove}>
+              {!bulkLoading && <CheckIcon size={15} />}{ui("Approve selected (")}{selectedIds.size})
+            </AdminButton>
           )}
         </div>
       )}
 
       {/* Registrations */}
-      <div className="bg-card rounded-2xl border border-border overflow-hidden">
-        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
-          <h2 className="font-semibold">Squad Applications ({confirmed.length})</h2>
-          <span className="text-xs text-muted-foreground">{approved} approved</span>
-        </div>
-        {confirmed.length === 0 ? (
-          <div className="text-center py-10 text-muted-foreground text-sm">No registrations yet.</div>
+      <Card title={ui(`Squad applications (${confirmed.length})`)} description={`${approved} approved`} flush>
+        {ui(confirmed.length === 0 ? (
+          <EmptyState title={ui("No registrations yet")} />
         ) : (
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-(--ad-line)">
             {confirmed.map((reg) => (
               <RegistrationCard key={reg.id} reg={reg} loading={loading}
                 onApprove={setApproval} waitIndex={null}
@@ -501,16 +451,13 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
                 showCheckbox={reg.approvalStatus === "pending"} />
             ))}
           </div>
-        )}
-      </div>
+        ))}
+      </Card>
 
       {/* Waitlist */}
       {waitlisted.length > 0 && (
-        <div className="bg-card rounded-2xl border border-border overflow-hidden">
-          <div className="px-6 py-4 border-b border-border">
-            <h2 className="font-semibold">Waiting List ({waitlisted.length})</h2>
-          </div>
-          <div className="divide-y divide-border">
+        <Card title={ui(`Waiting list (${waitlisted.length})`)} flush>
+          <div className="divide-y divide-(--ad-line)">
             {waitlisted.map((reg, i) => (
               <RegistrationCard key={reg.id} reg={reg} loading={loading}
                 onApprove={setApproval} waitIndex={i + 1}
@@ -518,75 +465,64 @@ export function ManageTournamentPanel({ tournament, registrations, announcements
                 showCheckbox={reg.approvalStatus === "pending"} />
             ))}
           </div>
-        </div>
+        </Card>
       )}
 
       {/* Announcements */}
-      <div className="bg-card rounded-2xl border border-border overflow-hidden">
-        <div className="px-6 py-4 border-b border-border">
-          <h2 className="font-semibold">Announcements to Registered Players</h2>
-          <p className="text-xs text-muted-foreground mt-0.5">Visible only to squads registered for this tournament</p>
-        </div>
-
-        {/* Compose */}
-        <div className="px-6 py-5 border-b border-border space-y-3">
+      <Card title={ui("Announcements to registered players")} description="Visible only to squads registered for this tournament" flush>
+        <div className="px-5 sm:px-6 py-5 border-b border-(--ad-line) space-y-3">
           <input
             value={annForm.title}
             onChange={e => setAnnForm(p => ({ ...p, title: e.target.value }))}
-            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
-            placeholder="Title (optional)"
+            className={fieldClass}
+            placeholder={ui("Title (optional)")}
+            aria-label={ui("Announcement title")}
           />
           <textarea
             value={annForm.body}
             onChange={e => setAnnForm(p => ({ ...p, body: e.target.value }))}
             rows={3}
-            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary resize-none"
-            placeholder="Write your announcement..."
+            className={`${textareaClass} resize-none`}
+            placeholder={ui("Write your announcement...")}
+            aria-label={ui("Announcement message")}
           />
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex gap-1.5">
-              {(["info", "warning", "roomInfo", "result"] as AnnouncementType[]).map(t => (
-                <button key={t} type="button" onClick={() => setAnnForm(p => ({ ...p, type: t }))}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold border-2 transition-colors ${annForm.type === t ? "border-primary bg-primary text-white" : "border-border text-muted-foreground"}`}>
-                  {t === "roomInfo" ? "Room Info" : t.charAt(0).toUpperCase() + t.slice(1)}
-                </button>
-              ))}
-            </div>
-            <label className="flex items-center gap-1.5 text-sm cursor-pointer">
-              <input type="checkbox" checked={annForm.isPinned} onChange={e => setAnnForm(p => ({ ...p, isPinned: e.target.checked }))} className="rounded" />
-              Pin to top
-            </label>
-            <Button size="sm" loading={annLoading} onClick={handlePostAnnouncement} className="ml-auto">
-              Post Announcement
-            </Button>
+            <Segmented
+              value={annForm.type}
+              onChange={(t) => setAnnForm(p => ({ ...p, type: t }))}
+              options={(["info", "warning", "roomInfo", "result"] as AnnouncementType[]).map(t => ({
+                value: t,
+                label: t === "roomInfo" ? "Room Info" : t.charAt(0).toUpperCase() + t.slice(1),
+              }))}
+            />
+            <Checkbox checked={annForm.isPinned} onChange={(v) => setAnnForm(p => ({ ...p, isPinned: v }))} label={ui("Pin to top")} />
+            <AdminButton size="sm" loading={annLoading} onClick={handlePostAnnouncement} className="ml-auto">{ui("Post announcement")}</AdminButton>
           </div>
         </div>
 
-        {/* List */}
-        {announcements.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground text-sm">No announcements yet.</div>
+        {ui(announcements.length === 0 ? (
+          <EmptyState title={ui("No announcements yet")} />
         ) : (
-          <div className="divide-y divide-border">
+          <ul className="divide-y divide-(--ad-line)">
             {announcements.map(a => (
-              <div key={a.id} className="px-6 py-4 flex items-start justify-between gap-3">
+              <li key={a.id} className="px-5 sm:px-6 py-4 flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-muted text-muted-foreground uppercase">{a.type}</span>
-                    {a.isPinned && <span className="text-xs">📌 Pinned</span>}
-                    <span className="text-xs text-muted-foreground">{timeAgo(a.createdAt)}</span>
+                    <Badge>{ui(a.type === "roomInfo" ? "Room Info" : a.type.charAt(0).toUpperCase() + a.type.slice(1))}</Badge>
+                    {a.isPinned && <Badge tone="accent"><PinIcon size={12} />{ui("Pinned")}</Badge>}
+                    <span className="text-xs text-(--ad-faint)">{timeAgo(a.createdAt)}</span>
                   </div>
-                  {a.title && <p className="font-semibold text-sm">{a.title}</p>}
-                  <p className="text-sm text-muted-foreground whitespace-pre-line">{a.body}</p>
+                  {a.title && <p className="text-sm font-semibold text-(--ad-text)">{ui(a.title)}</p>}
+                  <p className="text-sm text-(--ad-dim) whitespace-pre-line">{a.body}</p>
                 </div>
-                <button onClick={() => handleDeleteAnnouncement(a.id)} disabled={deletingAnn === a.id}
-                  className="text-xs text-primary hover:underline font-medium shrink-0 disabled:opacity-50">
-                  {deletingAnn === a.id ? "…" : "Delete"}
-                </button>
-              </div>
+                <RowAction tone="danger" onClick={() => handleDeleteAnnouncement(a.id)} disabled={deletingAnn === a.id}>
+                  {ui(deletingAnn === a.id ? "…" : "Delete")}
+                </RowAction>
+              </li>
             ))}
-          </div>
-        )}
-      </div>
+          </ul>
+        ))}
+      </Card>
     </div>
   );
 }

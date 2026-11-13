@@ -1,14 +1,18 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/Button";
+import { AdminButton, Checkbox, Field, Segmented, fieldClass, textareaClass } from "./ui";
 import { useToast } from "@/context/ToastContext";
 import type { Tournament } from "@/lib/types";
 
 type AnnouncementType = "info" | "warning" | "roomInfo" | "result";
 
 export function AnnouncementComposer({ tournaments }: { tournaments: Tournament[] }) {
+  const ui = useUiText();
+
   const router = useRouter();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -38,11 +42,11 @@ export function AnnouncementComposer({ tournaments }: { tournaments: Tournament[
         }),
       });
       if (!res.ok) throw new Error();
-      showToast("Announcement posted!", "success");
+      showToast(ui("Announcement posted!"), "success");
       setForm({ title: "", body: "", type: "info", tournamentId: "", isPinned: false });
       router.refresh();
     } catch {
-      showToast("Failed to post announcement", "error");
+      showToast(ui("Failed to post announcement"), "error");
     } finally {
       setLoading(false);
     }
@@ -57,81 +61,47 @@ export function AnnouncementComposer({ tournaments }: { tournaments: Tournament[
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block text-sm font-semibold mb-1">Title (optional)</label>
-        <input
-          value={form.title}
-          onChange={set("title")}
-          className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
-          placeholder="Announcement title..."
-        />
-      </div>
+      <Field label={ui("Title (optional)")}>
+        <input value={form.title} onChange={set("title")} className={fieldClass} placeholder={ui("Announcement title...")} />
+      </Field>
 
-      <div>
-        <label className="block text-sm font-semibold mb-1">Message *</label>
+      <Field label={ui("Message *")}>
         <textarea
           required
           value={form.body}
           onChange={set("body")}
           rows={3}
-          className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary resize-none"
-          placeholder="Write your announcement..."
+          className={`${textareaClass} resize-none`}
+          placeholder={ui("Write your announcement...")}
         />
-      </div>
+      </Field>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-semibold mb-1">Type</label>
-          <div className="flex flex-wrap gap-2">
-            {types.map((t) => (
-              <button
-                key={t.value}
-                type="button"
-                onClick={() => setForm((prev) => ({ ...prev, type: t.value }))}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 transition-colors ${
-                  form.type === t.value
-                    ? "border-primary bg-primary text-white"
-                    : "border-border text-muted-foreground"
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
+          <span className="block text-[13px] font-semibold text-(--ad-text) mb-1.5">{ui("Type")}</span>
+          <Segmented value={form.type} options={types} onChange={(v) => setForm((prev) => ({ ...prev, type: v }))} />
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold mb-1">Tournament (optional)</label>
-          <select
-            value={form.tournamentId}
-            onChange={set("tournamentId")}
-            className="w-full border border-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary"
-          >
-            <option value="">Site-wide</option>
+        <Field label={ui("Tournament (optional)")}>
+          <select value={form.tournamentId} onChange={set("tournamentId")} className={fieldClass}>
+            <option value="">{ui("Site-wide")}</option>
             {tournaments.map((t) => (
               <option key={t.id} value={t.id}>
                 {t.name}
               </option>
             ))}
           </select>
-        </div>
-
-        <div className="flex items-end">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={form.isPinned}
-              onChange={(e) => setForm((prev) => ({ ...prev, isPinned: e.target.checked }))}
-              className="rounded"
-            />
-            <span className="text-sm font-semibold">Pin to top</span>
-          </label>
-        </div>
+        </Field>
       </div>
 
-      <Button type="submit" loading={loading}>
-        Post Announcement
-      </Button>
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+        <Checkbox
+          checked={form.isPinned}
+          onChange={(v) => setForm((prev) => ({ ...prev, isPinned: v }))}
+          label={ui(<span className="font-semibold">{ui("Pin to top")}</span>)}
+        />
+        <AdminButton type="submit" loading={loading}>{ui("Post announcement")}</AdminButton>
+      </div>
     </form>
   );
 }

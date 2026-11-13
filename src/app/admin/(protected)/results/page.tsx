@@ -1,6 +1,10 @@
+
+import { createUiText } from "@/components/i18n/ui-text";
+import { getLocale } from "next-intl/server";
 import { ResultComposer } from "@/components/admin/ResultComposer";
 import { ResultPostList } from "@/components/admin/ResultPostList";
 import { serialize } from "@/lib/utils/serialize";
+import { Card, PageHeader } from "@/components/admin/ui";
 import type { ResultPost } from "@/lib/types";
 
 async function getData() {
@@ -16,22 +20,20 @@ async function getData() {
 }
 
 export default async function AdminResultsPage() {
+  const ui = createUiText(await getLocale());
+
   const { posts, tournaments } = await getData();
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-3xl text-foreground tracking-wide">Results</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Posts for the Results page, which only signed-in members can open. Link a post to a tournament or
-          leave it general. Save it as a draft to finish later, or publish it straight away.
-        </p>
-      </div>
+      <PageHeader
+        title={ui("Results")}
+        description="Posts for the Results page, which only signed-in members can open. Link a post to a tournament or leave it general. Save it as a draft to finish later, or publish it straight away."
+      />
 
-      <div className="bg-card rounded-2xl border border-border p-6">
-        <h2 className="font-semibold mb-4">New post</h2>
+      <Card title={ui("New post")}>
         <ResultComposer tournaments={tournaments} />
-      </div>
+      </Card>
 
       <ResultPostList posts={posts} tournaments={tournaments} />
     </div>

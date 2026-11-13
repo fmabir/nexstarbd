@@ -3,11 +3,11 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminMobileNav } from "@/components/admin/AdminMobileNav";
+import styles from "@/components/admin/admin.module.css";
 
-// The public site's phone shell is white; admin stays on the light-green
-// page at every width, so its browser chrome does too.
+// Admin sits on its own off-white page, so the browser chrome matches it.
 export const viewport: Viewport = {
-  themeColor: "#d3fbe4",
+  themeColor: "#f5f8fc",
 };
 
 export default async function AdminLayout({
@@ -22,19 +22,17 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col sm:flex-row">
-      {/* Desktop: left sidebar | Mobile: hidden */}
+    <div className={`${styles.root} flex flex-col lg:flex-row`}>
+      {/* Desktop: left sidebar */}
       <AdminSidebar />
 
-      {/* Right/main area */}
-      <div className="flex-1 flex flex-col overflow-auto">
-        {/* Mobile-only top nav */}
+      <div className="flex-1 min-w-0 flex flex-col">
+        {/* Phones and tablets: top bar + section pills */}
         <AdminMobileNav />
 
-        {/* Page content */}
-        <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-8">
+        <main className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-10 py-6 sm:py-8">
           {children}
-        </div>
+        </main>
       </div>
     </div>
   );

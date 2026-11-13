@@ -1,15 +1,13 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/context/ToastContext";
 import type { Tournament, Registration, ApprovalStatus } from "@/lib/types";
-
-const statusConfig: Record<ApprovalStatus, { label: string; color: string; icon: string }> = {
-  pending:  { label: "Pending", color: "text-amber-600 bg-amber-50 border-amber-200", icon: "⏳" },
-  approved: { label: "Approved", color: "text-secondary bg-secondary-light border-secondary", icon: "✅" },
-  rejected: { label: "Rejected", color: "text-primary bg-primary-light border-primary", icon: "❌" },
-};
+import { AdminButton, ApprovalBadge, Badge, Checkbox, EmptyState, fieldClass } from "./ui";
+import { CheckIcon, DownloadIcon, SearchIcon, XIcon } from "./icons";
 
 function exportToCSV(tournaments: Tournament[], registrations: Registration[], filtered: Registration[]) {
   const tournamentMap = new Map(tournaments.map((t) => [t.id, t]));
@@ -33,6 +31,8 @@ function exportToCSV(tournaments: Tournament[], registrations: Registration[], f
 }
 
 export function RegistrationsTable({ tournaments, registrations }: { tournaments: Tournament[]; registrations: Registration[] }) {
+  const ui = useUiText();
+
   const router = useRouter();
   const { showToast } = useToast();
   const [search, setSearch] = useState("");
@@ -90,10 +90,10 @@ export function RegistrationsTable({ tournaments, registrations }: { tournaments
         body: JSON.stringify({ approvalStatus }),
       });
       if (!res.ok) throw new Error();
-      showToast(approvalStatus === "approved" ? "Squad approved!" : approvalStatus === "rejected" ? "Squad rejected" : "Status updated", "success");
+      showToast(ui(approvalStatus === "approved" ? "Squad approved!" : approvalStatus === "rejected" ? "Squad rejected" : "Status updated"), "success");
       router.refresh();
     } catch {
-      showToast("Failed to update", "error");
+      showToast(ui("Failed to update"), "error");
     } finally {
       setLoading(null);
     }
@@ -112,11 +112,11 @@ export function RegistrationsTable({ tournaments, registrations }: { tournaments
           })
         )
       );
-      showToast(`${selectedIds.size} squad${selectedIds.size > 1 ? "s" : ""} approved!`, "success");
+      showToast(ui(`${selectedIds.size} squad${selectedIds.size > 1 ? "s" : ""} approved!`), "success");
       setSelectedIds(new Set());
       router.refresh();
     } catch {
-      showToast("Bulk approve failed", "error");
+      showToast(ui("Bulk approve failed"), "error");
     } finally {
       setBulkLoading(false);
     }
@@ -142,26 +142,24 @@ export function RegistrationsTable({ tournaments, registrations }: { tournaments
   });
 
   return (
-    <div className="space-y-4">
+    <div>
       {/* Filters */}
-      <div className="px-6 py-4 border-b border-border space-y-3">
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="px-5 sm:px-6 py-4 border-b border-(--ad-line) space-y-3">
+        <div className="relative">
+          <SearchIcon size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-(--ad-faint) pointer-events-none" />
           <input
             type="text"
-            placeholder="Search by squad name, leader name, or UID..."
+            placeholder={ui("Search by squad name, leader name, or UID...")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 min-w-64 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
+            className={`${fieldClass} pl-10`}
+            aria-label={ui("Search registrations")}
           />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <select
-            value={tournamentFilter}
-            onChange={(e) => setTournamentFilter(e.target.value)}
-            className="border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
-          >
-            <option value="all">All Tournaments</option>
+          <select value={tournamentFilter} onChange={(e) => setTournamentFilter(e.target.value)} className={fieldClass} aria-label={ui("Tournament")}>
+            <option value="all">{ui("All tournaments")}</option>
             {tournaments.map((t) => (
               <option key={t.id} value={t.id}>
                 {t.name}
@@ -172,149 +170,111 @@ export function RegistrationsTable({ tournaments, registrations }: { tournaments
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as ApprovalStatus | "all")}
-            className="border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
+            className={fieldClass}
+            aria-label={ui("Approval status")}
           >
-            <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
+            <option value="all">{ui("All statuses")}</option>
+            <option value="pending">{ui("Pending")}</option>
+            <option value="approved">{ui("Approved")}</option>
+            <option value="rejected">{ui("Rejected")}</option>
           </select>
 
           {hasPaidTournaments && (
             <select
               value={paymentFilter}
               onChange={(e) => setPaymentFilter(e.target.value as "all" | "verified" | "pending")}
-              className="border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
+              className={fieldClass}
+              aria-label={ui("Payment")}
             >
-              <option value="all">All Payments</option>
-              <option value="verified">Verified</option>
-              <option value="pending">Pending</option>
+              <option value="all">{ui("All payments")}</option>
+              <option value="verified">{ui("Verified")}</option>
+              <option value="pending">{ui("Pending")}</option>
             </select>
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3 flex-wrap">
+          <Checkbox
+            checked={selectedIds.size === filtered.length && filtered.length > 0}
+            onChange={toggleSelectAll}
+            label={ui(<span className="text-[13px] font-semibold text-(--ad-dim)">{ui("Select all (")}{filtered.length})</span>)}
+          />
           {selectedIds.size > 0 && (
-            <>
-              <span className="text-sm text-muted-foreground">{selectedIds.size} selected</span>
-              <button
-                disabled={bulkLoading}
-                onClick={handleBulkApprove}
-                className="px-3 py-1.5 bg-secondary text-white text-xs font-bold rounded-lg hover:bg-secondary/80 disabled:opacity-50 transition-colors"
-              >
-                {bulkLoading ? "…" : "✓ Approve Selected"}
-              </button>
-            </>
+            <AdminButton size="sm" variant="success" loading={bulkLoading} onClick={handleBulkApprove}>
+              {!bulkLoading && <CheckIcon size={15} />}{ui("Approve selected (")}{selectedIds.size})
+            </AdminButton>
           )}
-          <button
-            onClick={() => exportToCSV(tournaments, registrations, filtered)}
-            className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-lg transition-colors ml-auto"
-          >
-            ⬇ Export CSV
-          </button>
+          <AdminButton size="sm" variant="secondary" className="ml-auto" onClick={() => exportToCSV(tournaments, registrations, filtered)}>
+            <DownloadIcon size={15} />{ui("Export CSV")}</AdminButton>
         </div>
       </div>
 
       {/* Results */}
-      <div className="px-6 py-4">
-        {filtered.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            <p className="text-lg">No registrations found</p>
-            <p className="text-sm">Try adjusting your filters or search</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground px-4 py-2">
-              <input
-                type="checkbox"
-                checked={selectedIds.size === filtered.length && filtered.length > 0}
-                onChange={toggleSelectAll}
-                className="w-4 h-4 accent-primary cursor-pointer"
-              />
-              <span className="text-xs font-semibold">Select All ({filtered.length})</span>
-            </div>
+      {ui(filtered.length === 0 ? (
+        <EmptyState title={ui("No registrations found")} text={ui("Try adjusting your filters or search.")} />
+      ) : (
+        <ul className="divide-y divide-(--ad-line)">
+          {filtered.map((reg) => {
+            const tournament = tournamentMap.get(reg.tournamentId);
+            const regAt = reg.registeredAt
+              ? new Date(typeof (reg.registeredAt as { seconds?: number }).seconds === "number" ? (reg.registeredAt as { seconds: number }).seconds * 1000 : reg.registeredAt as unknown as number).toLocaleString("en-BD", { dateStyle: "short", timeStyle: "short" })
+              : "";
+            const busy = loading === reg.id;
 
-            {filtered.map((reg) => {
-              const tournament = tournamentMap.get(reg.tournamentId);
-              const cfg = statusConfig[reg.approvalStatus];
-              const paymentStatus = tournament?.isFree ? "N/A" : reg.transactionId ? "✓ Verified" : "⚠ Pending";
-              const regAt = reg.registeredAt
-                ? new Date(typeof (reg.registeredAt as { seconds?: number }).seconds === "number" ? (reg.registeredAt as { seconds: number }).seconds * 1000 : reg.registeredAt as unknown as number).toLocaleString("en-BD", { dateStyle: "short", timeStyle: "short" })
-                : "";
+            return (
+              <li key={reg.id} className={`px-5 sm:px-6 py-4 ${selectedIds.has(reg.id) ? "bg-(--ad-accent-soft)/60" : ""}`}>
+                <div className="flex items-start gap-3">
+                  <span className="pt-0.5">
+                    <Checkbox checked={selectedIds.has(reg.id)} onChange={() => toggleSelect(reg.id)} />
+                  </span>
 
-              return (
-                <div key={reg.id} className="border border-border rounded-lg p-4 hover:bg-muted/30 transition-colors">
-                  <div className="flex items-start gap-3 flex-wrap">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.has(reg.id)}
-                      onChange={() => toggleSelect(reg.id)}
-                      className="w-4 h-4 accent-primary cursor-pointer mt-1"
-                    />
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-2">
-                        <span className="font-semibold text-foreground">{reg.squadName}</span>
-                        <span className="text-xs text-muted-foreground">by {reg.leaderName}</span>
-                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full border ${cfg.color}`}>
-                          {cfg.icon} {cfg.label}
-                        </span>
-                        {!tournament?.isFree && (
-                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${reg.transactionId ? "bg-secondary/10 text-secondary border border-secondary" : "bg-amber-50 text-amber-700 border border-amber-200"}`}>
-                            {paymentStatus}
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-1 text-xs mb-2">
-                        <div className="text-muted-foreground">
-                          <span className="font-semibold">Tournament:</span> {tournament?.name || "Unknown"}
-                        </div>
-                        <div className="text-muted-foreground">
-                          <span className="font-semibold">UID:</span> <span className="font-mono">{reg.leaderUid}</span>
-                        </div>
-                        <div className="text-muted-foreground">
-                          <span className="font-semibold">WhatsApp:</span> {reg.whatsapp}
-                        </div>
-                        <div className="text-muted-foreground text-right sm:text-left">
-                          <span className="font-semibold">Registered:</span> {regAt}
-                        </div>
-                      </div>
-
-                      {reg.transactionId && (
-                        <div className="text-xs mb-2 p-2 bg-secondary/5 rounded border border-secondary/20">
-                          <span className="font-semibold">Transaction ID:</span> {reg.transactionId}
-                        </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[15px] font-semibold text-(--ad-text)">{reg.squadName}</span>
+                      <span className="text-xs text-(--ad-dim)">{ui("by")}{reg.leaderName}</span>
+                      <ApprovalBadge status={reg.approvalStatus} />
+                      {!tournament?.isFree && (
+                        reg.transactionId
+                          ? <Badge tone="success"><CheckIcon size={13} />{ui("Payment verified")}</Badge>
+                          : <Badge tone="warn">{ui("Payment pending")}</Badge>
                       )}
                     </div>
 
-                    <div className="flex gap-2 shrink-0">
-                      {reg.approvalStatus !== "approved" && (
-                        <button
-                          disabled={loading === reg.id}
-                          onClick={() => setApproval(reg.id, "approved")}
-                          className="text-xs font-bold px-2 py-1 rounded bg-secondary text-white hover:bg-secondary/80 disabled:opacity-50 transition-colors"
-                        >
-                          {loading === reg.id ? "…" : "✓"}
-                        </button>
-                      )}
-                      {reg.approvalStatus !== "rejected" && (
-                        <button
-                          disabled={loading === reg.id}
-                          onClick={() => setApproval(reg.id, "rejected")}
-                          className="text-xs font-bold px-2 py-1 rounded bg-primary text-white hover:bg-primary/80 disabled:opacity-50 transition-colors"
-                        >
-                          {loading === reg.id ? "…" : "✗"}
-                        </button>
-                      )}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-[1.5fr_1fr_1.2fr_1.2fr] gap-x-6 gap-y-0.5 text-xs text-(--ad-dim) mt-2">
+                      <span className="truncate"><span className="font-semibold text-(--ad-text)">{ui("Tournament:")}</span> {tournament?.name || "Unknown"}</span>
+                      <span><span className="font-semibold text-(--ad-text)">{ui("UID:")}</span> <span className="font-mono">{reg.leaderUid}</span></span>
+                      <span><span className="font-semibold text-(--ad-text)">{ui("WhatsApp:")}</span> {reg.whatsapp}</span>
+                      <span><span className="font-semibold text-(--ad-text)">{ui("Registered:")}</span> {regAt}</span>
                     </div>
+
+                    {reg.transactionId && (
+                      <p className="text-xs mt-2 inline-flex items-center gap-1.5 rounded-lg bg-(--ad-raised) px-2.5 py-1.5">
+                        <span className="font-semibold text-(--ad-text)">{ui("Transaction ID:")}</span>
+                        <span className="font-mono text-(--ad-text)">{reg.transactionId}</span>
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+                    {reg.approvalStatus !== "approved" && (
+                      <AdminButton size="sm" variant="success" loading={busy} onClick={() => setApproval(reg.id, "approved")} aria-label={ui(`Approve ${reg.squadName}`)}>
+                        {!busy && <CheckIcon size={15} />}
+                        <span className="hidden sm:inline">{ui("Approve")}</span>
+                      </AdminButton>
+                    )}
+                    {reg.approvalStatus !== "rejected" && (
+                      <AdminButton size="sm" variant="dangerSoft" disabled={busy} onClick={() => setApproval(reg.id, "rejected")} aria-label={ui(`Reject ${reg.squadName}`)}>
+                        <XIcon size={15} />
+                        <span className="hidden sm:inline">{ui("Reject")}</span>
+                      </AdminButton>
+                    )}
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+              </li>
+            );
+          })}
+        </ul>
+      ))}
     </div>
   );
 }

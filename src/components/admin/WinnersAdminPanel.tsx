@@ -1,8 +1,11 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/Button";
+import { AdminButton, Badge, Card, EmptyState, Field, PageHeader, RowAction, fieldClass } from "./ui";
+import { PlusIcon } from "./icons";
 import { useToast } from "@/context/ToastContext";
 import type { Winner, Tournament } from "@/lib/types";
 import { formatShortDate } from "@/lib/utils/formatDate";
@@ -10,6 +13,8 @@ import { formatShortDate } from "@/lib/utils/formatDate";
 type EditForm = { tournamentId: string; squadName: string; players: string; prize: string; position: string; photoUrl: string; tournamentDate: string };
 
 export function WinnersAdminPanel({ winners, tournaments }: { winners: Winner[]; tournaments: Tournament[] }) {
+  const ui = useUiText();
+
   const router = useRouter();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -32,10 +37,10 @@ export function WinnersAdminPanel({ winners, tournaments }: { winners: Winner[];
         body: JSON.stringify({ ...form, position: Number(form.position), tournamentName: tournament?.name || "", players: form.players.split(",").map(p => p.trim()).filter(Boolean) }),
       });
       if (!res.ok) throw new Error();
-      showToast("Winner added!", "success");
+      showToast(ui("Winner added!"), "success");
       setForm({ tournamentId: "", squadName: "", players: "", prize: "", position: "1", photoUrl: "", tournamentDate: "" });
       router.refresh();
-    } catch { showToast("Failed", "error"); }
+    } catch { showToast(ui("Failed"), "error"); }
     finally { setLoading(false); }
   };
 
@@ -48,10 +53,10 @@ export function WinnersAdminPanel({ winners, tournaments }: { winners: Winner[];
         body: JSON.stringify({ ...editForm, position: Number(editForm.position), tournamentName: tournament?.name || "", players: editForm.players.split(",").map(p => p.trim()).filter(Boolean) }),
       });
       if (!res.ok) throw new Error();
-      showToast("Winner updated!", "success");
+      showToast(ui("Winner updated!"), "success");
       setEditingId(null);
       router.refresh();
-    } catch { showToast("Failed", "error"); }
+    } catch { showToast(ui("Failed"), "error"); }
     finally { setLoading(false); }
   };
 
@@ -66,79 +71,88 @@ export function WinnersAdminPanel({ winners, tournaments }: { winners: Winner[];
     setEditForm({ tournamentId: w.tournamentId, squadName: w.squadName, players: w.players.join(", "), prize: w.prize, position: String(w.position), photoUrl: w.photoUrl || "", tournamentDate: dateStr });
   };
 
-  const inputClass = "w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary";
+  const placeLabel = { 1: "1st place", 2: "2nd place", 3: "3rd place" } as const;
+  const placeTone = { 1: "gold", 2: "neutral", 3: "warn" } as const;
+
+  // Called as a function, not rendered as <Fields/>, so inputs keep focus while typing
+  const fields = (vals: EditForm, target: "form" | "edit", required: boolean) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <Field label={ui("Tournament")}>
+        <select value={vals.tournamentId} onChange={set("tournamentId", target)} className={fieldClass}>
+          <option value="">{ui("Select...")}</option>
+          {tournaments.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+        </select>
+      </Field>
+      <Field label={ui(required ? "Position *" : "Position")}>
+        <select required={required} value={vals.position} onChange={set("position", target)} className={fieldClass}>
+          <option value="1">{ui("1st place")}</option><option value="2">{ui("2nd place")}</option><option value="3">{ui("3rd place")}</option>
+        </select>
+      </Field>
+      <Field label={ui(required ? "Squad name *" : "Squad name")}>
+        <input required={required} value={vals.squadName} onChange={set("squadName", target)} className={fieldClass} placeholder={ui(required ? "Fire Dragons" : undefined)} />
+      </Field>
+      <Field label={ui(required ? "Prize *" : "Prize")}>
+        <input required={required} value={vals.prize} onChange={set("prize", target)} className={fieldClass} placeholder={ui(required ? "৳5,000" : undefined)} />
+      </Field>
+      <Field label={ui(required ? "Player IGNs (comma-separated) *" : "Player IGNs")} wide>
+        <input required={required} value={vals.players} onChange={set("players", target)} className={fieldClass} placeholder={ui(required ? "Player1, Player2, Player3, Player4" : undefined)} />
+      </Field>
+      <Field label={ui(required ? "Tournament date" : "Date")}>
+        <input type="date" value={vals.tournamentDate} onChange={set("tournamentDate", target)} className={fieldClass} />
+      </Field>
+      <Field label={ui(required ? "Photo URL (optional)" : "Photo URL")}>
+        <input value={vals.photoUrl} onChange={set("photoUrl", target)} className={fieldClass} placeholder={ui(required ? "https://..." : undefined)} />
+      </Field>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-3xl text-foreground tracking-wide">Hall of Fame — Winners</h1>
+      <PageHeader title={ui("Winners")} description="Podium finishes shown in the Hall of Fame. Only completed tournaments can be picked." />
 
-      <div className="bg-card rounded-2xl border border-border p-6">
-        <h2 className="font-semibold mb-4">Add Winner</h2>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div><label className="block text-sm font-semibold mb-1">Tournament</label>
-            <select value={form.tournamentId} onChange={set("tournamentId", "form")} className={inputClass}><option value="">Select...</option>{tournaments.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}</select></div>
-          <div><label className="block text-sm font-semibold mb-1">Position *</label>
-            <select required value={form.position} onChange={set("position", "form")} className={inputClass}><option value="1">🥇 1st</option><option value="2">🥈 2nd</option><option value="3">🥉 3rd</option></select></div>
-          <div><label className="block text-sm font-semibold mb-1">Squad Name *</label>
-            <input required value={form.squadName} onChange={set("squadName", "form")} className={inputClass} placeholder="Fire Dragons" /></div>
-          <div><label className="block text-sm font-semibold mb-1">Prize *</label>
-            <input required value={form.prize} onChange={set("prize", "form")} className={inputClass} placeholder="৳5,000" /></div>
-          <div className="sm:col-span-2"><label className="block text-sm font-semibold mb-1">Player IGNs (comma-separated) *</label>
-            <input required value={form.players} onChange={set("players", "form")} className={inputClass} placeholder="Player1, Player2, Player3, Player4" /></div>
-          <div><label className="block text-sm font-semibold mb-1">Tournament Date</label>
-            <input type="date" value={form.tournamentDate} onChange={set("tournamentDate", "form")} className={inputClass} /></div>
-          <div><label className="block text-sm font-semibold mb-1">Photo URL (optional)</label>
-            <input value={form.photoUrl} onChange={set("photoUrl", "form")} className={inputClass} placeholder="https://..." /></div>
-          <div className="sm:col-span-2"><Button type="submit" loading={loading}>Add Winner</Button></div>
+      <Card title={ui("Add winner")}>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {fields(form, "form", true)}
+          <AdminButton type="submit" loading={loading}>
+            {!loading && <PlusIcon size={18} />}{ui("Add winner")}</AdminButton>
         </form>
-      </div>
+      </Card>
 
-      <div className="bg-card rounded-2xl border border-border overflow-hidden">
-        <div className="px-6 py-4 border-b border-border"><h2 className="font-semibold">All Winners ({winners.length})</h2></div>
-        {winners.length === 0 ? <div className="text-center py-8 text-muted-foreground text-sm">No winners yet.</div> : (
-          <div className="divide-y divide-border">
+      <Card title={ui(`All winners (${winners.length})`)} flush>
+        {ui(winners.length === 0 ? <EmptyState title={ui("No winners yet")} /> : (
+          <ul className="divide-y divide-(--ad-line)">
             {winners.map(w => (
-              <div key={w.id} className="px-4 sm:px-6 py-4">
-                {editingId === w.id ? (
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div><label className="block text-xs font-semibold mb-1">Tournament</label>
-                        <select value={editForm.tournamentId} onChange={set("tournamentId", "edit")} className={inputClass}><option value="">Select...</option>{tournaments.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}</select></div>
-                      <div><label className="block text-xs font-semibold mb-1">Position</label>
-                        <select value={editForm.position} onChange={set("position", "edit")} className={inputClass}><option value="1">🥇 1st</option><option value="2">🥈 2nd</option><option value="3">🥉 3rd</option></select></div>
-                      <div><label className="block text-xs font-semibold mb-1">Squad Name</label>
-                        <input value={editForm.squadName} onChange={set("squadName", "edit")} className={inputClass} /></div>
-                      <div><label className="block text-xs font-semibold mb-1">Prize</label>
-                        <input value={editForm.prize} onChange={set("prize", "edit")} className={inputClass} /></div>
-                      <div className="sm:col-span-2"><label className="block text-xs font-semibold mb-1">Player IGNs</label>
-                        <input value={editForm.players} onChange={set("players", "edit")} className={inputClass} /></div>
-                      <div><label className="block text-xs font-semibold mb-1">Date</label>
-                        <input type="date" value={editForm.tournamentDate} onChange={set("tournamentDate", "edit")} className={inputClass} /></div>
-                      <div><label className="block text-xs font-semibold mb-1">Photo URL</label>
-                        <input value={editForm.photoUrl} onChange={set("photoUrl", "edit")} className={inputClass} /></div>
-                    </div>
+              <li key={w.id} className="px-5 sm:px-6 py-4">
+                {ui(editingId === w.id ? (
+                  <div className="space-y-4">
+                    {fields(editForm, "edit", false)}
                     <div className="flex gap-2">
-                      <Button size="sm" loading={loading} onClick={() => handleSaveEdit(w.id)}>Save</Button>
-                      <Button size="sm" variant="ghost" onClick={() => setEditingId(null)}>Cancel</Button>
+                      <AdminButton size="sm" loading={loading} onClick={() => handleSaveEdit(w.id)}>{ui("Save")}</AdminButton>
+                      <AdminButton size="sm" variant="ghost" onClick={() => setEditingId(null)}>{ui("Cancel")}</AdminButton>
                     </div>
                   </div>
                 ) : (
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold truncate">{w.squadName} <span className="text-muted-foreground font-normal">— {w.position === 1 ? "🥇" : w.position === 2 ? "🥈" : "🥉"}</span></p>
-                      <p className="text-xs text-muted-foreground truncate">{w.tournamentName} · {formatShortDate(w.tournamentDate)} · {w.prize}</p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm font-semibold text-(--ad-text) truncate">{w.squadName}</span>
+                        <Badge tone={placeTone[w.position] ?? "neutral"}>{placeLabel[w.position] ?? w.position}</Badge>
+                      </div>
+                      <p className="text-xs text-(--ad-dim) truncate mt-0.5">
+                        {w.tournamentName} · {ui(formatShortDate(w.tournamentDate))} · <span className="font-semibold text-(--ad-gold)">{w.prize}</span>
+                      </p>
                     </div>
-                    <div className="flex gap-2 shrink-0">
-                      <button onClick={() => startEdit(w)} className="text-xs text-blue-600 hover:underline font-medium">Edit</button>
-                      <button onClick={() => handleDelete(w.id)} className="text-xs text-primary hover:underline font-medium">Delete</button>
+                    <div className="flex gap-3 shrink-0">
+                      <RowAction tone="accent" onClick={() => startEdit(w)}>{ui("Edit")}</RowAction>
+                      <RowAction tone="danger" onClick={() => handleDelete(w.id)}>{ui("Delete")}</RowAction>
                     </div>
                   </div>
-                )}
-              </div>
+                ))}
+              </li>
             ))}
-          </div>
-        )}
-      </div>
+          </ul>
+        ))}
+      </Card>
     </div>
   );
 }

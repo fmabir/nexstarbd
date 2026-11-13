@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useActiveTournaments } from "@/lib/hooks/useActiveTournaments";
@@ -31,6 +33,8 @@ function Sparkle({ size, color }: { size: number; color: string }) {
  * open for registration, or the date of the next one.
  */
 function StatusPill() {
+  const ui = useUiText();
+
   const { active, rest, loading } = useActiveTournaments();
   const now = active[0];
   const next = rest[0];
@@ -46,7 +50,7 @@ function StatusPill() {
       <Link href={`/tournaments/${now.id}`} className={pill}>
         {/* White, not red: a red dot would vanish into the red banner */}
         <span className={`w-2 h-2 shrink-0 rounded-full ${live ? "bg-white animate-pulse" : "bg-[#5df08e]"}`} />
-        <span className="shrink-0">{live ? "Live now" : "Registration open"}</span>
+        <span className="shrink-0">{ui(live ? "Live now" : "Registration open")}</span>
         <span className="truncate font-medium text-white/80">· {now.name}</span>
         <ChevronRightIcon size={14} className="shrink-0 text-white/80" />
       </Link>
@@ -57,16 +61,16 @@ function StatusPill() {
     return (
       <Link href={`/tournaments/${next.id}`} className={pill}>
         <span className="w-2 h-2 shrink-0 rounded-full bg-[#ffd76a]" />
-        <span className="shrink-0">Next battle</span>
+        <span className="shrink-0">{ui("Next battle")}</span>
         <span className="truncate font-medium text-white/80">
-          · {formatDateOnly(next.startsAt)}, {formatTimeOnly(next.startsAt)}
+          · {ui(formatDateOnly(next.startsAt))}, {ui(formatTimeOnly(next.startsAt))}
         </span>
         <ChevronRightIcon size={14} className="shrink-0 text-white/80" />
       </Link>
     );
   }
 
-  return <span className={pill}>Weekly squad battles</span>;
+  return <span className={pill}>{ui("Weekly squad battles")}</span>;
 }
 
 /**
@@ -76,9 +80,11 @@ function StatusPill() {
  * light streaks, a spotlight, the floating squad, and sparkles on top.
  */
 export function HeroBanner() {
+  const ui = useUiText();
+
   return (
     <section
-      aria-label="Welcome"
+      aria-label={ui("Welcome")}
       className="relative h-[236px] overflow-hidden rounded-b-[50%_34px] border-b-[3px] border-[#ffd76a]/80 bg-[linear-gradient(140deg,#ff2d55_0%,#e11d2e_30%,#b3125f_62%,#4c1d95_100%)] shadow-[0_26px_40px_-26px_rgba(179,18,95,0.7)]"
     >
       {/* Drifting glows */}
@@ -139,16 +145,10 @@ export function HeroBanner() {
         <div className="max-w-[78%]">
           <StatusPill />
         </div>
-        <h1 className="mt-auto font-m-display font-bold text-[31px] leading-[0.98] text-white drop-shadow-[0_2px_10px_rgba(60,0,30,0.35)]">
-          Drop in.
-          <br />
-          Squad up.
-          <br />
-          <span className="text-[#ffd76a]">Win big.</span>
+        <h1 className="mt-auto font-m-display font-bold text-[31px] leading-[0.98] text-white drop-shadow-[0_2px_10px_rgba(60,0,30,0.35)]">{ui("Drop in.")}<br />{ui("Squad up.")}<br />
+          <span className="text-[#ffd76a]">{ui("Win big.")}</span>
         </h1>
-        <p className="mt-2 max-w-[46%] text-[12px] font-medium leading-snug text-white/85">
-          Weekly squad battles · Free entry · Real prizes
-        </p>
+        <p className="mt-2 max-w-[46%] text-[12px] font-medium leading-snug text-white/85">{ui("Weekly squad battles · Free entry · Real prizes")}</p>
       </div>
     </section>
   );

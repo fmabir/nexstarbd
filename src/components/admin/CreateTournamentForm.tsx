@@ -1,11 +1,16 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/Button";
+import { AdminButton, Field, Toggle, fieldClass, textareaClass } from "./ui";
+import { PlusIcon } from "./icons";
 import { useToast } from "@/context/ToastContext";
 
 export function CreateTournamentForm() {
+  const ui = useUiText();
+
   const router = useRouter();
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -42,12 +47,12 @@ export function CreateTournamentForm() {
         }),
       });
       if (!res.ok) throw new Error("Failed");
-      showToast("Tournament created!", "success");
+      showToast(ui("Tournament created!"), "success");
       setIsFree(true);
       setForm({ name: "", description: "", mode: "Squad (BR)", prizePool: "", firstPrize: "", secondPrize: "", registrationFee: "", bkashNumber: "", startsAt: "", registrationDeadline: "" });
       router.refresh();
     } catch {
-      showToast("Failed to create tournament", "error");
+      showToast(ui("Failed to create tournament"), "error");
     } finally {
       setLoading(false);
     }
@@ -55,142 +60,86 @@ export function CreateTournamentForm() {
 
   return (
     <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div className="sm:col-span-2">
-        <label className="block text-sm font-semibold mb-1">Tournament Name *</label>
-        <input
-          required
-          value={form.name}
-          onChange={set("name")}
-          className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
-          placeholder="BD Free Fire Clash #1"
-        />
-      </div>
+      <Field label={ui("Tournament name *")} wide>
+        <input required value={form.name} onChange={set("name")} className={fieldClass} placeholder={ui("BD Free Fire Clash #1")} />
+      </Field>
 
-      <div className="sm:col-span-2">
-        <label className="block text-sm font-semibold mb-1">Description</label>
+      <Field label={ui("Description")} wide>
         <textarea
           value={form.description}
           onChange={set("description")}
           rows={2}
-          className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary resize-none"
-          placeholder="Tournament description..."
+          className={`${textareaClass} resize-none`}
+          placeholder={ui("Tournament description...")}
         />
-      </div>
+      </Field>
 
-      <div>
-        <label className="block text-sm font-semibold mb-1">Mode *</label>
-        <select
-          required
-          value={form.mode}
-          onChange={set("mode")}
-          className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
-        >
-          <option>Squad (BR)</option>
-          <option>Duo</option>
-          <option>Solo</option>
+      <Field label={ui("Mode *")}>
+        <select required value={form.mode} onChange={set("mode")} className={fieldClass}>
+          <option value="Squad (BR)">{ui("Squad (BR)")}</option>
+          <option value="Duo">{ui("Duo")}</option>
+          <option value="Solo">{ui("Solo")}</option>
         </select>
-      </div>
+      </Field>
 
-      <div>
-        <label className="block text-sm font-semibold mb-1">Total Prize Pool *</label>
-        <input
-          required
-          value={form.prizePool}
-          onChange={set("prizePool")}
-          className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
-          placeholder="৳5,000"
+      <Field label={ui("Total prize pool *")}>
+        <input required value={form.prizePool} onChange={set("prizePool")} className={fieldClass} placeholder="৳5,000" />
+      </Field>
+
+      <Field label={ui("1st prize")}>
+        <input value={form.firstPrize} onChange={set("firstPrize")} className={fieldClass} placeholder="৳3,000" />
+      </Field>
+
+      <Field label={ui("2nd prize")}>
+        <input value={form.secondPrize} onChange={set("secondPrize")} className={fieldClass} placeholder="৳1,500" />
+      </Field>
+
+      {/* Free / paid */}
+      <div className="sm:col-span-2">
+        <Toggle
+          on={isFree}
+          onToggle={() => setIsFree((v) => !v)}
+          label={ui(isFree ? "Free entry" : "Paid entry")}
+          description={isFree ? "No registration fee. Turn off to charge a fee." : "Squads pay a fee by bKash; you verify it before approving."}
         />
       </div>
 
-      {/* Free / Paid toggle */}
-      <div className="sm:col-span-2">
-        <label className="flex items-center gap-3 cursor-pointer select-none">
-          <div
-            onClick={() => setIsFree(v => !v)}
-            className={`relative w-11 h-6 rounded-full transition-colors ${isFree ? "bg-yellow-400" : "bg-gray-300"}`}
-          >
-            <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-card rounded-full shadow transition-transform ${isFree ? "translate-x-5" : "translate-x-0"}`} />
-          </div>
-          <span className="font-semibold text-sm">
-            {isFree ? "✨ Free Entry (no registration fee)" : "Paid Entry"}
-          </span>
-        </label>
-      </div>
-
-      {/* Registration fee — shown only when paid */}
+      {/* Fee and bKash number — paid tournaments only */}
       {!isFree && (
         <>
-          <div className="sm:col-span-2">
-            <label className="block text-sm font-semibold mb-1">Registration Fee *</label>
-            <input
-              required
-              value={form.registrationFee}
-              onChange={set("registrationFee")}
-              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
-              placeholder="৳50"
-            />
-          </div>
-          <div className="sm:col-span-2">
-            <label className="block text-sm font-semibold mb-1">bKash Send Money Number *</label>
+          <Field label={ui("Registration fee *")}>
+            <input required value={form.registrationFee} onChange={set("registrationFee")} className={fieldClass} placeholder="৳50" />
+          </Field>
+          <Field label={ui("bKash Send Money number *")} hint={ui("Players will send payments to this number during registration.")}>
             <input
               required
               type="tel"
               value={form.bkashNumber}
               onChange={set("bkashNumber")}
-              className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
-              placeholder="+880 1XXX-XXXXXX"
+              className={fieldClass}
+              placeholder={ui("+880 1XXX-XXXXXX")}
             />
-            <p className="text-xs text-muted-foreground mt-1">Players will send payments to this number during registration.</p>
-          </div>
+          </Field>
         </>
       )}
 
-      <div>
-        <label className="block text-sm font-semibold mb-1">1st Prize</label>
-        <input
-          value={form.firstPrize}
-          onChange={set("firstPrize")}
-          className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
-          placeholder="৳3,000"
-        />
-      </div>
+      <Field label={ui("Start date & time *")}>
+        <input required type="datetime-local" value={form.startsAt} onChange={set("startsAt")} className={fieldClass} />
+      </Field>
 
-      <div>
-        <label className="block text-sm font-semibold mb-1">2nd Prize</label>
-        <input
-          value={form.secondPrize}
-          onChange={set("secondPrize")}
-          className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
-          placeholder="৳1,500"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-semibold mb-1">Start Date & Time *</label>
-        <input
-          required
-          type="datetime-local"
-          value={form.startsAt}
-          onChange={set("startsAt")}
-          className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-semibold mb-1">Registration Deadline *</label>
+      <Field label={ui("Registration deadline *")}>
         <input
           required
           type="datetime-local"
           value={form.registrationDeadline}
           onChange={set("registrationDeadline")}
-          className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-primary"
+          className={fieldClass}
         />
-      </div>
+      </Field>
 
-      <div className="sm:col-span-2">
-        <Button type="submit" loading={loading}>
-          Create Tournament
-        </Button>
+      <div className="sm:col-span-2 pt-1">
+        <AdminButton type="submit" loading={loading}>
+          {!loading && <PlusIcon size={18} />}{ui("Create tournament")}</AdminButton>
       </div>
     </form>
   );

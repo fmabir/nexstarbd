@@ -1,6 +1,10 @@
+
+import { createUiText } from "@/components/i18n/ui-text";
+import { getLocale } from "next-intl/server";
 import { AnnouncementComposer } from "@/components/admin/AnnouncementComposer";
 import { AnnouncementList } from "@/components/admin/AnnouncementList";
 import { serialize } from "@/lib/utils/serialize";
+import { Card, PageHeader } from "@/components/admin/ui";
 import type { Announcement, Tournament } from "@/lib/types";
 
 async function getData() {
@@ -16,23 +20,21 @@ async function getData() {
 }
 
 export default async function AdminAnnouncementsPage() {
+  const ui = createUiText(await getLocale());
+
   const { announcements, tournaments } = await getData();
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-3xl text-foreground tracking-wide">Announcements</h1>
+      <PageHeader title={ui("Announcements")} description="News for everyone, or for one tournament's players. Pinned posts stay on top." />
 
-      <div className="bg-card rounded-2xl border border-border p-6">
-        <h2 className="font-semibold mb-4">Post Announcement</h2>
+      <Card title={ui("Post announcement")}>
         <AnnouncementComposer tournaments={tournaments} />
-      </div>
+      </Card>
 
-      <div className="bg-card rounded-2xl border border-border overflow-hidden">
-        <div className="px-6 py-4 border-b border-border">
-          <h2 className="font-semibold">Recent Announcements ({announcements.length})</h2>
-        </div>
+      <Card title={ui(`Recent announcements (${announcements.length})`)} flush>
         <AnnouncementList announcements={announcements} tournaments={tournaments} />
-      </div>
+      </Card>
     </div>
   );
 }

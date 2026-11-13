@@ -9,7 +9,7 @@ export default async function ResultsPage() {
   return (
     <>
       <Navbar locale={locale} />
-      <main>
+      <main id="main-content">
         <ResultsView />
       </main>
       <Footer />

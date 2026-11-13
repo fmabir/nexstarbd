@@ -1,11 +1,14 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/context/ToastContext";
 import { timeAgo } from "@/lib/utils/formatDate";
 import type { Announcement, Tournament } from "@/lib/types";
-import { Button } from "@/components/ui/Button";
+import { AdminButton, Badge, Checkbox, EmptyState, RowAction, Segmented, fieldClass, textareaClass } from "./ui";
+import { PinIcon } from "./icons";
 
 type AnnouncementType = "info" | "warning" | "roomInfo" | "result";
 const types: { value: AnnouncementType; label: string }[] = [
@@ -16,6 +19,8 @@ const types: { value: AnnouncementType; label: string }[] = [
 ];
 
 export function AnnouncementList({ announcements, tournaments }: { announcements: Announcement[]; tournaments: Tournament[] }) {
+  const ui = useUiText();
+
   const router = useRouter();
   const { showToast } = useToast();
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -45,10 +50,10 @@ export function AnnouncementList({ announcements, tournaments }: { announcements
         body: JSON.stringify({ ...editForm, tournamentId: editForm.tournamentId || null }),
       });
       if (!res.ok) throw new Error();
-      showToast("Announcement updated!", "success");
+      showToast(ui("Announcement updated!"), "success");
       setEditingId(null);
       router.refresh();
-    } catch { showToast("Update failed", "error"); }
+    } catch { showToast(ui("Update failed"), "error"); }
     finally { setSaving(false); }
   };
 
@@ -61,72 +66,64 @@ export function AnnouncementList({ announcements, tournaments }: { announcements
         body: JSON.stringify({ id }),
       });
       router.refresh();
-    } catch { showToast("Delete failed", "error"); }
+    } catch { showToast(ui("Delete failed"), "error"); }
     finally { setDeleting(null); }
   };
 
   if (announcements.length === 0) {
-    return <div className="text-center py-8 text-muted-foreground text-sm">No announcements yet.</div>;
+    return <EmptyState title={ui("No announcements yet")} />;
   }
 
   return (
-    <div className="divide-y divide-border">
+    <ul className="divide-y divide-(--ad-line)">
       {announcements.map((a) => (
-        <div key={a.id} className="px-6 py-4">
-          {editingId === a.id ? (
+        <li key={a.id} className="px-5 sm:px-6 py-4">
+          {ui(editingId === a.id ? (
             <div className="space-y-3">
               <input value={editForm.title} onChange={e => setEditForm(p => ({ ...p, title: e.target.value }))}
-                className="w-full border border-border rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary"
-                placeholder="Title (optional)" />
+                className={fieldClass} placeholder={ui("Title (optional)")} aria-label={ui("Title")} />
               <textarea value={editForm.body} onChange={e => setEditForm(p => ({ ...p, body: e.target.value }))}
-                rows={2} className="w-full border border-border rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary resize-none"
-                placeholder="Message *" required />
+                rows={2} className={`${textareaClass} resize-none`} placeholder={ui("Message *")} required aria-label={ui("Message")} />
               <div className="flex flex-wrap gap-3 items-center">
-                <div className="flex gap-1.5">
-                  {types.map(t => (
-                    <button key={t.value} type="button" onClick={() => setEditForm(p => ({ ...p, type: t.value }))}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-bold border-2 transition-colors ${editForm.type === t.value ? "border-primary bg-primary text-white" : "border-border text-muted-foreground"}`}>
-                      {t.label}
-                    </button>
-                  ))}
-                </div>
+                <Segmented value={editForm.type} options={types} onChange={(v) => setEditForm(p => ({ ...p, type: v }))} />
                 <select value={editForm.tournamentId} onChange={e => setEditForm(p => ({ ...p, tournamentId: e.target.value }))}
-                  className="border border-border rounded-lg px-2 py-1 text-xs focus:outline-none focus:border-primary">
-                  <option value="">Site-wide</option>
+                  className={`${fieldClass} h-10 w-auto`} aria-label={ui("Tournament")}>
+                  <option value="">{ui("Site-wide")}</option>
                   {tournaments.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                 </select>
-                <label className="flex items-center gap-1.5 text-xs cursor-pointer">
-                  <input type="checkbox" checked={editForm.isPinned} onChange={e => setEditForm(p => ({ ...p, isPinned: e.target.checked }))} className="rounded" />
-                  Pin to top
-                </label>
+                <Checkbox checked={editForm.isPinned} onChange={(v) => setEditForm(p => ({ ...p, isPinned: v }))} label={ui("Pin to top")} />
               </div>
               <div className="flex gap-2">
-                <Button size="sm" loading={saving} onClick={() => handleSave(a.id)}>Save</Button>
-                <Button size="sm" variant="ghost" onClick={() => setEditingId(null)}>Cancel</Button>
+                <AdminButton size="sm" loading={saving} onClick={() => handleSave(a.id)}>{ui("Save")}</AdminButton>
+                <AdminButton size="sm" variant="ghost" onClick={() => setEditingId(null)}>{ui("Cancel")}</AdminButton>
               </div>
             </div>
           ) : (
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-muted text-muted-foreground uppercase">{a.type}</span>
-                  {a.isPinned && <span className="text-xs">📌</span>}
-                  <span className="text-xs text-muted-foreground">{timeAgo(a.createdAt)}</span>
+                  <Badge tone={a.type === "warning" ? "warn" : a.type === "result" ? "gold" : a.type === "roomInfo" ? "info" : "neutral"}>
+                    {types.find((t) => t.value === a.type)?.label ?? a.type}
+                  </Badge>
+                  {a.isPinned && <Badge tone="accent"><PinIcon size={12} />{ui("Pinned")}</Badge>}
+                  {a.tournamentId && (
+                    <span className="text-xs text-(--ad-dim)">{tournaments.find((t) => t.id === a.tournamentId)?.name ?? "Tournament"}</span>
+                  )}
+                  <span className="text-xs text-(--ad-faint)">{timeAgo(a.createdAt)}</span>
                 </div>
-                {a.title && <p className="font-semibold text-sm">{a.title}</p>}
-                <p className="text-sm text-muted-foreground line-clamp-2">{a.body}</p>
+                {a.title && <p className="text-sm font-semibold text-(--ad-text)">{ui(a.title)}</p>}
+                <p className="text-sm text-(--ad-dim) line-clamp-2">{a.body}</p>
               </div>
-              <div className="flex gap-2 shrink-0">
-                <button onClick={() => startEdit(a)} className="text-xs text-blue-600 hover:underline font-medium">Edit</button>
-                <button onClick={() => handleDelete(a.id)} disabled={deleting === a.id}
-                  className="text-xs text-primary hover:underline font-medium disabled:opacity-50">
-                  {deleting === a.id ? "…" : "Delete"}
-                </button>
+              <div className="flex gap-3 shrink-0">
+                <RowAction tone="accent" onClick={() => startEdit(a)}>{ui("Edit")}</RowAction>
+                <RowAction tone="danger" onClick={() => handleDelete(a.id)} disabled={deleting === a.id}>
+                  {ui(deleting === a.id ? "…" : "Delete")}
+                </RowAction>
               </div>
             </div>
-          )}
-        </div>
+          ))}
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }

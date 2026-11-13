@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useTranslations } from "next-intl";
 import { useAnnouncements } from "@/lib/hooks/useAnnouncements";
 import { useTournamentWinners } from "@/lib/hooks/useTournamentWinners";
@@ -10,6 +12,8 @@ import { AnnouncementList } from "@/components/mobile/announcements/Announcement
 import { RoomCard } from "./RoomCard";
 
 function Results({ tournamentId }: { tournamentId: string }) {
+  const ui = useUiText();
+
   const { winners, loading } = useTournamentWinners(tournamentId);
 
   if (loading) return <Skeleton className="h-40" />;
@@ -18,8 +22,8 @@ function Results({ tournamentId }: { tournamentId: string }) {
     return (
       <EmptyState
         art={art.trophy}
-        title="Results not posted yet"
-        text="Check back after the tournament — winners will appear here."
+        title={ui("Results not posted yet")}
+        text={ui("Check back after the tournament — winners will appear here.")}
         className="bg-m-surface"
       />
     );
@@ -49,6 +53,8 @@ export function MobileTournamentDashboard({
   tournament: Tournament;
   myRegistration: Registration | null;
 }) {
+  const ui = useUiText();
+
   const t = useTranslations("dashboard");
   const { announcements, loading } = useAnnouncements(tournament.id);
 
@@ -59,28 +65,28 @@ export function MobileTournamentDashboard({
     myRegistration?.approvalStatus === "approved";
 
   return (
-    <div className="mt-8">
+    <div className="-mx-4">
       {showRoomInfo && (
         <div className="px-4 pb-7">
           <RoomCard roomId={tournament.roomId!} roomPassword={tournament.roomPassword!} />
         </div>
       )}
 
-      <Section title={t("announcements")} tone="blue">
+      <Section title={ui(t("announcements"))} tone="blue">
         <div className="px-4">
-          {loading ? (
+          {ui(loading ? (
             <Skeleton className="h-32" />
           ) : announcements.length === 0 ? (
-            <EmptyState icon={<MegaphoneIcon size={22} />} title={t("noAnnouncements")} className="bg-m-surface" />
+            <EmptyState icon={<MegaphoneIcon size={22} />} title={ui(t("noAnnouncements"))} className="bg-m-surface" />
           ) : (
             <AnnouncementList announcements={announcements} />
-          )}
+          ))}
         </div>
       </Section>
 
       {/* Results are shown to registered players only, as on desktop */}
       {myRegistration && (
-        <Section title="Results" tone="gold">
+        <Section title={ui("Results")} tone="gold">
           <div className="px-4">
             <Results tournamentId={tournament.id} />
           </div>

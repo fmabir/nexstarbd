@@ -1,3 +1,5 @@
+
+import { useUiText } from "@/components/i18n/ui-text";
 import Image from "next/image";
 import type { Winner } from "@/lib/types";
 import { formatShortDate } from "@/lib/utils/formatDate";
@@ -9,6 +11,8 @@ const positionConfig = {
 };
 
 export function WinnerCard({ winner }: { winner: Winner }) {
+  const ui = useUiText();
+
   const config = positionConfig[winner.position];
 
   return (
@@ -16,7 +20,7 @@ export function WinnerCard({ winner }: { winner: Winner }) {
       <div className="rounded-xl overflow-hidden">
       {/* Position banner */}
       <div className={`bg-gradient-to-r ${config.bg} px-4 py-2.5 text-white font-display text-lg tracking-wide`}>
-        {config.label}
+        {ui(config.label)}
       </div>
 
       {/* Photo */}
@@ -24,7 +28,7 @@ export function WinnerCard({ winner }: { winner: Winner }) {
         <div className="relative h-40 bg-gray-100">
           <Image
             src={winner.photoUrl}
-            alt={winner.squadName}
+            alt={ui(winner.squadName)}
             fill
             className="object-cover"
           />
@@ -39,7 +43,7 @@ export function WinnerCard({ winner }: { winner: Winner }) {
           {winner.squadName}
         </h3>
         <p className="text-sm text-muted-foreground mb-3">
-          {winner.tournamentName} · {formatShortDate(winner.tournamentDate)}
+          {winner.tournamentName} · {ui(formatShortDate(winner.tournamentDate))}
         </p>
 
         {/* Players */}
@@ -55,9 +59,7 @@ export function WinnerCard({ winner }: { winner: Winner }) {
         </div>
 
         <div className="flex items-center justify-between border-t border-border pt-3">
-          <span className="text-xs text-muted-foreground uppercase tracking-wide font-semibold">
-            Prize
-          </span>
+          <span className="text-xs text-muted-foreground uppercase tracking-wide font-semibold">{ui("Prize")}</span>
           <span className="font-display text-xl text-secondary">
             {winner.prize}
           </span>

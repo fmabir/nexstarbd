@@ -1,3 +1,5 @@
+
+import { useUiText } from "@/components/i18n/ui-text";
 import Image from "next/image";
 import Link from "next/link";
 import type { Winner } from "@/lib/types";
@@ -10,6 +12,8 @@ const positionStyle = {
 };
 
 export function ChampionsCarousel({ winners }: { winners: Winner[] }) {
+  const ui = useUiText();
+
   if (winners.length === 0) return null;
 
   return (
@@ -18,17 +22,13 @@ export function ChampionsCarousel({ winners }: { winners: Winner[] }) {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="font-display text-3xl text-foreground tracking-wide">
-              Previous Champions
-            </h2>
+            <h2 className="font-display text-3xl text-foreground tracking-wide">{ui("Previous Champions")}</h2>
             <div className="w-12 h-1 bg-secondary rounded-full mt-1" />
           </div>
           <Link
             href="/hall-of-fame"
             className="text-sm font-semibold text-secondary hover:underline"
-          >
-            Full Hall of Fame →
-          </Link>
+          >{ui("Full Hall of Fame →")}</Link>
         </div>
 
         {/* Carousel */}
@@ -42,26 +42,26 @@ export function ChampionsCarousel({ winners }: { winners: Winner[] }) {
               >
                 {/* Position bar */}
                 <div className={`${style.accent} px-4 py-2 ${style.text}`}>
-                  <span className="text-xs font-bold uppercase tracking-wider">{style.label}</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">{ui(style.label)}</span>
                 </div>
 
                 {/* Photo */}
-                {w.photoUrl ? (
+                {ui(w.photoUrl ? (
                   <div className="relative h-36 bg-gray-100">
-                    <Image src={w.photoUrl} alt={w.squadName} fill className="object-cover" />
+                    <Image src={w.photoUrl} alt={ui(w.squadName)} fill className="object-cover" />
                   </div>
                 ) : (
                   <div className="h-20 bg-gray-50 flex items-center justify-center">
                     <span className="text-3xl">🏆</span>
                   </div>
-                )}
+                ))}
 
                 <div className="p-4">
                   <h3 className="font-display text-xl text-foreground tracking-wide mb-0.5">
                     {w.squadName}
                   </h3>
                   <p className="text-xs text-muted-foreground mb-2">
-                    {w.tournamentName} · {formatShortDate(w.tournamentDate)}
+                    {w.tournamentName} · {ui(formatShortDate(w.tournamentDate))}
                   </p>
 
                   {/* Players */}
@@ -79,7 +79,7 @@ export function ChampionsCarousel({ winners }: { winners: Winner[] }) {
                   </div>
 
                   <div className="flex items-center justify-between border-t border-border pt-2">
-                    <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">Prize</span>
+                    <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">{ui("Prize")}</span>
                     <span className="font-display text-lg text-secondary">{w.prize}</span>
                   </div>
                 </div>

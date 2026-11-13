@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import Link from "next/link";
 import { useRegistrationAction } from "@/lib/hooks/useRegistrationAction";
 import type { ApprovalStatus } from "@/lib/types";
@@ -7,7 +9,7 @@ import type { ApprovalStatus } from "@/lib/types";
 const statusConfig: Record<ApprovalStatus, { label: string; className: string }> = {
   pending:  { label: "⏳ Awaiting Approval",  className: "bg-amber-100 text-amber-700 border border-amber-300 cursor-default" },
   approved: { label: "✓ Registered",          className: "bg-secondary/10 text-secondary border border-secondary/30 cursor-default" },
-  rejected: { label: "✗ Not Allowed",         className: "bg-gray-100 text-gray-500 border border-gray-300 cursor-default" },
+  rejected: { label: "✗ Rejected",         className: "bg-danger-light text-danger border border-danger/30 cursor-default" },
 };
 
 interface Props {
@@ -20,6 +22,8 @@ interface Props {
 }
 
 export function RegistrationStatusButton({ tournamentId, canRegister, isFull, isOngoing, className = "", size = "md" }: Props) {
+  const ui = useUiText();
+
   const action = useRegistrationAction({ tournamentId, canRegister, isFull, isOngoing });
 
   const base = size === "sm"
@@ -35,7 +39,7 @@ export function RegistrationStatusButton({ tournamentId, canRegister, isFull, is
     const cfg = statusConfig[action.status];
     return (
       <span className={`${base} ${cfg.className} ${className}`}>
-        {cfg.label}
+        {ui(cfg.label)}
       </span>
     );
   }
@@ -49,7 +53,7 @@ export function RegistrationStatusButton({ tournamentId, canRegister, isFull, is
 
   return (
     <Link href={action.href} className={`${base} ${btnClass} ${className}`}>
-      {label}
+      {ui(label)}
     </Link>
   );
 }

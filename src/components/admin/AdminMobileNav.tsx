@@ -1,14 +1,28 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
+import { LanguageToggle } from "@/components/layout/LanguageToggle";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { navItems } from "./AdminSidebar";
+import { AdminBrand, isActive, navItems } from "./AdminSidebar";
+import { LogoutIcon } from "./icons";
 
+/** Phone and tablet navigation: a slim top bar, then every section as a scrollable row of pills. */
 export function AdminMobileNav() {
+  const ui = useUiText();
+
   const pathname = usePathname();
-  const { user, signOut } = useAuth();
+  const { signOut } = useAuth();
   const router = useRouter();
+  const navRef = useRef<HTMLElement>(null);
+
+  // Keep the current section's pill in view, e.g. Sponsors at the far end
+  useEffect(() => {
+    navRef.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ block: "nearest", inline: "center" });
+  }, [pathname]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -16,50 +30,38 @@ export function AdminMobileNav() {
   };
 
   return (
-    <div className="sm:hidden bg-gray-900 border-b border-gray-800">
-      {/* Top row — brand + sign out */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-800">
-        <Link href="/" className="flex items-center gap-1.5">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/banners/lnsbd.png" alt="logo" style={{ height: "32px", width: "auto", display: "block" }} />
-          <span className="font-brand font-bold text-sm text-white tracking-wide">
-            NexStar<span className="text-pink-300">B</span><span className="text-green-300">D</span>
-            <span className="text-gray-500 font-normal text-xs ml-1">Admin</span>
-          </span>
+    <div className="lg:hidden sticky top-0 z-30 bg-(--ad-surface)/95 backdrop-blur border-b border-(--ad-line)">
+      <div className="flex items-center justify-between h-14 pl-4 pr-2">
+        <Link href="/" aria-label={ui("NexStarBD home")}>
+          <AdminBrand size={26} />
         </Link>
-        <div className="flex items-center gap-2">
-          {user && (
-            <span className="text-gray-400 text-xs truncate max-w-[110px]">{user.email}</span>
-          )}
-          <button
-            onClick={handleSignOut}
-            className="text-xs font-semibold text-gray-400 hover:text-white bg-gray-800 px-2.5 py-1.5 rounded-lg transition-colors"
-          >
-            🚪 Out
-          </button>
-        </div>
+        <div className="flex items-center gap-2"><LanguageToggle /><button
+          onClick={handleSignOut}
+          className="flex items-center gap-1.5 h-10 px-3 rounded-xl text-[13px] font-semibold text-(--ad-dim) hover:bg-(--ad-raised)"
+        >
+          <LogoutIcon size={17} />{ui("Sign out")}</button></div>
       </div>
 
-      {/* Scrollable section tabs */}
-      <div className="flex overflow-x-auto scrollbar-none px-2 py-2 gap-1.5">
+      <nav ref={navRef} aria-label={ui("Admin")} className="flex gap-1.5 overflow-x-auto px-3 pb-2.5 [scrollbar-width:none]">
         {navItems.map((item) => {
-          const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
+          const active = isActive(pathname, item);
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-1.5 shrink-0 px-3 py-2 rounded-xl text-xs font-semibold transition-colors whitespace-nowrap ${
+              aria-current={active ? "page" : undefined}
+              className={`flex items-center gap-1.5 shrink-0 h-9 px-3 rounded-full text-[13px] font-semibold whitespace-nowrap border transition-colors ${
                 active
-                  ? "bg-primary text-white"
-                  : "bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700"
+                  ? "bg-(--ad-accent) border-transparent text-white"
+                  : "bg-(--ad-surface) border-(--ad-line) text-(--ad-dim)"
               }`}
             >
-              <span className="text-sm leading-none">{item.icon}</span>
-              {item.short}
+              <item.Icon size={16} />
+              {ui(item.short)}
             </Link>
           );
         })}
-      </div>
+      </nav>
     </div>
   );
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useResultPosts } from "@/lib/hooks/useResultPosts";
@@ -12,11 +14,13 @@ import { AlertIcon, ChevronRightIcon, CrownIcon, LockIcon, TrophyIcon } from "@/
  * gets a sign-in prompt. The Hall of Fame stays public and is linked at the top.
  */
 export function ResultsView() {
+  const ui = useUiText();
+
   const t = useTranslations("results");
   const { posts, loading, locked, error } = useResultPosts();
 
   const content = (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <Link href="/hall-of-fame" className={`${mCard} flex items-center gap-3 p-3 active:bg-m-raised hover:bg-m-raised transition-colors`}>
         <span className="w-11 h-11 rounded-xl bg-m-gold/20 text-m-gold-text flex items-center justify-center shrink-0">
           <CrownIcon size={22} />
@@ -28,12 +32,12 @@ export function ResultsView() {
         <ChevronRightIcon size={18} className="text-m-faint shrink-0" />
       </Link>
 
-      {locked ? (
-        <div className={`${mCard} flex flex-col items-center text-center px-6 py-10`}>
-          <span className="w-14 h-14 rounded-full bg-m-red/10 text-m-red-text flex items-center justify-center mb-4">
+      {ui(locked ? (
+        <div className={`${mCard} flex flex-col items-center text-center px-4 py-6`}>
+          <span className="w-11 h-11 rounded-full bg-primary-light text-primary flex items-center justify-center mb-4">
             <LockIcon size={26} />
           </span>
-          <p className="font-m-display font-bold text-[21px] leading-tight text-m-text">{t("lockedTitle")}</p>
+          <p className="font-m-display font-bold text-[19px] leading-tight text-m-text">{t("lockedTitle")}</p>
           <p className="mt-1.5 text-[14px] text-m-dim max-w-[19rem]">{t("lockedText")}</p>
           <Link href="/login?next=/results" className={`${mBtn.primary} mt-5 w-full max-w-[19rem]`}>
             {t("signIn")}
@@ -45,7 +49,7 @@ export function ResultsView() {
           <Skeleton className="h-48" />
         </>
       ) : error ? (
-        <div className={`${mCard} flex flex-col items-center text-center px-6 py-10`}>
+        <div className={`${mCard} flex flex-col items-center text-center px-4 py-6`}>
           <span className="w-12 h-12 rounded-full bg-m-raised text-m-dim flex items-center justify-center mb-3">
             <AlertIcon size={22} />
           </span>
@@ -55,29 +59,17 @@ export function ResultsView() {
           </button>
         </div>
       ) : posts.length === 0 ? (
-        <EmptyState icon={<TrophyIcon size={22} />} title={t("empty")} text={t("emptyText")} />
+        <EmptyState icon={<TrophyIcon size={22} />} title={ui(t("empty"))} text={ui(t("emptyText"))} />
       ) : (
         posts.map((p) => <ResultPostCard key={p.id} post={toView(p)} />)
-      )}
+      ))}
     </div>
   );
 
   return (
-    <>
-      <div className="md:hidden m-app">
-        <PageHeader title={t("title")} subtitle={t("subtitle")} art={art.trophy} />
-        <div className="px-4">{content}</div>
-      </div>
-
-      <div className="hidden md:block min-h-screen bg-background">
-        <div className="bg-gray-900 text-white py-14">
-          <div className="max-w-2xl mx-auto px-6 text-center">
-            <h1 className="font-display text-5xl sm:text-6xl tracking-wide mb-3">{t("title")}</h1>
-            <p className="text-gray-400">{t("subtitle")}</p>
-          </div>
-        </div>
-        <div className="max-w-2xl mx-auto px-6 py-12">{content}</div>
-      </div>
-    </>
+    <div className="player-narrow">
+      <PageHeader title={ui(t("title"))} subtitle={ui(t("subtitle"))} art={art.trophy} />
+      <div className="px-4">{content}</div>
+    </div>
   );
 }

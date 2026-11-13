@@ -4,7 +4,8 @@ import { cookies } from "next/headers";
 export default getRequestConfig(async () => {
   const cookieStore = await cookies();
   const localeValue = cookieStore.get("locale")?.value;
-  const locale = localeValue === "bn" ? "bn" : "en";
+  // Bangla unless the visitor has chosen English with the language switch
+  const locale = localeValue === "en" ? "en" : "bn";
 
   return {
     locale,

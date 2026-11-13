@@ -1,9 +1,13 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useRegistrations } from "@/lib/hooks/useRegistrations";
 import { Spinner } from "@/components/ui/Spinner";
 
 export function SquadList({ tournamentId, maxSlots }: { tournamentId: string; maxSlots: number }) {
+  const ui = useUiText();
+
   const { squads, loading } = useRegistrations(tournamentId);
 
   const confirmed = squads.filter((s) => !s.isWaitlisted);
@@ -17,7 +21,7 @@ export function SquadList({ tournamentId, maxSlots }: { tournamentId: string; ma
     return (
       <div className="text-center py-8 bg-muted rounded-2xl">
         <p className="text-3xl mb-2">👥</p>
-        <p className="text-sm text-muted-foreground">No squads registered yet.</p>
+        <p className="text-sm text-muted-foreground">{ui("No squads registered yet.")}</p>
       </div>
     );
   }
@@ -26,8 +30,7 @@ export function SquadList({ tournamentId, maxSlots }: { tournamentId: string; ma
     <div className="space-y-4">
       {/* Confirmed slots */}
       <div>
-        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
-          Squads ({confirmed.length}/{maxSlots})
+        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">{ui("Squads (")}{confirmed.length}/{maxSlots})
         </p>
         <div className="space-y-1.5">
           {confirmed.map((s) => (
@@ -47,8 +50,7 @@ export function SquadList({ tournamentId, maxSlots }: { tournamentId: string; ma
       {/* Waitlist */}
       {waitlisted.length > 0 && (
         <div>
-          <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
-            Waitlist ({waitlisted.length})
+          <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">{ui("Waitlist (")}{waitlisted.length})
           </p>
           <div className="space-y-1.5">
             {waitlisted.map((s, i) => (

@@ -1,4 +1,8 @@
+
+import { useUiText } from "@/components/i18n/ui-text";
 export function HeroSection({ subtitle }: { subtitle: string }) {
+  const ui = useUiText();
+
   return (
     <section className="relative py-10 sm:py-14 text-center overflow-hidden">
       {/* Soft blobs */}
@@ -9,14 +13,13 @@ export function HeroSection({ subtitle }: { subtitle: string }) {
         {/* Logo mark */}
         <div className="inline-flex items-center gap-0 mb-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/banners/lnsbd.png" alt="NexStarBD logo" style={{ height: "108px", width: "auto", display: "block", transform: "translateY(-8px) translateX(8px)" }} />
-          <span className="font-brand font-bold text-4xl sm:text-5xl tracking-wide text-foreground">
-            NexStar<span className="text-pink-800">B</span><span className="text-green-800">D</span>
+          <img src="/banners/lnsbd.png" alt={ui("NexStarBD logo")} style={{ height: "108px", width: "auto", display: "block", transform: "translateY(-8px) translateX(8px)" }} />
+          <span className="font-brand font-bold text-4xl sm:text-5xl tracking-wide text-foreground">{ui("NexStar")}<span className="text-pink-800">B</span><span className="text-green-800">D</span>
           </span>
         </div>
 
         <p className="text-base sm:text-lg text-muted-foreground font-medium max-w-lg mx-auto">
-          {subtitle}
+          {ui(subtitle)}
         </p>
 
         {/* Flag stripe */}

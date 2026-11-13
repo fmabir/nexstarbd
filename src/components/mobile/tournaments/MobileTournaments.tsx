@@ -1,10 +1,11 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useState } from "react";
-import Image from "next/image";
 import { useActiveTournaments } from "@/lib/hooks/useActiveTournaments";
 import { useCompletedTournaments } from "@/lib/hooks/useCompletedTournaments";
-import { EmptyState, Skeleton, art } from "@/components/mobile/ui/primitives";
+import { EmptyState, Skeleton } from "@/components/mobile/ui/primitives";
 import { CalendarIcon, CrosshairIcon } from "@/components/mobile/ui/icons";
 import { TournamentCard } from "./TournamentCard";
 import { TournamentRow } from "./TournamentRow";
@@ -12,14 +13,10 @@ import { RegisteredFooter } from "./RegisteredFooter";
 
 type Tab = "live" | "upcoming" | "completed";
 
-const tabTint: Record<Tab, string> = {
-  live: "bg-m-tint-red",
-  upcoming: "bg-m-tint-green",
-  completed: "bg-m-tint-slate",
-};
-
 /** Every tournament, split by status into three tabs that never overlap. */
 export function MobileTournaments() {
+  const ui = useUiText();
+
   const { active, rest: upcoming, loading: activeLoading } = useActiveTournaments();
   const { tournaments: completed, loading: completedLoading } = useCompletedTournaments();
   const live = active.filter((t) => t.status === "ongoing");
@@ -37,28 +34,18 @@ export function MobileTournaments() {
   const loading = tab === "completed" ? completedLoading : activeLoading;
 
   return (
-    <div className="md:hidden m-app">
-      <header className="px-4 pt-4 pb-3">
-        <h1 className="font-m-display font-bold text-[30px] leading-[1.05] text-m-text">Tournaments</h1>
-        <p className="mt-1.5 mb-4 text-[14px] leading-snug text-m-dim">Join the battle — register your squad today</p>
-        <div className="relative rounded-3xl bg-white border border-m-line overflow-hidden">
-          <Image
-            src={art.arena}
-            alt=""
-            width={1536}
-            height={1024}
-            sizes="100vw"
-            className="w-full h-auto"
-          />
-        </div>
+    <div className="player-container">
+      <header className="pb-2">
+        <h1 className="font-m-display font-bold text-[24px] md:text-[28px] leading-tight text-m-text">{ui("Tournaments")}</h1>
+        <p className="mt-1 mb-2 text-[14px] leading-snug text-m-dim">{ui("Find your next match and register your squad.")}</p>
       </header>
 
       <div
-        className="sticky top-14 z-20 px-4 py-2 bg-m-bg/90 backdrop-blur-xl"
+        className="sticky top-16 z-20 py-2 bg-background"
         role="tablist"
-        aria-label="Tournament status"
+        aria-label={ui("Tournament status")}
       >
-        <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-m-raised">
+        <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-m-line/50 max-w-lg">
           {tabs.map((t) => (
             <button
               key={t.key}
@@ -71,18 +58,18 @@ export function MobileTournaments() {
               }`}
             >
               {t.key === "live" && t.count > 0 && (
-                <span className="inline-block w-1.5 h-1.5 mr-1.5 mb-0.5 rounded-full bg-m-red animate-pulse" />
+                <span className="inline-block w-1.5 h-1.5 mr-1.5 mb-0.5 rounded-full bg-m-green animate-pulse" />
               )}
-              {t.label}
+              {ui(t.label)}
               <span className="ml-1 tabular-nums text-m-faint">{t.count}</span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* The list takes the colour of its tab: live red, upcoming green, completed slate */}
-      <div className={`${tabTint[tab]} px-4 pt-4 pb-8 min-h-[50vh] space-y-3`} role="tabpanel">
-        {loading ? (
+      {/* One neutral list surface for every tournament state. */}
+      <div className="pt-4 pb-8 min-h-[25vh] grid md:grid-cols-2 lg:grid-cols-3 gap-3 items-start" role="tabpanel">
+        {ui(loading ? (
           <>
             <Skeleton className="h-[108px]" />
             <Skeleton className="h-[108px]" />
@@ -91,8 +78,8 @@ export function MobileTournaments() {
           live.length === 0 ? (
             <EmptyState
               icon={<CrosshairIcon size={22} />}
-              title="Nothing live right now"
-              text="Live tournaments show up here the moment they start."
+              title={ui("Nothing live right now")}
+              text={ui("Live tournaments show up here the moment they start.")}
               className="bg-m-surface"
             />
           ) : (
@@ -102,8 +89,8 @@ export function MobileTournaments() {
           upcoming.length === 0 ? (
             <EmptyState
               icon={<CalendarIcon size={22} />}
-              title="No upcoming tournaments"
-              text="No upcoming tournaments right now. Stay tuned!"
+              title={ui("No upcoming tournaments")}
+              text={ui("No upcoming tournaments right now. Stay tuned!")}
               className="bg-m-surface"
             />
           ) : (
@@ -112,10 +99,10 @@ export function MobileTournaments() {
             ))
           )
         ) : completed.length === 0 ? (
-          <EmptyState art={art.trophy} title="No completed tournaments yet" className="bg-m-surface" />
+          <EmptyState icon={<CalendarIcon size={22} />} title={ui("No completed tournaments yet")} className="bg-m-surface" />
         ) : (
           completed.map((t) => <TournamentRow key={t.id} tournament={t} />)
-        )}
+        ))}
       </div>
     </div>
   );

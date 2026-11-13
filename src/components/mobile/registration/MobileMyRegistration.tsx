@@ -1,6 +1,8 @@
+
+import { useUiText } from "@/components/i18n/ui-text";
 import Link from "next/link";
 import type { Announcement, ApprovalStatus, Registration, Tournament } from "@/lib/types";
-import { Caption, PageHeader, Section, art, mBtn, mCard } from "@/components/mobile/ui/primitives";
+import { Caption, PageHeader, Section, mBtn, mCard } from "@/components/mobile/ui/primitives";
 import { BanIcon, CheckIcon, HourglassIcon } from "@/components/mobile/ui/icons";
 import { AnnouncementList } from "@/components/mobile/announcements/AnnouncementItem";
 
@@ -43,6 +45,8 @@ export function MobileMyRegistration({
   tournament: Tournament | null;
   announcements: Announcement[];
 }) {
+  const ui = useUiText();
+
   const s = statusLook[reg.approvalStatus || "pending"];
   const details = [
     { label: "Squad name", value: reg.squadName, strong: true },
@@ -52,46 +56,43 @@ export function MobileMyRegistration({
   ];
 
   return (
-    <div className="md:hidden m-app">
+    <div className="player-narrow">
       <PageHeader
-        title="My registration"
-        subtitle={tournament?.name}
+        title={ui("My registration")}
+        subtitle={ui(tournament?.name)}
         back={{ href: `/tournaments/${reg.tournamentId}`, label: "Tournament" }}
-        art={art.community}
       />
 
       <div>
-        <div className="px-4 pb-7">
+        <div className="px-4 pb-3">
           <div className={`rounded-2xl border p-4 ${s.box}`}>
             <div className="flex items-start gap-3">
               <span className={`w-11 h-11 shrink-0 rounded-full flex items-center justify-center ${s.badge}`}>{s.icon}</span>
               <div className="min-w-0">
-                <p className={`font-m-display font-bold text-[24px] leading-tight ${s.text}`}>{s.label}</p>
-                <p className="mt-0.5 text-[14px] leading-snug text-m-dim">{s.desc}</p>
+                <p className={`font-m-display font-bold text-[20px] leading-tight ${s.text}`}>{ui(s.label)}</p>
+                <p className="mt-0.5 text-[14px] leading-snug text-m-dim">{ui(s.desc)}</p>
               </div>
             </div>
 
             {reg.slotNumber && reg.approvalStatus === "approved" && (
               <div className="mt-4 pt-3 border-t border-black/10 flex items-center justify-between">
-                <Caption>Slot confirmed</Caption>
-                <span className="font-m-display font-bold text-[26px] leading-none text-m-text">#{reg.slotNumber}</span>
+                <Caption>{ui("Slot confirmed")}</Caption>
+                <span className="font-m-display font-bold text-[22px] leading-none text-m-text">#{reg.slotNumber}</span>
               </div>
             )}
 
             {reg.isWaitlisted && (
-              <p className={`mt-4 pt-3 border-t border-black/10 text-[14px] font-semibold ${s.text}`}>
-                You are on the waiting list
-              </p>
+              <p className={`mt-4 pt-3 border-t border-black/10 text-[14px] font-semibold ${s.text}`}>{ui("You are on the waiting list")}</p>
             )}
           </div>
         </div>
 
-        <Section title="Squad details" tone="slate">
+        <Section title={ui("Squad details")} tone="slate">
           <div className="px-4">
             <dl className={`${mCard} px-4 divide-y divide-m-line`}>
               {details.map((d) => (
-                <div key={d.label} className="flex items-center justify-between gap-4 py-3.5">
-                  <dt className="text-[14px] text-m-dim shrink-0">{d.label}</dt>
+                <div key={d.label} className="flex items-center justify-between gap-4 py-2.5">
+                  <dt className="text-[14px] text-m-dim shrink-0">{ui(d.label)}</dt>
                   <dd
                     className={`text-right break-all ${d.strong ? "text-[15px] font-semibold" : "text-[14px]"} ${
                       d.mono ? "font-mono" : ""
@@ -106,20 +107,16 @@ export function MobileMyRegistration({
         </Section>
 
         {announcements.length > 0 && (
-          <Section title="Tournament announcements" live tone="blue">
+          <Section title={ui("Tournament announcements")} live tone="blue">
             <div className="px-4">
               <AnnouncementList announcements={announcements} />
             </div>
           </Section>
         )}
 
-        <div className="px-4 pt-7 flex flex-col gap-2.5">
-          <Link href={`/tournaments/${reg.tournamentId}`} className={`${mBtn.primary} w-full`}>
-            Go to tournament dashboard
-          </Link>
-          <Link href="/" className={`${mBtn.secondary} w-full`}>
-            Back to home
-          </Link>
+        <div className="px-4 pt-4 flex flex-col gap-2.5">
+          <Link href={`/tournaments/${reg.tournamentId}`} className={`${mBtn.primary} w-full`}>{ui("Go to tournament dashboard")}</Link>
+          <Link href="/" className={`${mBtn.secondary} w-full`}>{ui("Back to home")}</Link>
         </div>
       </div>
     </div>

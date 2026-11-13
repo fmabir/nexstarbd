@@ -1,19 +1,21 @@
+
+import { useUiText } from "@/components/i18n/ui-text";
 import { MvpCard } from "@/components/mvp/MvpCard";
 import { Button } from "@/components/ui/Button";
 import type { MvpPlayer } from "@/lib/types";
 
 export function MvpShowcase({ players }: { players: MvpPlayer[] }) {
+  const ui = useUiText();
+
   if (players.length === 0) return null;
 
   return (
     <section className="py-16 border-t border-green-200/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
-          <h2 className="font-display text-4xl sm:text-5xl text-foreground tracking-wide mb-2">
-            MVP Players
-          </h2>
+          <h2 className="font-display text-4xl sm:text-5xl text-foreground tracking-wide mb-2">{ui("MVP Players")}</h2>
           <div className="w-16 h-1 bg-secondary rounded-full mx-auto mb-3" />
-          <p className="text-muted-foreground">Our most outstanding performers</p>
+          <p className="text-muted-foreground">{ui("Our most outstanding performers")}</p>
         </div>
 
         <div className="flex gap-5 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide justify-start sm:justify-center flex-nowrap">

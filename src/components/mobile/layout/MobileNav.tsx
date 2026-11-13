@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useCallback, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -35,6 +37,8 @@ const tabs = [
 
 /** Phone chrome: a slim top bar with the account, and a bottom tab bar for the four sections. */
 export function MobileNav() {
+  const ui = useUiText();
+
   const pathname = usePathname();
   const { user, isAdmin, signOut } = useAuth();
   const [accountOpen, setAccountOpen] = useState(false);
@@ -46,16 +50,16 @@ export function MobileNav() {
     <>
       <header className="md:hidden m-app sticky top-0 z-40 bg-m-bg/85 backdrop-blur-xl border-b border-m-line">
         <div className="flex items-center justify-between h-14 pl-4 pr-3">
-          <Link href="/" aria-label="NexStarBD home" className="flex items-center h-11">
+          <Link href="/" aria-label={ui("NexStarBD home")} className="flex items-center h-11">
             <Wordmark />
           </Link>
 
-          {user ? (
+          {ui(user ? (
             <button
               type="button"
               onClick={() => setAccountOpen(true)}
               className="flex items-center justify-center w-11 h-11"
-              aria-label="Account"
+              aria-label={ui("Account")}
               aria-haspopup="dialog"
             >
               <span className="w-8 h-8 rounded-full bg-m-red text-white text-[14px] font-semibold flex items-center justify-center">
@@ -64,11 +68,9 @@ export function MobileNav() {
             </button>
           ) : (
             <Link href="/login" className="inline-flex items-center h-11 px-1">
-              <span className="inline-flex items-center h-9 px-4 rounded-full bg-m-red active:bg-m-red-press text-white text-[14px] font-semibold">
-                Sign in
-              </span>
+              <span className="inline-flex items-center h-9 px-4 rounded-full bg-m-red active:bg-m-red-press text-white text-[14px] font-semibold">{ui("Sign in")}</span>
             </Link>
-          )}
+          ))}
         </div>
       </header>
 
@@ -76,7 +78,7 @@ export function MobileNav() {
           filled red pill behind its icon */}
       <nav
         className="md:hidden m-tabbar fixed inset-x-3 bottom-[calc(10px+env(safe-area-inset-bottom))] z-40 h-16 rounded-[26px] bg-white/85 backdrop-blur-xl backdrop-saturate-150 border border-white/70 ring-1 ring-black/5 shadow-[0_12px_32px_-12px_rgba(16,24,40,0.35)]"
-        aria-label="Main"
+        aria-label={ui("Main")}
       >
         <ul className="grid grid-cols-4 h-full px-1">
           {tabs.map(({ href, label, Icon, match }) => {
@@ -97,7 +99,7 @@ export function MobileNav() {
                   >
                     <Icon size={20} strokeWidth={active ? 2.1 : 1.8} />
                   </span>
-                  {label}
+                  {ui(label)}
                 </Link>
               </li>
             );
@@ -129,9 +131,7 @@ export function MobileNav() {
                   >
                     <span className="w-9 h-9 rounded-xl bg-m-raised flex items-center justify-center text-m-dim">
                       <ShieldIcon size={18} />
-                    </span>
-                    Admin dashboard
-                    <ChevronRightIcon size={18} className="ml-auto text-m-faint" />
+                    </span>{ui("Admin dashboard")}<ChevronRightIcon size={18} className="ml-auto text-m-faint" />
                   </Link>
                 </li>
               )}
@@ -146,9 +146,7 @@ export function MobileNav() {
                 >
                   <span className="w-9 h-9 rounded-xl bg-m-red/12 flex items-center justify-center">
                     <LogoutIcon size={18} />
-                  </span>
-                  Sign out
-                </button>
+                  </span>{ui("Sign out")}</button>
               </li>
             </ul>
           </div>

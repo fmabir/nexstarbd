@@ -1,155 +1,61 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
-import { MobileNav } from "@/components/mobile/layout/MobileNav";
+import { useUiText } from "@/components/i18n/ui-text";
 
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/#upcoming-tournaments", label: "Tournaments" },
-  { href: "/results", label: "Results" },
-  { href: "/rules", label: "Rules" },
+import { LanguageToggle } from "./LanguageToggle";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { Wordmark } from "@/components/mobile/ui/primitives";
+import { CrosshairIcon, HomeIcon, TrophyIcon, UserIcon } from "@/components/mobile/ui/icons";
+
+const links = [
+  { href: "/", label: "Home", Icon: HomeIcon },
+  { href: "/tournaments", label: "Tournaments", Icon: CrosshairIcon },
+  { href: "/results", label: "Results", Icon: TrophyIcon },
+  { href: "/account", label: "Account", Icon: UserIcon },
 ];
 
-// locale prop kept so callers don't need to change
-export function Navbar({ locale: _locale }: { locale: string }) {
-  const { user, isAdmin, signOut } = useAuth();
-  const [profileOpen, setProfileOpen] = useState(false);
-  const profileRef = useRef<HTMLDivElement>(null);
+export function Navbar({ locale }: { locale: string }) {
+  const ui = useUiText();
 
-  // Close the profile dropdown on an outside click
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
-        setProfileOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
-
-  // Escape closes the profile dropdown
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setProfileOpen(false);
-    }
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, []);
-
+  const pathname = usePathname();
+  const { user, isAdmin } = useAuth();
+  const active = (href: string) => href === "/" ? pathname === "/" :
+    href === "/tournaments" ? ["/tournaments", "/register", "/my-registration"].some(p => pathname.startsWith(p)) :
+      href === "/results" ? ["/results", "/hall-of-fame"].some(p => pathname.startsWith(p)) : pathname.startsWith(href);
   return (
     <>
-      {/*
-        Apple's bar: slim, translucent, and blurred so the page tints it as it
-        scrolls underneath. saturate lifts the colour the blur washes out.
-        Desktop only — phones get MobileNav's top bar and tab bar.
-      */}
-      <header className="hidden md:block sticky top-0 z-40">
-        <div className="bg-surface/70 backdrop-blur-xl backdrop-saturate-[180%] border-b border-green-900/10">
-          <nav className="max-w-6xl mx-auto px-2 sm:px-6">
-            <div className="relative flex items-center justify-between h-11 sm:h-12">
-
-              {/* Brand */}
-              <Link
-                href="/"
-                className="absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0 flex items-center gap-1.5 shrink-0 h-11"
-                aria-label="NexStarBD home"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/banners/lnsbd.png"
-                  alt=""
-                  aria-hidden="true"
-                  className="w-auto h-[26px] sm:h-[28px] block"
-                />
-                <span className="font-brand text-[15px] sm:text-base text-foreground">
-                  NexStar<span className="text-pink-800">B</span><span className="text-green-800">D</span>
-                </span>
-              </Link>
-
-              {/* Centre — links (desktop) */}
-              <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="text-[13px] tracking-[-0.01em] text-foreground/75 hover:text-foreground transition-colors duration-200 whitespace-nowrap"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-                {isAdmin && (
-                  <Link
-                    href="/admin"
-                    className="text-[13px] tracking-[-0.01em] text-primary hover:text-primary-dark transition-colors duration-200 whitespace-nowrap"
-                  >
-                    Admin
-                  </Link>
-                )}
-              </div>
-
-              {/* Right — account */}
-              <div className="flex items-center shrink-0 ml-auto md:ml-0" ref={profileRef}>
-                {user ? (
-                  <div className="relative">
-                    <button
-                      onClick={() => setProfileOpen((v) => !v)}
-                      className="flex items-center justify-center w-11 h-11 md:w-auto md:h-auto md:gap-2 md:px-2 md:py-1.5 rounded-full transition-colors duration-200"
-                      aria-label="Account menu"
-                      aria-expanded={profileOpen}
-                    >
-                      <span className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center text-[12px] font-semibold">
-                        {(user.displayName?.[0] ?? user.email?.[0] ?? "?").toUpperCase()}
-                      </span>
-                      <span className="hidden md:inline text-[13px] text-foreground/75 max-w-[10rem] truncate">
-                        {user.displayName || user.email?.split("@")[0]}
-                      </span>
-                    </button>
-
-                    {profileOpen && (
-                      <div className="absolute right-0 top-full mt-1.5 w-60 rounded-2xl bg-surface/95 backdrop-blur-xl border border-green-900/10 shadow-lg overflow-hidden">
-                        <div className="px-4 py-3 border-b border-green-900/10">
-                          {user.displayName && (
-                            <p className="text-[13px] font-semibold text-foreground truncate">{user.displayName}</p>
-                          )}
-                          <p className="text-[12px] text-muted-foreground truncate">{user.email}</p>
-                        </div>
-                        {isAdmin && (
-                          <Link
-                            href="/admin"
-                            onClick={() => setProfileOpen(false)}
-                            className="flex items-center min-h-11 px-4 text-[13px] text-foreground hover:bg-green-900/5 transition-colors"
-                          >
-                            Admin Dashboard
-                          </Link>
-                        )}
-                        <button
-                          onClick={async () => { setProfileOpen(false); await signOut(); }}
-                          className="flex items-center w-full min-h-11 px-4 text-[13px] text-primary hover:bg-green-900/5 transition-colors"
-                        >
-                          Sign Out
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <Link
-                    href="/login"
-                    className="group inline-flex items-center justify-center h-11 -mr-1 px-1"
-                  >
-                    <span className="inline-flex items-center justify-center h-8 px-4 rounded-full bg-primary group-hover:bg-primary-dark text-white text-[13px] font-medium transition-colors duration-200">
-                      Sign In
-                    </span>
-                  </Link>
-                )}
-              </div>
-            </div>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 bg-white p-3 rounded-lg">{ui("Skip to content")}</a>
+      <header lang={locale} className="sticky top-0 z-40 bg-white border-b border-border">
+        <div className="max-w-[1168px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
+          <Link href="/" aria-label={ui("NexStarBD home")}>
+            <Wordmark size={30} />
+          </Link>
+          <nav aria-label={ui("Main navigation")} className="hidden md:flex items-center gap-1">
+            {links.slice(0, 3).map(({ href, label }) => <Link key={href} href={href} aria-current={active(href) ? "page" : undefined} className={`px-4 py-2.5 rounded-lg text-sm font-medium ${active(href) ? "bg-primary-light text-primary" : "text-muted-foreground hover:bg-muted"}`}>{ui(label)}</Link>)}
+            <Link href="/rules" aria-current={active("/rules") ? "page" : undefined} className={`px-4 py-2.5 rounded-lg text-sm font-medium ${active("/rules") ? "text-primary bg-primary-light" : "text-muted-foreground hover:bg-muted"}`}>{ui("Rules")}</Link>
           </nav>
+          <div className="flex items-center gap-2">
+            <LanguageToggle currentLocale={locale} />
+            {isAdmin && <Link href="/admin" className="hidden lg:block text-sm font-medium text-muted-foreground">{ui("Admin")}</Link>}
+            <Link href={user ? "/account" : "/login"} className={user ? "flex items-center gap-2 text-sm font-semibold min-h-11" : "rounded-xl bg-primary hover:bg-primary-dark text-white p-2.5 md:px-4 text-sm font-semibold"}>
+              {ui(user ? <>
+                <span className="w-9 h-9 rounded-full bg-primary-light text-primary flex items-center justify-center">{(user.displayName?.[0] ?? user.email?.[0] ?? "P").toUpperCase()}</span>
+                <span className="hidden lg:block max-w-32 truncate">{user.displayName || ui("My account")}</span>
+              </> : <><UserIcon size={20} className="md:hidden" /><span className="sr-only md:not-sr-only">{ui("Sign in")}</span></>)}
+            </Link>
+          </div>
         </div>
       </header>
-
-      <MobileNav />
+      <nav aria-label={ui("Mobile navigation")} className="m-tabbar md:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-border pb-[env(safe-area-inset-bottom)]">
+        <div className="grid grid-cols-4 h-[68px] max-w-lg mx-auto">
+          {links.map(({ href, label, Icon }) => <Link key={href} href={href} aria-current={active(href) ? "page" : undefined} className={`flex flex-col items-center justify-center gap-1 text-[11px] font-medium ${active(href) ? "text-primary" : "text-muted-foreground"}`}>
+            <span className={`rounded-xl px-4 py-1 ${active(href) ? "bg-primary-light" : ""}`}>
+              <Icon size={21} />
+            </span>{ui(label)}</Link>)}
+        </div>
+      </nav>
     </>
   );
 }

@@ -1,18 +1,22 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useActiveTournaments } from "@/lib/hooks/useActiveTournaments";
 import { SeeAllLink, Section, art } from "@/components/mobile/ui/primitives";
 import { TournamentRow } from "@/components/mobile/tournaments/TournamentRow";
 import { RegisteredFooter } from "@/components/mobile/tournaments/RegisteredFooter";
 
 export function UpcomingSection() {
+  const ui = useUiText();
+
   const { rest: upcoming, loading } = useActiveTournaments();
 
   if (loading || upcoming.length === 0) return null;
 
   return (
     <Section
-      title="Upcoming tournaments"
+      title={ui("Upcoming tournaments")}
       tone="green"
       backdrop={art.arena}
       flipBackdrop

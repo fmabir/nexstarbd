@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,21 +15,23 @@ const positionStyle: Record<number, { label: string; bar: string }> = {
 };
 
 function ChampionCard({ winner }: { winner: Winner }) {
+  const ui = useUiText();
+
   const s = positionStyle[winner.position] ?? positionStyle[3];
   return (
     <div className="snap-start shrink-0 w-60 bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md transition-shadow">
       <div className={`h-1.5 ${s.bar}`} />
-      {winner.photoUrl ? (
+      {ui(winner.photoUrl ? (
         <div className="relative h-32 bg-gray-100">
-          <Image src={winner.photoUrl} alt={winner.squadName} fill className="object-cover" />
+          <Image src={winner.photoUrl} alt={ui(winner.squadName)} fill className="object-cover" />
         </div>
       ) : (
         <div className="h-20 bg-gray-50 flex items-center justify-center text-3xl">🏆</div>
-      )}
+      ))}
       <div className="p-4">
-        <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide">{s.label}</span>
+        <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide">{ui(s.label)}</span>
         <h3 className="font-display text-lg text-foreground tracking-wide mt-0.5 mb-1">{winner.squadName}</h3>
-        <p className="text-xs text-muted-foreground mb-2">{winner.tournamentName} · {formatShortDate(winner.tournamentDate)}</p>
+        <p className="text-xs text-muted-foreground mb-2">{winner.tournamentName} · {ui(formatShortDate(winner.tournamentDate))}</p>
         <div className="flex flex-wrap gap-1 mb-3">
           {winner.players.slice(0, 3).map((p) => (
             <span key={p} className="text-xs bg-gray-100 px-2 py-0.5 rounded-full">{p}</span>
@@ -37,7 +41,7 @@ function ChampionCard({ winner }: { winner: Winner }) {
           )}
         </div>
         <div className="flex items-center justify-between border-t border-border pt-2">
-          <span className="text-xs text-muted-foreground">Prize</span>
+          <span className="text-xs text-muted-foreground">{ui("Prize")}</span>
           <span className="font-display text-base text-secondary">{winner.prize}</span>
         </div>
       </div>
@@ -46,36 +50,38 @@ function ChampionCard({ winner }: { winner: Winner }) {
 }
 
 function MvpCard({ mvp }: { mvp: MvpPlayer }) {
+  const ui = useUiText();
+
   return (
     <div className="snap-start shrink-0 w-52 bg-card border border-border rounded-2xl overflow-hidden hover:shadow-md transition-shadow">
       <div className="h-1.5 bg-secondary" />
       <div className="p-4 text-center">
         <div className="relative w-14 h-14 mx-auto mb-3">
-          {mvp.photoUrl ? (
-            <Image src={mvp.photoUrl} alt={mvp.playerName} fill className="object-cover rounded-full" />
+          {ui(mvp.photoUrl ? (
+            <Image src={mvp.photoUrl} alt={ui(mvp.playerName)} fill className="object-cover rounded-full" />
           ) : (
             <div className="w-14 h-14 rounded-full bg-gradient-to-br from-secondary to-secondary-dark flex items-center justify-center text-white font-display text-xl">
               {mvp.playerName.charAt(0).toUpperCase()}
             </div>
-          )}
-          <div className="absolute -bottom-1 -right-1 bg-secondary text-white text-xs font-bold px-1.5 py-0.5 rounded-full">MVP</div>
+          ))}
+          <div className="absolute -bottom-1 -right-1 bg-secondary text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{ui("MVP")}</div>
         </div>
         <h3 className="font-display text-base text-foreground tracking-wide">{mvp.playerName}</h3>
-        <p className="text-xs text-muted-foreground mb-3">{mvp.achievement}</p>
+        <p className="text-xs text-muted-foreground mb-3">{ui(mvp.achievement)}</p>
         <div className="flex items-center justify-center gap-4 mb-3">
           <div className="text-center">
             <div className="font-display text-xl text-primary">{mvp.kills}</div>
-            <div className="text-xs text-muted-foreground uppercase tracking-wide">Kills</div>
+            <div className="text-xs text-muted-foreground uppercase tracking-wide">{ui("Kills")}</div>
           </div>
           {mvp.damage && (
             <div className="text-center">
               <div className="font-display text-xl text-secondary">{mvp.damage}</div>
-              <div className="text-xs text-muted-foreground uppercase tracking-wide">DMG</div>
+              <div className="text-xs text-muted-foreground uppercase tracking-wide">{ui("DMG")}</div>
             </div>
           )}
         </div>
         <p className="text-xs text-muted-foreground border-t border-border pt-2">
-          {mvp.tournamentName} · {formatShortDate(mvp.tournamentDate)}
+          {mvp.tournamentName} · {ui(formatShortDate(mvp.tournamentDate))}
         </p>
       </div>
     </div>
@@ -85,6 +91,8 @@ function MvpCard({ mvp }: { mvp: MvpPlayer }) {
 type Tab = "champions" | "mvp";
 
 export function PreviousHighlights({ winners, mvpPlayers }: { winners: Winner[]; mvpPlayers: MvpPlayer[] }) {
+  const ui = useUiText();
+
   const [tab, setTab] = useState<Tab>("champions");
 
   if (winners.length === 0 && mvpPlayers.length === 0) return null;
@@ -101,12 +109,10 @@ export function PreviousHighlights({ winners, mvpPlayers }: { winners: Winner[];
         {/* Header + tabs */}
         <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
           <div>
-            <h2 className="font-esports font-bold text-2xl text-foreground tracking-wide uppercase">Hall of Fame</h2>
+            <h2 className="font-esports font-bold text-2xl text-foreground tracking-wide uppercase">{ui("Hall of Fame")}</h2>
             <div className="w-10 h-1 bg-secondary rounded-full mt-1" />
           </div>
-          <Link href="/hall-of-fame" className="text-sm font-semibold text-secondary hover:underline">
-            View All →
-          </Link>
+          <Link href="/hall-of-fame" className="text-sm font-semibold text-secondary hover:underline">{ui("View All →")}</Link>
         </div>
 
         {/* Tab bar */}
@@ -121,7 +127,7 @@ export function PreviousHighlights({ winners, mvpPlayers }: { winners: Winner[];
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
-              {t.label}
+              {ui(t.label)}
               <span className="ml-1.5 text-xs bg-gray-100 px-1.5 py-0.5 rounded-full">{t.count}</span>
             </button>
           ))}

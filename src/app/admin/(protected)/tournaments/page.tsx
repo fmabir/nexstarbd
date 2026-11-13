@@ -1,7 +1,12 @@
+
+import { createUiText } from "@/components/i18n/ui-text";
+import { getLocale } from "next-intl/server";
 import Link from "next/link";
 import type { Tournament } from "@/lib/types";
 import { formatShortDate } from "@/lib/utils/formatDate";
 import { CreateTournamentForm } from "@/components/admin/CreateTournamentForm";
+import { Card, EmptyState, PageHeader, TournamentStatusBadge } from "@/components/admin/ui";
+import { ChevronRightIcon } from "@/components/admin/icons";
 
 async function getTournaments(): Promise<Tournament[]> {
   const { adminDb } = await import("@/lib/firebase/admin");
@@ -13,67 +18,45 @@ async function getTournaments(): Promise<Tournament[]> {
 }
 
 export default async function AdminTournamentsPage() {
+  const ui = createUiText(await getLocale());
+
   const tournaments = await getTournaments();
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="font-display text-3xl text-foreground tracking-wide">
-          Tournaments
-        </h1>
-      </div>
+    <div className="space-y-6">
+      <PageHeader title={ui("Tournaments")} description="Create a tournament, then open it to manage squads, room info and schedule." />
 
-      {/* Create form */}
-      <div className="bg-card rounded-2xl border border-border p-6">
-        <h2 className="font-semibold text-lg mb-4">Create Tournament</h2>
-        <CreateTournamentForm />
-      </div>
+      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-6 items-start">
+        <Card title={ui("Create tournament")} description="Fields marked * are required.">
+          <CreateTournamentForm />
+        </Card>
 
-      {/* List */}
-      <div className="bg-card rounded-2xl border border-border overflow-hidden">
-        <div className="px-6 py-4 border-b border-border">
-          <h2 className="font-semibold text-lg">All Tournaments</h2>
-        </div>
-        {tournaments.length === 0 ? (
-          <div className="text-center py-10 text-muted-foreground">
-            No tournaments yet. Create one above.
-          </div>
-        ) : (
-          <div className="divide-y divide-border">
-            {tournaments.map((t) => (
-              <div
-                key={t.id}
-                className="px-4 sm:px-6 py-3 sm:py-4 hover:bg-muted/50"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <p className="font-semibold truncate flex-1 min-w-0">{t.name}</p>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span
-                      className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                        t.status === "upcoming"
-                          ? "bg-blue-100 text-blue-700"
-                          : t.status === "ongoing"
-                          ? "bg-primary-light text-primary"
-                          : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      {t.status}
+        <Card title={ui(`All tournaments (${tournaments.length})`)} flush>
+          {ui(tournaments.length === 0 ? (
+            <EmptyState title={ui("No tournaments yet")} text={ui("Create one with the form.")} />
+          ) : (
+            <ul className="divide-y divide-(--ad-line)">
+              {tournaments.map((t) => (
+                <li key={t.id}>
+                  <Link
+                    href={`/admin/tournaments/${t.id}`}
+                    className="flex items-center gap-3 px-5 sm:px-6 py-3.5 hover:bg-(--ad-raised) transition-colors"
+                  >
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-sm font-semibold text-(--ad-text) truncate">{t.name}</span>
+                      <span className="block text-xs text-(--ad-dim) mt-0.5">
+                        {ui(formatShortDate(t.startsAt))} · {t.mode} · {t.registeredCount}/{t.maxSlots}{ui("squads")}{ui(t.isFree ? " · Free" : t.registrationFee ? ` · ${t.registrationFee}` : "")}
+                      </span>
                     </span>
-                    <Link
-                      href={`/admin/tournaments/${t.id}`}
-                      className="text-sm font-semibold text-primary hover:underline"
-                    >
-                      Manage →
-                    </Link>
-                  </div>
-                </div>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {formatShortDate(t.startsAt)} · {t.mode} · {t.registeredCount}/{t.maxSlots} squads
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
+                    <TournamentStatusBadge status={t.status} />
+                    <span className="hidden sm:inline text-[13px] font-semibold text-(--ad-accent)">{ui("Manage")}</span>
+                    <ChevronRightIcon size={16} className="text-(--ad-faint) shrink-0" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </Card>
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import type { MvpPlayer, Tournament, Winner } from "@/lib/types";
@@ -15,12 +17,14 @@ type Slide =
 
 /* ── Banner image slide ──────────────────────────────────────── */
 function BannerSlide() {
+  const ui = useUiText();
+
   return (
     <div className="relative h-52 sm:h-72 bg-black flex items-center justify-center">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/banners/bgbn.png"
-        alt="NexStarBD"
+        alt={ui("NexStarBD")}
         className="w-full h-full object-cover"
       />
     </div>
@@ -33,6 +37,8 @@ function ChampionSlide({ champion, runnerUp, tournamentName }: {
   runnerUp: Winner | null;
   tournamentName: string;
 }) {
+  const ui = useUiText();
+
   return (
     <div className="relative h-52 sm:h-72 overflow-hidden flex flex-col">
       {/* Background image */}
@@ -50,7 +56,7 @@ function ChampionSlide({ champion, runnerUp, tournamentName }: {
       <div className="relative flex items-center gap-2 px-4 sm:px-6 pt-2.5 pb-2 border-b border-white/10 shrink-0">
         <span className="text-yellow-400 text-xs leading-none">🏆</span>
         <span className="text-white/60 text-[10px] sm:text-xs font-bold uppercase tracking-widest truncate">{tournamentName}</span>
-        <span className="text-white/25 text-[10px] ml-auto shrink-0">Champions</span>
+        <span className="text-white/25 text-[10px] ml-auto shrink-0">{ui("Champions")}</span>
       </div>
 
       {/* Side-by-side halves */}
@@ -61,7 +67,7 @@ function ChampionSlide({ champion, runnerUp, tournamentName }: {
           className="flex-1 flex flex-col justify-center px-3 sm:px-6 py-2 sm:py-4 border-r border-white/10 overflow-hidden"
           style={{ background: "linear-gradient(135deg, rgba(255,215,0,0.12) 0%, transparent 70%)" }}
         >
-          <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-widest text-yellow-400 mb-1">🥇 Champion</span>
+          <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-widest text-yellow-400 mb-1">{ui("🥇 Champion")}</span>
           <p className="text-white font-bold text-base sm:text-2xl leading-tight line-clamp-1">{champion.squadName}</p>
           <div className="flex flex-wrap gap-1 mt-1.5">
             {champion.players.slice(0, 4).map((p, i) => (
@@ -76,12 +82,12 @@ function ChampionSlide({ champion, runnerUp, tournamentName }: {
         </div>
 
         {/* ── Runner-up (right) ── */}
-        {runnerUp ? (
+        {ui(runnerUp ? (
           <div
             className="flex-1 flex flex-col justify-center px-3 sm:px-6 py-2 sm:py-4 overflow-hidden"
           style={{ background: "linear-gradient(135deg, rgba(192,192,192,0.10) 0%, transparent 70%)" }}
           >
-            <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-widest text-gray-300 mb-1">🥈 Runner-Up</span>
+            <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-widest text-gray-300 mb-1">{ui("🥈 Runner-Up")}</span>
             <p className="text-white font-bold text-base sm:text-2xl leading-tight line-clamp-1">{runnerUp.squadName}</p>
             <div className="flex flex-wrap gap-1 mt-1.5">
               {runnerUp.players.slice(0, 4).map((p, i) => (
@@ -96,9 +102,9 @@ function ChampionSlide({ champion, runnerUp, tournamentName }: {
           </div>
         ) : (
           <div className="flex-1 flex items-center justify-center">
-            <span className="text-white/20 text-xs">No runner-up recorded</span>
+            <span className="text-white/20 text-xs">{ui("No runner-up recorded")}</span>
           </div>
-        )}
+        ))}
       </div>
     </div>
   );
@@ -106,6 +112,8 @@ function ChampionSlide({ champion, runnerUp, tournamentName }: {
 
 /* ── Leaderboard slide ───────────────────────────────────────── */
 function LeaderboardSlide({ player }: { player: MvpPlayer }) {
+  const ui = useUiText();
+
   return (
     <div
       className="relative h-52 sm:h-72 flex items-center overflow-hidden"
@@ -123,7 +131,7 @@ function LeaderboardSlide({ player }: { player: MvpPlayer }) {
       <div className="relative w-full px-5 sm:px-10">
         <div className="flex items-center gap-2 mb-2">
           <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-          <span className="text-primary text-[10px] sm:text-xs font-black uppercase tracking-widest">Top Kills</span>
+          <span className="text-primary text-[10px] sm:text-xs font-black uppercase tracking-widest">{ui("Top Kills")}</span>
           <span className="text-white/30 text-[10px] mx-1">·</span>
           <span className="text-white/70 text-[10px] sm:text-xs font-semibold truncate">{player.tournamentName}</span>
         </div>
@@ -135,19 +143,19 @@ function LeaderboardSlide({ player }: { player: MvpPlayer }) {
 
           <div className="min-w-0">
             <p className="text-white font-black text-xl sm:text-3xl leading-tight truncate drop-shadow">{player.playerName}</p>
-            <p className="text-white/55 text-[10px] sm:text-xs font-mono mt-0.5">UID: {player.uid}</p>
+            <p className="text-white/55 text-[10px] sm:text-xs font-mono mt-0.5">{ui("UID:")}{player.uid}</p>
             <div className="flex items-baseline gap-2 mt-2">
               <span className="text-primary font-black text-4xl sm:text-5xl leading-none drop-shadow-lg">{player.kills}</span>
-              <span className="text-white/70 text-xs sm:text-sm font-bold uppercase tracking-wide">kills</span>
+              <span className="text-white/70 text-xs sm:text-sm font-bold uppercase tracking-wide">{ui("kills")}</span>
               {player.damage && (
-                <span className="text-white/45 text-xs hidden sm:inline">{player.damage.toLocaleString()} dmg</span>
+                <span className="text-white/45 text-xs hidden sm:inline">{player.damage.toLocaleString()}{ui("dmg")}</span>
               )}
             </div>
           </div>
 
           {player.achievement && (
             <div className="hidden sm:block ml-auto shrink-0 bg-yellow-500/15 border border-yellow-400/50 rounded-xl px-4 py-2 text-center shadow shadow-yellow-500/10">
-              <p className="text-yellow-300 text-xs font-black">{player.achievement}</p>
+              <p className="text-yellow-300 text-xs font-black">{ui(player.achievement)}</p>
             </div>
           )}
         </div>
@@ -158,12 +166,14 @@ function LeaderboardSlide({ player }: { player: MvpPlayer }) {
 
 /* ── Upcoming tournament slide ───────────────────────────────── */
 function UpcomingSlide({ tournament }: { tournament: Tournament }) {
+  const ui = useUiText();
+
   return (
     <div className="relative h-52 sm:h-72" style={{ backgroundColor: "#1f2937" }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={resolveBannerUrl(tournament.bannerUrl, tournament.id)}
-        alt={tournament.name}
+        alt={ui(tournament.name)}
         className="absolute inset-0 w-full h-full object-cover"
       />
       <div
@@ -172,9 +182,7 @@ function UpcomingSlide({ tournament }: { tournament: Tournament }) {
       />
 
       <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
-        <span className="inline-block bg-secondary text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full mb-2">
-          🎮 Upcoming
-        </span>
+        <span className="inline-block bg-secondary text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full mb-2">{ui("🎮 Upcoming")}</span>
         <h3 className="font-display text-white text-xl sm:text-3xl leading-tight mb-2 line-clamp-1">
           {tournament.name}
         </h3>
@@ -182,14 +190,12 @@ function UpcomingSlide({ tournament }: { tournament: Tournament }) {
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
             <span className="text-primary font-bold text-sm sm:text-base">{tournament.prizePool}</span>
             <span className="text-white/40 text-xs hidden sm:inline">·</span>
-            <span className="text-white/60 text-xs sm:text-sm">{formatTimeOnly(tournament.startsAt)} · {formatDateOnly(tournament.startsAt)}</span>
+            <span className="text-white/60 text-xs sm:text-sm">{ui(formatTimeOnly(tournament.startsAt))} · {ui(formatDateOnly(tournament.startsAt))}</span>
           </div>
           <Link
             href={`/tournaments/${tournament.id}`}
             className="shrink-0 bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg transition-colors border border-white/20"
-          >
-            View Details →
-          </Link>
+          >{ui("View Details →")}</Link>
         </div>
       </div>
     </div>
@@ -206,6 +212,8 @@ export function HeroCarousel({
   mvpPlayers: MvpPlayer[];
   upcomingTournaments: Tournament[];
 }) {
+  const ui = useUiText();
+
   // Group winners by tournament so champion + runner-up appear on the same slide
   const tournamentMap = new Map<string, { champion?: Winner; runnerUp?: Winner; tournamentName: string }>();
   for (const w of winners) {
@@ -294,7 +302,7 @@ export function HeroCarousel({
       onTouchEnd={onTouchEnd}
       role="region"
       aria-roledescription="carousel"
-      aria-label="Highlights"
+      aria-label={ui("Highlights")}
     >
       {/* Slide track */}
       <div
@@ -315,14 +323,14 @@ export function HeroCarousel({
       <button
         onClick={handlePrev}
         className="hidden sm:flex absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 hover:bg-black/70 text-white rounded-full items-center justify-center transition-colors z-10"
-        aria-label="Previous"
+        aria-label={ui("Previous")}
       >
         ‹
       </button>
       <button
         onClick={handleNext}
         className="hidden sm:flex absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 hover:bg-black/70 text-white rounded-full items-center justify-center transition-colors z-10"
-        aria-label="Next"
+        aria-label={ui("Next")}
       >
         ›
       </button>
@@ -334,7 +342,7 @@ export function HeroCarousel({
             key={i}
             onClick={() => handleManualChange(i)}
             className="flex items-center justify-center h-9 flex-1 min-w-0 max-w-[28px]"
-            aria-label={`Go to slide ${i + 1}`}
+            aria-label={ui(`Go to slide ${i + 1}`)}
             aria-current={i === current}
           >
             <span

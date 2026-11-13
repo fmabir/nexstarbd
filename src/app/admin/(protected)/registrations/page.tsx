@@ -1,7 +1,11 @@
+
+import { createUiText } from "@/components/i18n/ui-text";
+import { getLocale } from "next-intl/server";
 import { RegistrationsTable } from "@/components/admin/RegistrationsTable";
 import type { Tournament, Registration } from "@/lib/types";
 import { serialize } from "@/lib/utils/serialize";
 import { withPrivateFields } from "@/lib/server/privateData";
+import { Badge, Card, PageHeader } from "@/components/admin/ui";
 
 async function getData() {
   const { adminDb } = await import("@/lib/firebase/admin");
@@ -22,27 +26,23 @@ async function getData() {
 }
 
 export default async function RegistrationsPage() {
+  const ui = createUiText(await getLocale());
+
   const data = await getData();
 
   const pendingCount = data.registrations.filter((r) => r.approvalStatus === "pending").length;
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="font-display text-3xl text-foreground tracking-wide">
-          All Registrations
-        </h1>
-        {pendingCount > 0 && (
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg">
-            <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
-            <span className="text-sm font-semibold text-amber-700">{pendingCount} pending approval</span>
-          </div>
-        )}
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title={ui("Registrations")}
+        description="Every squad across all tournaments. Check payments, then approve or reject."
+        actions={pendingCount > 0 ? <Badge tone="warn" dot>{pendingCount}{ui("pending approval")}</Badge> : undefined}
+      />
 
-      <div className="bg-card rounded-2xl border border-border overflow-hidden">
+      <Card flush>
         <RegistrationsTable tournaments={data.tournaments} registrations={data.registrations} />
-      </div>
+      </Card>
     </div>
   );
 }

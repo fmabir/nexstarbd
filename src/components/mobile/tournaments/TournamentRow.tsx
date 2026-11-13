@@ -1,3 +1,5 @@
+
+import { useUiText } from "@/components/i18n/ui-text";
 import Link from "next/link";
 import type { Tournament } from "@/lib/types";
 import { formatDateOnly, formatTimeOnly } from "@/lib/utils/formatDate";
@@ -14,11 +16,13 @@ export function TournamentRow({
   /** Optional strip under the row, e.g. the player's own registration */
   footer?: React.ReactNode;
 }) {
+  const ui = useUiText();
+
   const banner = resolveBanner(t.bannerUrl, t.id);
   return (
     <div className={`${mCard} overflow-hidden`}>
       <Link href={`/tournaments/${t.id}`} className="flex items-center gap-3 p-3 active:bg-m-raised transition-colors">
-        <div className="relative w-[84px] h-[84px] shrink-0 rounded-xl overflow-hidden bg-m-raised">
+        <div className="relative w-14 h-16 shrink-0 rounded-xl overflow-hidden bg-m-raised">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={banner.src}
@@ -30,22 +34,21 @@ export function TournamentRow({
           />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 mb-1.5">
+          <div className="flex flex-wrap items-center gap-1.5 mb-1">
             <StatusChip status={t.status} />
             <EntryChip isFree={t.isFree} fee={t.registrationFee} />
           </div>
-          <h3 className="text-[16px] font-semibold leading-snug text-m-text line-clamp-2">{t.name}</h3>
+          <h3 className="text-[15px] font-semibold leading-snug text-m-text line-clamp-2">{t.name}</h3>
           <p className="text-[13px] text-m-dim truncate">
-            {formatDateOnly(t.startsAt)} · {formatTimeOnly(t.startsAt)}
+            {ui(formatDateOnly(t.startsAt))} · {ui(formatTimeOnly(t.startsAt))}
           </p>
           <p className="mt-0.5 text-[13px] truncate">
             <span className="font-semibold text-m-gold-text">{t.prizePool}</span>
             <span className="text-m-faint">
-              {" "}· {t.mode} · {t.registeredCount}/{t.maxSlots} slots
-            </span>
+              {ui(" ")}· {t.mode} · {t.registeredCount}/{t.maxSlots}{ui("slots")}</span>
           </p>
         </div>
-        <ChevronRightIcon size={18} className="shrink-0 text-m-faint" />
+        <ChevronRightIcon size={18} className="hidden min-[400px]:block shrink-0 text-m-faint" />
       </Link>
       {footer}
     </div>

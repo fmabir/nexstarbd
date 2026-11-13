@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import Link from "next/link";
 import { useRegistrationAction, type RegistrationAction } from "@/lib/hooks/useRegistrationAction";
 import type { ApprovalStatus } from "@/lib/types";
@@ -25,15 +27,17 @@ const statusLook: Record<ApprovalStatus, { label: string; icon: React.ReactNode;
     className: "bg-m-green/12 border-m-green/35 text-m-green-text",
   },
   rejected: {
-    label: "Not allowed",
+    label: "Rejected",
     icon: <BanIcon size={18} />,
-    className: "bg-m-raised border-m-line text-m-dim",
+    className: "bg-danger-light border-m-red/35 text-m-red-text",
   },
 };
 
 function ActionView({ action, className }: { action: RegistrationAction; className: string }) {
+  const ui = useUiText();
+
   if (action.kind === "loading") {
-    return <div className={`h-12 rounded-xl bg-m-raised animate-pulse ${className}`} />;
+    return <div className={`h-11 rounded-xl bg-m-raised animate-pulse ${className}`} />;
   }
   if (action.kind === "none") return null;
 
@@ -42,11 +46,11 @@ function ActionView({ action, className }: { action: RegistrationAction; classNa
     return (
       <Link
         href={`/my-registration/${action.registrationId}`}
-        className={`inline-flex items-center gap-2 h-12 px-4 rounded-xl border text-[15px] font-semibold ${s.className} ${className}`}
+        className={`inline-flex items-center gap-2 h-11 px-4 rounded-xl border text-[14px] font-semibold ${s.className} ${className}`}
       >
         {s.icon}
-        <span className="flex-1 text-left">{s.label}</span>
-        <span className="text-[13px] font-medium opacity-80">My squad</span>
+        <span className="flex-1 text-left">{ui(s.label)}</span>
+        <span className="text-[13px] font-medium opacity-80">{ui("My squad")}</span>
         <ChevronRightIcon size={16} className="-mr-1 opacity-80" />
       </Link>
     );
@@ -54,7 +58,7 @@ function ActionView({ action, className }: { action: RegistrationAction; classNa
 
   return (
     <Link href={action.href} className={`${action.isFull ? mBtn.warning : mBtn.primary} ${className}`}>
-      {action.isFull ? "Join waitlist" : "Register squad"}
+      {ui(action.isFull ? "Join waitlist" : "Register squad")}
       <ArrowRightIcon size={18} />
     </Link>
   );
@@ -78,7 +82,7 @@ export function RegisterBar(params: Props) {
   return (
     <>
       {/* Reserves the button's height so it never covers the end of the page */}
-      <div className="h-16" aria-hidden="true" />
+      <div className="h-16 md:hidden" aria-hidden="true" />
       {/* Floats just above the tab bar; the white backing keeps the tinted
           status pill opaque over scrolling content */}
       <div className="md:hidden fixed inset-x-3 z-30 bottom-[calc(var(--m-tabbar-h)+env(safe-area-inset-bottom))] rounded-xl bg-white shadow-[0_10px_28px_-10px_rgba(16,24,40,0.4)]">

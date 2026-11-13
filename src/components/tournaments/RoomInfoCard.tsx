@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
@@ -9,6 +11,8 @@ interface RoomInfoCardProps {
 }
 
 export function RoomInfoCard({ roomId, roomPassword }: RoomInfoCardProps) {
+  const ui = useUiText();
+
   const t = useTranslations("dashboard");
   const [copiedId, setCopiedId] = useState(false);
   const [copiedPw, setCopiedPw] = useState(false);
@@ -39,7 +43,7 @@ export function RoomInfoCard({ roomId, roomPassword }: RoomInfoCardProps) {
           <div key={label} className="bg-card rounded-xl px-4 py-3 flex items-center justify-between gap-3">
             <div className="min-w-0">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-0.5">
-                {label}
+                {ui(label)}
               </p>
               <p className="font-display text-xl sm:text-2xl text-foreground tracking-widest break-all">{value}</p>
             </div>
@@ -47,7 +51,7 @@ export function RoomInfoCard({ roomId, roomPassword }: RoomInfoCardProps) {
               onClick={() => copy(value, which)}
               className="shrink-0 px-3 py-1.5 rounded-lg border border-border text-sm font-semibold hover:bg-muted transition-colors"
             >
-              {copied ? "✓ " + t("copied") : t("copy")}
+              {ui(copied ? "✓ " + t("copied") : t("copy"))}
             </button>
           </div>
         ))}

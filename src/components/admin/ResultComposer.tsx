@@ -1,8 +1,11 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/Button";
+import { AdminButton, Field, fieldClass, textareaClass } from "./ui";
+import { PlusIcon, XIcon } from "./icons";
 import { useToast } from "@/context/ToastContext";
 import { ResultPostCard } from "@/components/results/ResultPostCard";
 import { toDate } from "@/lib/utils/formatDate";
@@ -18,9 +21,6 @@ export interface TournamentOption {
   name: string;
 }
 
-const inputClass =
-  "w-full border border-border rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:border-primary";
-
 /**
  * Writes a Results post, or edits one when `post` is given. The preview
  * beside the form is the same card members see, so what's published is
@@ -35,6 +35,8 @@ export function ResultComposer({
   post?: ResultPost;
   onDone?: () => void;
 }) {
+  const ui = useUiText();
+
   const router = useRouter();
   const { showToast } = useToast();
   const [title, setTitle] = useState(post?.title ?? "");
@@ -59,7 +61,7 @@ export function ResultComposer({
 
   const addPhotos = async (files: File[]) => {
     const room = MAX_PHOTOS - photos.length - preparing;
-    if (files.length > room) showToast(`Up to ${MAX_PHOTOS} photos per post`, "error");
+    if (files.length > room) showToast(ui(`Up to ${MAX_PHOTOS} photos per post`), "error");
     const picked = files.slice(0, Math.max(room, 0));
     setPreparing((n) => n + picked.length);
     for (const file of picked) {
@@ -68,7 +70,7 @@ export function ResultComposer({
         const src = URL.createObjectURL(blob);
         setPhotos((prev) => [...prev, { kind: "new", src, blob, width, height }]);
       } catch {
-        showToast(`Couldn't use "${file.name}". Try a JPG or PNG photo.`, "error");
+        showToast(ui(`Couldn't use "${file.name}". Try a JPG or PNG photo.`), "error");
       } finally {
         setPreparing((n) => n - 1);
       }
@@ -90,7 +92,7 @@ export function ResultComposer({
 
   const save = async (status: ResultPostStatus) => {
     if (!title.trim() && !body.trim() && photos.length === 0) {
-      showToast("Add some text or a photo first", "error");
+      showToast(ui("Add some text or a photo first"), "error");
       return;
     }
     setSaving(status);
@@ -111,12 +113,12 @@ export function ResultComposer({
       });
       if (!res.ok) throw new Error();
 
-      showToast(status === "published" ? "Posted to Results!" : "Saved as a draft", "success");
+      showToast(ui(status === "published" ? "Posted to Results!" : "Saved as a draft"), "success");
       if (post) onDone?.();
       else reset();
       router.refresh();
     } catch {
-      showToast("Couldn't save the post. Please try again.", "error");
+      showToast(ui("Couldn't save the post. Please try again."), "error");
     } finally {
       setSaving(null);
     }
@@ -134,80 +136,73 @@ export function ResultComposer({
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
       <div className="space-y-4 min-w-0">
-        <div>
-          <label className="block text-sm font-semibold mb-1">Tournament</label>
-          <select value={tournamentId} onChange={(e) => setTournamentId(e.target.value)} className={inputClass}>
-            <option value="">None — a general post</option>
+        <Field label={ui("Tournament")}>
+          <select value={tournamentId} onChange={(e) => setTournamentId(e.target.value)} className={fieldClass}>
+            <option value="">{ui("None — a general post")}</option>
             {options.map((t) => (
               <option key={t.id} value={t.id}>
                 {t.name}
               </option>
             ))}
           </select>
-        </div>
+        </Field>
 
-        <div>
-          <label className="block text-sm font-semibold mb-1">Title (optional)</label>
+        <Field label={ui("Title (optional)")}>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             maxLength={120}
-            className={inputClass}
-            placeholder="e.g. Weekly Clash #13 — final standings"
+            className={fieldClass}
+            placeholder={ui("e.g. Weekly Clash #13 — final standings")}
           />
-        </div>
+        </Field>
 
-        <div>
-          <label className="block text-sm font-semibold mb-1">Text</label>
+        <Field label={ui("Text")}>
           <textarea
             value={body}
             onChange={(e) => setBody(e.target.value)}
             rows={5}
             maxLength={5000}
-            className={`${inputClass} resize-y`}
-            placeholder="Winners, kills, prize money, anything you want members to see…"
+            className={`${textareaClass} resize-y`}
+            placeholder={ui("Winners, kills, prize money, anything you want members to see…")}
           />
-        </div>
+        </Field>
 
         <div>
           <div className="flex items-baseline justify-between mb-1">
-            <label className="block text-sm font-semibold">Photos</label>
-            <span className="text-xs text-muted-foreground">
+            <span className="block text-[13px] font-semibold text-(--ad-text)">{ui("Photos")}</span>
+            <span className="text-xs text-(--ad-faint)">
               {photos.length}/{MAX_PHOTOS}
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
             {photos.map((p, i) => (
-              <div key={p.src} className="relative w-24 h-24 rounded-xl overflow-hidden bg-muted border border-border">
+              <div key={p.src} className="relative w-24 h-24 rounded-xl overflow-hidden bg-(--ad-raised) border border-(--ad-line)">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={p.src} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
+                <img src={p.src} alt={ui(`Photo ${i + 1}`)} className="w-full h-full object-cover" />
                 <button
                   type="button"
                   onClick={() => removePhoto(p.src)}
-                  className="absolute top-1 right-1 w-7 h-7 rounded-full bg-black/70 text-white text-sm leading-none flex items-center justify-center hover:bg-black"
-                  aria-label={`Remove photo ${i + 1}`}
+                  className="absolute top-1 right-1 w-7 h-7 rounded-full bg-black/70 text-white flex items-center justify-center hover:bg-black"
+                  aria-label={ui(`Remove photo ${i + 1}`)}
                 >
-                  ✕
+                  <XIcon size={14} />
                 </button>
               </div>
             ))}
             {Array.from({ length: preparing }, (_, i) => (
               <div
                 key={`preparing-${i}`}
-                className="w-24 h-24 rounded-xl border border-dashed border-border bg-muted animate-pulse flex items-center justify-center text-xs text-muted-foreground"
-              >
-                Preparing…
-              </div>
+                className="w-24 h-24 rounded-xl border border-dashed border-(--ad-line-strong) bg-(--ad-raised) animate-pulse flex items-center justify-center text-xs text-(--ad-dim)"
+              >{ui("Preparing…")}</div>
             ))}
             {photos.length + preparing < MAX_PHOTOS && (
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="w-24 h-24 rounded-xl border-2 border-dashed border-border text-muted-foreground hover:border-primary hover:text-primary flex flex-col items-center justify-center gap-1 text-xs font-semibold transition-colors"
+                className="w-24 h-24 rounded-xl border-2 border-dashed border-(--ad-line-strong) text-(--ad-dim) hover:border-(--ad-accent) hover:text-(--ad-accent) flex flex-col items-center justify-center gap-1 text-xs font-semibold transition-colors"
               >
-                <span className="text-2xl leading-none">+</span>
-                Add photos
-              </button>
+                <PlusIcon size={22} />{ui("Add photos")}</button>
             )}
           </div>
           <input
@@ -221,39 +216,31 @@ export function ResultComposer({
               e.target.value = "";
             }}
           />
-          <p className="text-xs text-muted-foreground mt-1.5">Scoreboards, winner photos, screenshots. Large photos are shrunk automatically.</p>
+          <p className="text-xs text-(--ad-faint) mt-1.5">{ui("Scoreboards, winner photos, screenshots. Large photos are shrunk automatically.")}</p>
         </div>
 
         <div className="flex flex-wrap gap-2 pt-1">
-          {post?.status === "published" ? (
-            <Button type="button" onClick={() => save("published")} loading={saving === "published"} disabled={busy}>
-              Save changes
-            </Button>
+          {ui(post?.status === "published" ? (
+            <AdminButton onClick={() => save("published")} loading={saving === "published"} disabled={busy}>{ui("Save changes")}</AdminButton>
           ) : (
             <>
-              <Button type="button" onClick={() => save("published")} loading={saving === "published"} disabled={busy}>
-                Publish to Results
-              </Button>
-              <Button type="button" variant="outline" onClick={() => save("draft")} loading={saving === "draft"} disabled={busy}>
-                {post ? "Save draft" : "Save as draft"}
-              </Button>
+              <AdminButton onClick={() => save("published")} loading={saving === "published"} disabled={busy}>{ui("Publish to Results")}</AdminButton>
+              <AdminButton variant="secondary" onClick={() => save("draft")} loading={saving === "draft"} disabled={busy}>
+                {ui(post ? "Save draft" : "Save as draft")}
+              </AdminButton>
             </>
-          )}
+          ))}
           {post && (
-            <Button type="button" variant="ghost" onClick={onDone} disabled={saving !== null}>
-              Cancel
-            </Button>
+            <AdminButton variant="ghost" onClick={onDone} disabled={saving !== null}>{ui("Cancel")}</AdminButton>
           )}
         </div>
       </div>
 
       <div className="min-w-0">
-        <p className="text-sm font-semibold mb-2">Preview — how members will see it</p>
-        <div className="rounded-2xl bg-[var(--m-bg)] border border-border p-3 lg:sticky lg:top-4">
-          {isEmpty ? (
-            <p className="text-sm text-muted-foreground text-center py-12 px-4">
-              Add a title, some text or a photo to see the preview.
-            </p>
+        <p className="text-[13px] font-semibold text-(--ad-text) mb-1.5">{ui("Preview — how members will see it")}</p>
+        <div className="rounded-2xl bg-(--ad-bg) border border-(--ad-line) p-3 lg:sticky lg:top-4">
+          {ui(isEmpty ? (
+            <p className="text-sm text-(--ad-dim) text-center py-12 px-4">{ui("Add a title, some text or a photo to see the preview.")}</p>
           ) : (
             <ResultPostCard
               linkTournament={false}
@@ -266,7 +253,7 @@ export function ResultComposer({
                 photos,
               }}
             />
-          )}
+          ))}
         </div>
       </div>
     </div>

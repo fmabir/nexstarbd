@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useState } from "react";
 import Image from "next/image";
 import type { MvpPlayer, Winner } from "@/lib/types";
@@ -10,27 +12,29 @@ const placeName = { 1: "Champion", 2: "Runner-up", 3: "3rd place" } as const;
 const placeText = { 1: "text-m-gold-text", 2: "text-m-silver-text", 3: "text-m-bronze-text" } as const;
 
 function ChampionCard({ winner: w }: { winner: Winner }) {
+  const ui = useUiText();
+
   return (
-    <article className={`snap-start shrink-0 w-[264px] ${mCard} overflow-hidden`}>
+    <article className={`snap-start shrink-0 w-[240px] ${mCard} overflow-hidden`}>
       {w.photoUrl && (
-        <div className="relative h-32 bg-m-raised">
-          <Image src={w.photoUrl} alt={w.squadName} fill sizes="264px" className="object-cover" />
+        <div className="relative h-24 bg-m-raised">
+          <Image src={w.photoUrl} alt={ui(w.squadName)} fill sizes="264px" className="object-cover" />
         </div>
       )}
-      <div className="p-4">
+      <div className="p-3">
         <div className="flex items-center gap-2">
           <PlaceBadge place={w.position} size={22} />
           <span className={`text-[12px] font-semibold uppercase tracking-[0.08em] ${placeText[w.position]}`}>
             {placeName[w.position]}
           </span>
         </div>
-        <h3 className="mt-2 font-m-display font-bold text-[22px] leading-tight text-m-text truncate">{w.squadName}</h3>
+        <h3 className="mt-2 font-m-display font-bold text-[19px] leading-tight text-m-text truncate">{w.squadName}</h3>
         <p className="text-[12px] text-m-faint truncate">
-          {w.tournamentName} · {formatShortDate(w.tournamentDate)}
+          {w.tournamentName} · {ui(formatShortDate(w.tournamentDate))}
         </p>
-        <p className="mt-2 text-[13px] text-m-dim line-clamp-2 min-h-[2.8em]">{w.players.join(" · ")}</p>
+        <p className="mt-2 text-[13px] text-m-dim line-clamp-2 min-h-[1.4em]">{w.players.join(" · ")}</p>
         <div className="mt-3 pt-3 border-t border-m-line flex items-center justify-between">
-          <Caption>Prize</Caption>
+          <Caption>{ui("Prize")}</Caption>
           <span className="font-m-display font-semibold text-[18px] text-m-gold-text">{w.prize}</span>
         </div>
       </div>
@@ -39,40 +43,40 @@ function ChampionCard({ winner: w }: { winner: Winner }) {
 }
 
 function MvpCard({ mvp }: { mvp: MvpPlayer }) {
+  const ui = useUiText();
+
   return (
-    <article className={`snap-start shrink-0 w-[228px] ${mCard} p-4`}>
+    <article className={`snap-start shrink-0 w-[228px] ${mCard} p-3`}>
       <div className="flex items-center gap-3">
         <div className="relative w-12 h-12 shrink-0">
-          {mvp.photoUrl ? (
-            <Image src={mvp.photoUrl} alt={mvp.playerName} fill sizes="48px" className="object-cover rounded-full" />
+          {ui(mvp.photoUrl ? (
+            <Image src={mvp.photoUrl} alt={ui(mvp.playerName)} fill sizes="48px" className="object-cover rounded-full" />
           ) : (
             <span className="w-12 h-12 rounded-full bg-m-raised border border-m-line flex items-center justify-center font-m-display font-bold text-[20px] text-m-text">
               {mvp.playerName.charAt(0).toUpperCase()}
             </span>
-          )}
-          <span className="absolute -bottom-1 -right-1.5 px-1.5 rounded-md bg-m-red text-white text-[10px] font-bold leading-[16px]">
-            MVP
-          </span>
+          ))}
+          <span className="absolute -bottom-1 -right-1.5 px-1.5 rounded-md bg-gold text-white text-[10px] font-bold leading-[16px]">{ui("MVP")}</span>
         </div>
         <div className="min-w-0">
           <h3 className="text-[16px] font-semibold text-m-text truncate">{mvp.playerName}</h3>
-          <p className="text-[12px] text-m-faint truncate">{mvp.achievement}</p>
+          <p className="text-[12px] text-m-faint truncate">{ui(mvp.achievement)}</p>
         </div>
       </div>
       <dl className="mt-3 grid grid-cols-2 rounded-xl border border-m-line divide-x divide-m-line">
         <div className="px-3 py-2">
-          <dt><Caption>Kills</Caption></dt>
-          <dd className="font-m-display font-bold text-[24px] leading-tight tabular-nums text-m-red-text">{mvp.kills}</dd>
+          <dt><Caption>{ui("Kills")}</Caption></dt>
+          <dd className="font-m-display font-bold text-[24px] leading-tight tabular-nums text-gold">{mvp.kills}</dd>
         </div>
         <div className="px-3 py-2">
-          <dt><Caption>Damage</Caption></dt>
+          <dt><Caption>{ui("Damage")}</Caption></dt>
           <dd className="font-m-display font-bold text-[24px] leading-tight tabular-nums text-m-text">
-            {mvp.damage ? mvp.damage.toLocaleString() : "—"}
+            {ui(mvp.damage ? mvp.damage.toLocaleString() : "—")}
           </dd>
         </div>
       </dl>
       <p className="mt-3 text-[12px] text-m-faint truncate">
-        {mvp.tournamentName} · {formatShortDate(mvp.tournamentDate)}
+        {mvp.tournamentName} · {ui(formatShortDate(mvp.tournamentDate))}
       </p>
     </article>
   );
@@ -81,6 +85,8 @@ function MvpCard({ mvp }: { mvp: MvpPlayer }) {
 type Tab = "champions" | "mvp";
 
 export function HallOfFameSection({ winners, mvpPlayers }: { winners: Winner[]; mvpPlayers: MvpPlayer[] }) {
+  const ui = useUiText();
+
   const [tab, setTab] = useState<Tab>(winners.length > 0 ? "champions" : "mvp");
 
   if (winners.length === 0 && mvpPlayers.length === 0) return null;
@@ -100,12 +106,12 @@ export function HallOfFameSection({ winners, mvpPlayers }: { winners: Winner[]; 
   ).filter((t) => t.count > 0);
 
   return (
-    <Section title="Hall of Fame" tone="gold" action={<SeeAllLink href="/hall-of-fame" />}>
+    <Section title={ui("Hall of Fame")} tone="gold" action={<SeeAllLink href="/hall-of-fame" />}>
       {tabs.length > 1 && (
         <div
           className="mx-4 mb-3 grid grid-cols-2 gap-1 p-1 rounded-xl bg-black/5"
           role="tablist"
-          aria-label="Hall of Fame"
+          aria-label={ui("Hall of Fame")}
         >
           {tabs.map((t) => (
             <button
@@ -118,7 +124,7 @@ export function HallOfFameSection({ winners, mvpPlayers }: { winners: Winner[]; 
                 tab === t.key ? "bg-m-surface text-m-text shadow-[0_1px_3px_rgba(16,24,40,0.12)]" : "text-m-dim"
               }`}
             >
-              {t.label}
+              {ui(t.label)}
               <span className="ml-1.5 tabular-nums text-m-faint">{t.count}</span>
             </button>
           ))}

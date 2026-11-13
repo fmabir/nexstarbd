@@ -1,11 +1,15 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useActiveTournaments } from "@/lib/hooks/useActiveTournaments";
 import { EmptyState, Section, SectionBand, Skeleton, art } from "@/components/mobile/ui/primitives";
 import { TournamentCard } from "@/components/mobile/tournaments/TournamentCard";
 
 /** The tournament(s) a player can act on right now — live, or open for registration. */
 export function LiveTournaments() {
+  const ui = useUiText();
+
   const { active, loading } = useActiveTournaments();
 
   if (loading) {
@@ -24,8 +28,8 @@ export function LiveTournaments() {
         <div className="px-4">
           <EmptyState
             art={art.arena}
-            title="No active tournament right now"
-            text="Check back soon for the next one!"
+            title={ui("No active tournament right now")}
+            text={ui("Check back soon for the next one!")}
             className="bg-m-surface"
           />
         </div>
@@ -36,7 +40,7 @@ export function LiveTournaments() {
   const hasOngoing = active[0].status === "ongoing";
 
   return (
-    <Section title={hasOngoing ? "Live now" : "Registration open"} live={hasOngoing} tone="red" backdrop={art.arena}>
+    <Section title={ui(hasOngoing ? "Live now" : "Registration open")} live={hasOngoing} tone="red" backdrop={art.arena}>
       <div className="px-4 space-y-3">
         {active.map((t) => (
           <TournamentCard key={t.id} tournament={t} />

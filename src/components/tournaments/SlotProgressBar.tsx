@@ -1,3 +1,5 @@
+
+import { useUiText } from "@/components/i18n/ui-text";
 interface SlotProgressBarProps {
   filled: number;
   max: number;
@@ -5,13 +7,15 @@ interface SlotProgressBarProps {
 }
 
 export function SlotProgressBar({ filled, max, waitlisted = 0 }: SlotProgressBarProps) {
+  const ui = useUiText();
+
   const confirmedPct = Math.min((filled / max) * 100, 100);
   const isFull = filled >= max;
 
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
-        <span className="text-xs font-semibold text-muted-foreground">Slots</span>
+        <span className="text-xs font-semibold text-muted-foreground">{ui("Slots")}</span>
         <span className="text-xs font-bold text-foreground">
           {filled}/{max}
           {waitlisted > 0 && <span className="text-amber-600 ml-1">+{waitlisted}</span>}

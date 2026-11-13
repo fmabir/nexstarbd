@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import Link from "next/link";
 import { useActiveTournaments } from "@/lib/hooks/useActiveTournaments";
 import { RegistrationStatusButton } from "@/components/tournaments/RegistrationStatusButton";
@@ -11,6 +13,8 @@ import { resolveBannerUrl } from "@/lib/utils/bannerUrl";
 import type { Tournament } from "@/lib/types";
 
 function ActiveTournamentCard({ tournament }: { tournament: Tournament }) {
+  const ui = useUiText();
+
   const isOngoing = tournament.status === "ongoing";
   const isFull = tournament.registeredCount >= tournament.maxSlots;
   const canRegister = tournament.isRegistrationOpen;
@@ -19,36 +23,30 @@ function ActiveTournamentCard({ tournament }: { tournament: Tournament }) {
     <div className="rounded-3xl p-1.5 shadow-sm bg-card">
       {/* Entry strip + banner share one rounded shell */}
       <div className="rounded-xl overflow-hidden">
-      {tournament.isFree ? (
-        <div className="flex items-center justify-center gap-2 py-2 px-4 font-bold text-xs uppercase tracking-widest" style={{ background: "linear-gradient(90deg,#BF8E00,#FFD700,#BF8E00)", color: "#3B2500" }}>
-          ✨ FREE ENTRY — No Registration Fee
-        </div>
+      {ui(tournament.isFree ? (
+        <div className="flex items-center justify-center gap-2 py-2 px-4 font-bold text-xs uppercase tracking-widest" style={{ background: "linear-gradient(90deg,#BF8E00,#FFD700,#BF8E00)", color: "#3B2500" }}>{ui("✨ FREE ENTRY — No Registration Fee")}</div>
       ) : tournament.registrationFee ? (
-        <div className="flex items-center justify-center gap-2 py-2 px-4 bg-gray-800 text-white font-bold text-xs uppercase tracking-widest">
-          Entry Fee: {tournament.registrationFee}
+        <div className="flex items-center justify-center gap-2 py-2 px-4 bg-gray-800 text-white font-bold text-xs uppercase tracking-widest">{ui("Entry Fee:")}{tournament.registrationFee}
         </div>
-      ) : null}
+      ) : null)}
 
       {/* Banner */}
       <div className="relative h-20 sm:h-40 lg:h-52 overflow-hidden" style={{ backgroundColor: "#1f2937" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={resolveBannerUrl(tournament.bannerUrl, tournament.id)}
-          alt={tournament.name}
+          alt={ui(tournament.name)}
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.15) 50%, transparent 100%)" }} />
 
         <div className="absolute top-2 left-2 sm:top-4 sm:left-4">
-          {isOngoing ? (
+          {ui(isOngoing ? (
             <span className="inline-flex items-center gap-1.5 bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-full shadow">
-              <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE NOW
-            </span>
+              <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />{ui("LIVE NOW")}</span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 bg-secondary text-white text-xs font-bold px-2.5 py-1 rounded-full shadow">
-              Registration Open
-            </span>
-          )}
+            <span className="inline-flex items-center gap-1.5 bg-secondary text-white text-xs font-bold px-2.5 py-1 rounded-full shadow">{ui("Registration Open")}</span>
+          ))}
         </div>
 
         <div className="absolute bottom-2 left-3 right-3 sm:bottom-4 sm:left-5 sm:right-5">
@@ -65,25 +63,23 @@ function ActiveTournamentCard({ tournament }: { tournament: Tournament }) {
         {/* Prize + mode + start time — single compact row */}
         <div className="flex items-center gap-2">
           <div className="flex-1 min-w-0">
-            <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider leading-none mb-0.5">Prize Pool</p>
+            <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider leading-none mb-0.5">{ui("Prize Pool")}</p>
             <p className="font-display text-base text-primary tracking-wide leading-none">{tournament.prizePool}</p>
           </div>
           <span className="shrink-0 bg-secondary/10 text-secondary border border-secondary/20 text-[9px] font-bold px-1.5 py-0.5 rounded-full">
             ⚔️ {tournament.mode}
           </span>
           <div className="shrink-0 blink bg-primary text-white rounded-lg px-2 py-1 text-right shadow-sm">
-            <p className="text-[9px] font-semibold uppercase tracking-widest opacity-80 leading-none">Starts</p>
-            <p className="font-display text-xs tracking-wide leading-tight">{formatTimeOnly(tournament.startsAt)}</p>
-            <p className="text-[9px] font-semibold opacity-80">{formatDateOnly(tournament.startsAt)}</p>
+            <p className="text-[9px] font-semibold uppercase tracking-widest opacity-80 leading-none">{ui("Starts")}</p>
+            <p className="font-display text-xs tracking-wide leading-tight">{ui(formatTimeOnly(tournament.startsAt))}</p>
+            <p className="text-[9px] font-semibold opacity-80">{ui(formatDateOnly(tournament.startsAt))}</p>
           </div>
         </div>
         <SlotProgressBar filled={tournament.registeredCount} max={tournament.maxSlots} waitlisted={tournament.waitlistCount} />
-        {tournament.registrationDeadline && <CountdownTimer compact targetDate={tournament.registrationDeadline.toDate()} label="Closes in" />}
+        {tournament.registrationDeadline && <CountdownTimer compact targetDate={tournament.registrationDeadline.toDate()} label={ui("Closes in")} />}
         <div className="flex gap-1.5">
           <RegistrationStatusButton tournamentId={tournament.id} canRegister={canRegister} isFull={isFull} isOngoing={isOngoing} size="sm" />
-          <Link href={`/tournaments/${tournament.id}`} className="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-foreground font-semibold px-2 py-1.5 rounded-lg text-[10px] transition-colors">
-            View Details
-          </Link>
+          <Link href={`/tournaments/${tournament.id}`} className="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-foreground font-semibold px-2 py-1.5 rounded-lg text-[10px] transition-colors">{ui("View Details")}</Link>
         </div>
       </div>
 
@@ -91,7 +87,7 @@ function ActiveTournamentCard({ tournament }: { tournament: Tournament }) {
       <div className="hidden sm:block bg-panel rounded-xl mt-1.5 p-4 space-y-3">
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Prize Pool</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">{ui("Prize Pool")}</p>
             <p className="font-display text-3xl text-primary tracking-wide leading-none">{tournament.prizePool}</p>
             {(tournament.firstPrize || tournament.secondPrize) && (
               <div className="flex gap-2 mt-1.5 flex-wrap">
@@ -105,21 +101,19 @@ function ActiveTournamentCard({ tournament }: { tournament: Tournament }) {
             )}
           </div>
           <div className="shrink-0 blink bg-primary text-white rounded-xl px-3 py-2.5 text-right shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-widest opacity-80 mb-0.5">Starts</p>
-            <p className="font-display text-2xl tracking-wide leading-none">{formatTimeOnly(tournament.startsAt)}</p>
-            <p className="text-xs font-semibold opacity-80 mt-0.5">{formatDateOnly(tournament.startsAt)}</p>
+            <p className="text-xs font-semibold uppercase tracking-widest opacity-80 mb-0.5">{ui("Starts")}</p>
+            <p className="font-display text-2xl tracking-wide leading-none">{ui(formatTimeOnly(tournament.startsAt))}</p>
+            <p className="text-xs font-semibold opacity-80 mt-0.5">{ui(formatDateOnly(tournament.startsAt))}</p>
           </div>
         </div>
         <span className="inline-flex items-center gap-1.5 bg-secondary/10 text-secondary border border-secondary/20 text-xs font-bold px-3 py-1.5 rounded-full">
           ⚔️ {tournament.mode}
         </span>
         <SlotProgressBar filled={tournament.registeredCount} max={tournament.maxSlots} waitlisted={tournament.waitlistCount} />
-        {tournament.registrationDeadline && <CountdownTimer targetDate={tournament.registrationDeadline.toDate()} label="Registration Closes In" />}
+        {tournament.registrationDeadline && <CountdownTimer targetDate={tournament.registrationDeadline.toDate()} label={ui("Registration Closes In")} />}
         <div className="flex gap-2">
           <RegistrationStatusButton tournamentId={tournament.id} canRegister={canRegister} isFull={isFull} isOngoing={isOngoing} />
-          <Link href={`/tournaments/${tournament.id}`} className="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-foreground font-semibold px-4 py-3 rounded-xl text-sm transition-colors">
-            View Details
-          </Link>
+          <Link href={`/tournaments/${tournament.id}`} className="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-foreground font-semibold px-4 py-3 rounded-xl text-sm transition-colors">{ui("View Details")}</Link>
         </div>
       </div>
     </div>
@@ -127,6 +121,8 @@ function ActiveTournamentCard({ tournament }: { tournament: Tournament }) {
 }
 
 export function FeaturedTournament() {
+  const ui = useUiText();
+
   const { active, loading } = useActiveTournaments();
 
   if (loading) {
@@ -141,8 +137,8 @@ export function FeaturedTournament() {
     return (
       <section className="py-20 border-t border-green-200/60 text-center">
         <p className="text-5xl mb-4">🎮</p>
-        <p className="text-lg font-semibold text-foreground">No active tournament right now</p>
-        <p className="text-muted-foreground text-sm mt-1">Check back soon for the next one!</p>
+        <p className="text-lg font-semibold text-foreground">{ui("No active tournament right now")}</p>
+        <p className="text-muted-foreground text-sm mt-1">{ui("Check back soon for the next one!")}</p>
       </section>
     );
   }
@@ -156,7 +152,7 @@ export function FeaturedTournament() {
         <div className="flex items-center gap-2 mb-4 sm:mb-6">
           <span className={`w-2.5 h-2.5 rounded-full animate-pulse ${hasOngoing ? "bg-primary" : "bg-secondary"}`} />
           <span className="font-esports font-bold text-xs uppercase tracking-widest text-muted-foreground">
-            {hasOngoing ? "Live Tournaments" : "Registration Open"}
+            {ui(hasOngoing ? "Live Tournaments" : "Registration Open")}
           </span>
         </div>
 

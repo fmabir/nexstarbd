@@ -1,3 +1,5 @@
+
+import { useUiText } from "@/components/i18n/ui-text";
 import type { Announcement, AnnouncementType } from "@/lib/types";
 import { timeAgo } from "@/lib/utils/formatDate";
 
@@ -36,6 +38,8 @@ export function AnnouncementCard({
 }: {
   announcement: Announcement;
 }) {
+  const ui = useUiText();
+
   const config = typeConfig[announcement.type];
 
   return (
@@ -44,12 +48,10 @@ export function AnnouncementCard({
     >
       <div className="flex items-start gap-2 flex-wrap mb-1">
         <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${config.badge}`}>
-          {config.label}
+          {ui(config.label)}
         </span>
         {announcement.isPinned && (
-          <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-gray-800 text-white">
-            📌 Pinned
-          </span>
+          <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-gray-800 text-white">{ui("📌 Pinned")}</span>
         )}
         <span className="text-xs text-muted-foreground ml-auto">
           {timeAgo(announcement.createdAt)}
@@ -57,7 +59,7 @@ export function AnnouncementCard({
       </div>
       {announcement.title && (
         <h4 className="font-semibold text-foreground text-sm mb-1">
-          {announcement.title}
+          {ui(announcement.title)}
         </h4>
       )}
       <p className="text-sm text-foreground/80 whitespace-pre-line">

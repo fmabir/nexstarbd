@@ -1,8 +1,12 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useAuth } from "@/context/AuthContext";
 
 export function TransitionOverlay() {
+  const ui = useUiText();
+
   const { transitioning, transitionMessage } = useAuth();
   if (!transitioning) return null;
 
@@ -10,12 +14,11 @@ export function TransitionOverlay() {
     <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-m-bg md:bg-card">
       {/* Phone shell: just the mark */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/banners/lnsbd.png" alt="NexStarBD" className="md:hidden w-16 h-16 mb-6" />
+      <img src="/banners/lnsbd.png" alt={ui("NexStarBD")} className="md:hidden w-16 h-16 mb-6" />
       <div className="hidden md:flex items-center gap-0 mb-6">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/banners/lnsbd.png" alt="NexStarBD" style={{ height: "72px", width: "auto", transform: "translateY(-6px) translateX(6px)" }} />
-        <span className="font-brand font-bold text-3xl tracking-wide">
-          NexStar<span className="text-pink-800">B</span><span className="text-secondary">D</span>
+        <img src="/banners/lnsbd.png" alt={ui("NexStarBD")} style={{ height: "72px", width: "auto", transform: "translateY(-6px) translateX(6px)" }} />
+        <span className="font-brand font-bold text-3xl tracking-wide">{ui("NexStar")}<span className="text-pink-800">B</span><span className="text-secondary">D</span>
         </span>
       </div>
       <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4" />

@@ -1,3 +1,5 @@
+
+import { useUiText } from "@/components/i18n/ui-text";
 import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import { CountdownTimer } from "./CountdownTimer";
@@ -17,6 +19,8 @@ const statusBadge: Record<
 };
 
 export function TournamentCard({ tournament }: { tournament: Tournament }) {
+  const ui = useUiText();
+
   const s = statusBadge[tournament.status];
   const isFull = tournament.registeredCount >= tournament.maxSlots;
   const canRegister = tournament.isRegistrationOpen;
@@ -40,7 +44,7 @@ export function TournamentCard({ tournament }: { tournament: Tournament }) {
             {s.label === "LIVE" && (
               <span className="w-1.5 h-1.5 bg-current rounded-full animate-pulse mr-1" />
             )}
-            {s.label}
+            {ui(s.label)}
           </Badge>
         </div>
         <div className="absolute bottom-1.5 left-2 right-2">
@@ -59,7 +63,7 @@ export function TournamentCard({ tournament }: { tournament: Tournament }) {
         </div>
 
         {/* Date */}
-        <p style={{ fontSize: "10px" }} className="text-muted-foreground">{formatTournamentDate(tournament.startsAt)}</p>
+        <p style={{ fontSize: "10px" }} className="text-muted-foreground">{ui(formatTournamentDate(tournament.startsAt))}</p>
 
         {/* Slots */}
         <SlotProgressBar
@@ -75,7 +79,7 @@ export function TournamentCard({ tournament }: { tournament: Tournament }) {
 
         {/* Actions */}
         <div className="flex gap-1.5 pt-0.5">
-          {canRegister ? (
+          {ui(canRegister ? (
             <Link
               href={`/register/${tournament.id}`}
               style={{ fontSize: "10px" }}
@@ -85,22 +89,20 @@ export function TournamentCard({ tournament }: { tournament: Tournament }) {
                   : "bg-primary hover:bg-primary-dark text-white border-primary"
               }`}
             >
-              {isFull ? "Join Waitlist" : "Register Squad"}
+              {ui(isFull ? "Join Waitlist" : "Register Squad")}
             </Link>
           ) : (
             <span style={{ fontSize: "10px" }} className="flex-1 text-center text-muted-foreground py-1 font-medium">
-              {tournament.status === "completed" ? "Tournament Ended"
+              {ui(tournament.status === "completed" ? "Tournament Ended"
                 : tournament.status === "cancelled" ? "Cancelled"
-                : "Registration Closed"}
+                : "Registration Closed")}
             </span>
-          )}
+          ))}
           <Link
             href={`/tournaments/${tournament.id}`}
             style={{ fontSize: "10px" }}
             className="font-bold text-primary bg-primary/8 border border-primary/20 rounded-lg px-2 py-1 hover:bg-primary hover:text-white transition-colors"
-          >
-            Details →
-          </Link>
+          >{ui("Details →")}</Link>
         </div>
       </div>
     </div>

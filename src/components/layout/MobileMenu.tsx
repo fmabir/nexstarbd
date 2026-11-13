@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useEffect } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -11,6 +13,8 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
+  const ui = useUiText();
+
   const t = useTranslations("nav");
   const { user, signOut } = useAuth();
 
@@ -45,13 +49,13 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
         <div className="flex items-center justify-between px-6 py-5 border-b border-border">
           <div className="flex items-center gap-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/banners/lnsbd.png" alt="NexStarBD logo" style={{ height: "68px", width: "auto", display: "block", transform: "translateY(-6px) translateX(6px)" }} />
-            <span className="font-brand font-bold text-2xl text-foreground tracking-wide">NexStar<span className="text-pink-800">B</span><span className="text-green-800">D</span></span>
+            <img src="/banners/lnsbd.png" alt={ui("NexStarBD logo")} style={{ height: "68px", width: "auto", display: "block", transform: "translateY(-6px) translateX(6px)" }} />
+            <span className="font-brand font-bold text-2xl text-foreground tracking-wide">{ui("NexStar")}<span className="text-pink-800">B</span><span className="text-green-800">D</span></span>
           </div>
           <button
             onClick={onClose}
             className="text-muted-foreground hover:text-foreground text-2xl"
-            aria-label="Close menu"
+            aria-label={ui("Close menu")}
           >
             ✕
           </button>
@@ -65,14 +69,14 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                   onClick={onClose}
                   className="block px-4 py-3 rounded-xl text-base font-semibold text-foreground hover:bg-primary-light hover:text-primary transition-colors"
                 >
-                  {link.label}
+                  {ui(link.label)}
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
         <div className="px-6 py-5 border-t border-border space-y-3">
-          {user ? (
+          {ui(user ? (
             <>
               <div className="flex items-center gap-3 px-1">
                 <div className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold shrink-0">
@@ -86,19 +90,15 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
               <button
                 onClick={async () => { await signOut(); onClose(); }}
                 className="block w-full text-center border border-border text-foreground font-semibold py-3 rounded-xl hover:bg-gray-50 transition-colors"
-              >
-                Sign Out
-              </button>
+              >{ui("Sign Out")}</button>
             </>
           ) : (
             <Link
               href="/login"
               onClick={onClose}
               className="block w-full text-center bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-xl transition-colors"
-            >
-              Login
-            </Link>
-          )}
+            >{ui("Login")}</Link>
+          ))}
         </div>
       </div>
     </>

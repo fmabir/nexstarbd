@@ -1,0 +1,42 @@
+/*
+ * Admin palette. Set on the admin layout's root only, so nothing here can
+ * reach the public site. Components read these through Tailwind's
+ * var shorthand, e.g. bg-(--ad-surface) — retune the admin here.
+ *
+ * White and blue, gold for prizes and champions; green, amber and red
+ * keep their usual meanings (approved, pending, rejected/delete).
+ */
+.root {
+  --ad-bg: #f5f8fc;
+  --ad-surface: #ffffff;
+  --ad-raised: #edf2f8;
+  --ad-line: #e2e9f2;
+  --ad-line-strong: #d3d3db;
+  --ad-text: #17171c;
+  --ad-dim: #55555f;
+  --ad-faint: #85858f;
+
+  --ad-accent: #2563b4;
+  --ad-accent-press: #1e5094;
+  --ad-accent-soft: #eaf3ff;
+
+  --ad-gold: #a8760a;
+  --ad-gold-soft: #fbf3dd;
+
+  --ad-success: #157f3b;
+  --ad-success-soft: #e7f6ec;
+  --ad-warn: #b45309;
+  --ad-warn-soft: #fef4e4;
+  --ad-danger: #d0281c;
+  --ad-danger-soft: #fdecea;
+
+  min-height: 100vh;
+  background: var(--ad-bg);
+  color: var(--ad-text);
+  font-family: var(--font-sans);
+}
+
+/* Native controls (checkbox ticks, date pickers) pick up the accent */
+.root :global(input[type="checkbox"]) {
+  accent-color: var(--ad-accent);
+}

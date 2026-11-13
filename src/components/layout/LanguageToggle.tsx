@@ -1,28 +1,17 @@
 "use client";
 
 import { useTransition } from "react";
+import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 
-export function LanguageToggle({ currentLocale }: { currentLocale: string }) {
-  const [, startTransition] = useTransition();
+export function LanguageToggle({ currentLocale }: { currentLocale?: string }) {
+  const detectedLocale = useLocale();
+  const locale = currentLocale ?? detectedLocale;
+  const [pending, startTransition] = useTransition();
   const router = useRouter();
-
-  const toggle = () => {
-    const next = currentLocale === "en" ? "bn" : "en";
-    document.cookie = `locale=${next}; path=/; max-age=31536000`;
-    startTransition(() => {
-      router.refresh();
-    });
-  };
-
-  return (
-    <button
-      onClick={toggle}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-sm font-semibold hover:bg-muted transition-colors"
-      title={currentLocale === "en" ? "Switch to Bangla" : "Switch to English"}
-    >
-      <span className="text-base">{currentLocale === "en" ? "🇧🇩" : "🇬🇧"}</span>
-      <span className="text-foreground">{currentLocale === "en" ? "বাংলা" : "EN"}</span>
-    </button>
-  );
+  const next = locale === "bn" ? "en" : "bn";
+  return <button type="button" disabled={pending} onClick={() => {
+    document.cookie = `locale=${next}; path=/; max-age=31536000; SameSite=Lax`;
+    startTransition(() => router.refresh());
+  }} lang={next} aria-label={next === "bn" ? "বাংলায় দেখুন" : "Switch to English"} className="inline-flex min-h-10 min-w-11 items-center justify-center rounded-xl border border-border bg-white px-2.5 text-[13px] font-semibold text-foreground hover:bg-primary-light disabled:opacity-50">{pending ? "…" : next === "bn" ? "বাংলা" : "EN"}</button>;
 }

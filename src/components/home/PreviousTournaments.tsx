@@ -1,11 +1,15 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import Link from "next/link";
 import { useCompletedTournaments } from "@/lib/hooks/useCompletedTournaments";
 import { resolveBannerUrl } from "@/lib/utils/bannerUrl";
 import { formatDateOnly } from "@/lib/utils/formatDate";
 
 export function PreviousTournaments() {
+  const ui = useUiText();
+
   const { tournaments, loading } = useCompletedTournaments();
 
   if (loading) return null;
@@ -17,12 +21,11 @@ export function PreviousTournaments() {
 
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h2 className="font-esports font-bold text-xl text-foreground tracking-wide uppercase">Previous Tournaments</h2>
+            <h2 className="font-esports font-bold text-xl text-foreground tracking-wide uppercase">{ui("Previous Tournaments")}</h2>
             <div className="w-8 h-1 bg-primary rounded-full mt-1" />
           </div>
           <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-            {tournaments.length} completed
-          </span>
+            {tournaments.length}{ui("completed")}</span>
         </div>
 
         {/* Horizontal scroll on mobile, wrap grid on desktop */}
@@ -38,24 +41,20 @@ export function PreviousTournaments() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={resolveBannerUrl(t.bannerUrl, t.id)}
-                  alt={t.name}
+                  alt={ui(t.name)}
                   style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                 />
                 <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 60%)" }} />
 
                 {/* Completed badge */}
                 <div style={{ position: "absolute", top: 6, right: 6 }}>
-                  <span style={{ fontSize: "10px" }} className="bg-gray-700/80 text-white font-bold px-1.5 py-0.5 rounded-full">
-                    ✓ Done
-                  </span>
+                  <span style={{ fontSize: "10px" }} className="bg-gray-700/80 text-white font-bold px-1.5 py-0.5 rounded-full">{ui("✓ Done")}</span>
                 </div>
 
                 {/* Free/fee badge */}
                 {t.isFree && (
                   <div style={{ position: "absolute", top: 6, left: 6 }}>
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: "linear-gradient(90deg,#BF8E00,#FFD700,#BF8E00)", color: "#3B2500" }}>
-                      FREE
-                    </span>
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: "linear-gradient(90deg,#BF8E00,#FFD700,#BF8E00)", color: "#3B2500" }}>{ui("FREE")}</span>
                   </div>
                 )}
               </div>
@@ -71,12 +70,10 @@ export function PreviousTournaments() {
                   <span style={{ fontSize: "10px" }} className="font-semibold text-secondary bg-secondary/10 px-1.5 py-0.5 rounded-full">{t.mode}</span>
                 </div>
 
-                <p style={{ fontSize: "10px" }} className="text-muted-foreground">{formatDateOnly(t.startsAt)}</p>
+                <p style={{ fontSize: "10px" }} className="text-muted-foreground">{ui(formatDateOnly(t.startsAt))}</p>
 
                 <div className="pt-0.5">
-                  <span style={{ fontSize: "10px" }} className="block text-center font-bold text-primary bg-primary/8 border border-primary/20 rounded-lg py-1 group-hover:bg-primary group-hover:text-white transition-colors">
-                    View Results →
-                  </span>
+                  <span style={{ fontSize: "10px" }} className="block text-center font-bold text-primary bg-primary/8 border border-primary/20 rounded-lg py-1 group-hover:bg-primary group-hover:text-white transition-colors">{ui("View Results →")}</span>
                 </div>
               </div>
             </Link>

@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useAnnouncements } from "@/lib/hooks/useAnnouncements";
 import { useTournamentWinners } from "@/lib/hooks/useTournamentWinners";
 import { AnnouncementCard } from "@/components/announcements/AnnouncementCard";
@@ -15,6 +17,8 @@ const positionConfig: Record<number, { label: string; icon: string; bar: string;
 };
 
 function WinnerCard({ winner }: { winner: Winner }) {
+  const ui = useUiText();
+
   const cfg = positionConfig[winner.position] ?? positionConfig[3];
   return (
     <div className={`rounded-2xl border-2 ${cfg.bg} overflow-hidden`}>
@@ -22,7 +26,7 @@ function WinnerCard({ winner }: { winner: Winner }) {
       <div className="p-4 sm:p-5">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-xl">{cfg.icon}</span>
-          <span className={`font-bold text-xs uppercase tracking-widest ${cfg.text}`}>{cfg.label}</span>
+          <span className={`font-bold text-xs uppercase tracking-widest ${cfg.text}`}>{ui(cfg.label)}</span>
         </div>
         <p className="font-display text-xl sm:text-2xl text-foreground tracking-wide leading-tight mb-2">{winner.squadName}</p>
         <div className="flex flex-wrap gap-1 mb-3">
@@ -33,7 +37,7 @@ function WinnerCard({ winner }: { winner: Winner }) {
           ))}
         </div>
         <div className="flex items-center justify-between pt-2 border-t border-black/10">
-          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">Prize</span>
+          <span className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">{ui("Prize")}</span>
           <span className="font-display text-lg text-secondary tracking-wide">{winner.prize}</span>
         </div>
       </div>
@@ -42,6 +46,8 @@ function WinnerCard({ winner }: { winner: Winner }) {
 }
 
 function ResultsSection({ tournamentId }: { tournamentId: string }) {
+  const ui = useUiText();
+
   const { winners, loading } = useTournamentWinners(tournamentId);
 
   if (loading) {
@@ -56,10 +62,8 @@ function ResultsSection({ tournamentId }: { tournamentId: string }) {
     return (
       <div className="text-center py-8 bg-muted rounded-2xl">
         <p className="text-3xl mb-2">🏆</p>
-        <p className="text-sm font-semibold text-foreground">Results not posted yet</p>
-        <p className="text-xs text-muted-foreground mt-1">
-          Check back after the tournament — winners will appear here.
-        </p>
+        <p className="text-sm font-semibold text-foreground">{ui("Results not posted yet")}</p>
+        <p className="text-xs text-muted-foreground mt-1">{ui("Check back after the tournament — winners will appear here.")}</p>
       </div>
     );
   }
@@ -79,6 +83,8 @@ interface TournamentDashboardProps {
 }
 
 export function TournamentDashboard({ tournament, myRegistration }: TournamentDashboardProps) {
+  const ui = useUiText();
+
   const t = useTranslations("dashboard");
   const { announcements, loading } = useAnnouncements(tournament.id);
 
@@ -105,7 +111,7 @@ export function TournamentDashboard({ tournament, myRegistration }: TournamentDa
           <h2 className="font-display text-2xl text-foreground tracking-wide mb-4">
             {t("announcements")}
           </h2>
-          {loading ? (
+          {ui(loading ? (
             <div className="flex justify-center py-8"><Spinner /></div>
           ) : announcements.length === 0 ? (
             <div className="text-center py-8 bg-muted rounded-xl">
@@ -118,7 +124,7 @@ export function TournamentDashboard({ tournament, myRegistration }: TournamentDa
                 <AnnouncementCard key={a.id} announcement={a} />
               ))}
             </div>
-          )}
+          ))}
         </div>
       </div>
 
@@ -127,7 +133,7 @@ export function TournamentDashboard({ tournament, myRegistration }: TournamentDa
         <div className="lg:col-span-2">
           <div className="flex items-center gap-2 mb-4">
             <span className="w-2.5 h-2.5 bg-secondary rounded-full" />
-            <h2 className="font-display text-2xl text-foreground tracking-wide">Results</h2>
+            <h2 className="font-display text-2xl text-foreground tracking-wide">{ui("Results")}</h2>
           </div>
           <ResultsSection tournamentId={tournament.id} />
         </div>

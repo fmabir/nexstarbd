@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useState } from "react";
 import { useAnnouncements } from "@/lib/hooks/useAnnouncements";
 import { AnnouncementCard } from "@/components/announcements/AnnouncementCard";
@@ -8,6 +10,8 @@ import { Spinner } from "@/components/ui/Spinner";
 import { useTranslations } from "next-intl";
 
 export function AnnouncementsFeed() {
+  const ui = useUiText();
+
   const t = useTranslations("announcements");
   const { announcements, loading } = useAnnouncements(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -32,13 +36,11 @@ export function AnnouncementsFeed() {
               <button
                 onClick={() => setModalOpen(true)}
                 className="text-xs font-semibold text-primary hover:underline transition-colors"
-              >
-                View All
-              </button>
+              >{ui("View All")}</button>
             )}
           </div>
 
-          {loading ? (
+          {ui(loading ? (
             <div className="flex justify-center py-8">
               <Spinner />
             </div>
@@ -52,12 +54,10 @@ export function AnnouncementsFeed() {
                 <button
                   onClick={() => setModalOpen(true)}
                   className="w-full mt-4 py-3 px-4 border border-border rounded-xl text-center font-semibold text-primary hover:bg-muted transition-colors"
-                >
-                  View All {announcements.length} Announcements →
-                </button>
+                >{ui("View All")}{announcements.length}{ui("Announcements →")}</button>
               )}
             </div>
-          )}
+          ))}
         </div>
       </section>
 

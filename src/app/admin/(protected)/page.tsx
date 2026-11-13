@@ -1,7 +1,13 @@
+
+import { createUiText } from "@/components/i18n/ui-text";
+import { getLocale } from "next-intl/server";
 import { getAdminDb } from "@/lib/firebase/admin";
 import { connection } from "next/server";
 import { migratePrivateData } from "@/lib/server/privateData";
 import Link from "next/link";
+import { Badge, Card, Stat, TournamentStatusBadge, ApprovalBadge, EmptyState, PageHeader, buttonClass } from "@/components/admin/ui";
+import { AlertIcon, ChevronRightIcon, PlusIcon } from "@/components/admin/icons";
+import type { ApprovalStatus, TournamentStatus } from "@/lib/types";
 
 async function getDashboardStats() {
   // Only when an admin actually opens the page — never while the site is being built
@@ -71,137 +77,136 @@ async function getDashboardStats() {
   };
 }
 
-function StatCard({ label, value, sub, href, urgent }: {
-  label: string; value: number | string; sub?: string; href?: string; urgent?: boolean;
-}) {
-  const card = (
-    <div className={`bg-card rounded-2xl border p-5 flex flex-col gap-1 hover:shadow-md transition-shadow ${urgent && Number(value) > 0 ? "border-primary" : "border-border"}`}>
-      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</span>
-      <span className={`text-3xl font-bold ${urgent && Number(value) > 0 ? "text-primary" : "text-foreground"}`}>{value}</span>
-      {sub && <span className="text-xs text-muted-foreground">{sub}</span>}
-    </div>
-  );
-  return href ? <Link href={href}>{card}</Link> : card;
-}
-
 export default async function AdminDashboard() {
+  const ui = createUiText(await getLocale());
+
   const stats = await getDashboardStats();
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground text-sm mt-1">Overview of your platform</p>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title={ui("Dashboard")}
+        description="What needs your attention, and how the platform is doing."
+        actions={
+          <Link href="/admin/tournaments" className={buttonClass("primary", "md")}>
+            <PlusIcon size={18} />{ui("New tournament")}</Link>
+        }
+      />
 
-      {/* Urgent alert */}
+      {/* What needs doing first */}
       {stats.pendingApprovals > 0 && (
-        <Link href="/admin/tournaments">
-          <div className="bg-primary/10 border border-primary rounded-2xl px-5 py-4 flex items-center justify-between">
-            <div>
-              <p className="font-semibold text-primary text-sm">
-                {stats.pendingApprovals} squad{stats.pendingApprovals > 1 ? "s" : ""} waiting for approval
-              </p>
-              <p className="text-xs text-muted-foreground mt-0.5">Review and approve registrations</p>
-            </div>
-            <span className="text-primary font-bold text-sm">Review →</span>
-          </div>
+        <Link
+          href="/admin/registrations"
+          className="flex items-center gap-4 rounded-2xl bg-(--ad-warn-soft) border border-(--ad-warn)/25 px-5 py-4 hover:border-(--ad-warn)/50 transition-colors"
+        >
+          <span className="w-10 h-10 rounded-full bg-(--ad-surface) text-(--ad-warn) flex items-center justify-center shrink-0">
+            <AlertIcon size={20} />
+          </span>
+          <span className="flex-1 min-w-0">
+            <span className="block text-sm font-semibold text-(--ad-text)">
+              {stats.pendingApprovals}{ui("squad")}{ui(stats.pendingApprovals > 1 ? "s" : "")}{ui("waiting for approval")}</span>
+            <span className="block text-[13px] text-(--ad-dim)">{ui("Check payments and approve or reject them.")}</span>
+          </span>
+          <span className="hidden sm:inline text-sm font-semibold text-(--ad-warn)">{ui("Review")}</span>
+          <ChevronRightIcon size={18} className="text-(--ad-warn) shrink-0" />
         </Link>
       )}
 
-      {/* Tournament stats */}
-      <div>
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Tournaments</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <StatCard label="Total" value={stats.totalTournaments} href="/admin/tournaments" />
-          <StatCard label="Live Now" value={stats.liveTournaments} sub="ongoing" href="/admin/tournaments" />
-          <StatCard label="Upcoming" value={stats.upcomingTournaments} href="/admin/tournaments" />
-          <StatCard label="Completed" value={stats.completedTournaments} href="/admin/tournaments" />
+      <section>
+        <h2 className="text-[13px] font-semibold text-(--ad-dim) mb-2.5">{ui("Tournaments")}</h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <Stat label={ui("Total")} value={stats.totalTournaments} href="/admin/tournaments" />
+          <Stat label={ui("Live now")} value={stats.liveTournaments} tone={stats.liveTournaments > 0 ? "accent" : "neutral"} href="/admin/tournaments" />
+          <Stat label={ui("Upcoming")} value={stats.upcomingTournaments} href="/admin/tournaments" />
+          <Stat label={ui("Completed")} value={stats.completedTournaments} href="/admin/tournaments" />
         </div>
-      </div>
+      </section>
 
-      {/* Registration stats */}
-      <div>
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Registrations</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <StatCard label="Total Squads" value={stats.totalRegistrations} />
-          <StatCard label="Pending" value={stats.pendingApprovals} sub="needs action" href="/admin/tournaments" urgent />
-          <StatCard label="Approved" value={stats.approvedRegistrations} />
-          <StatCard label="Waitlisted" value={stats.waitlisted} />
+      <section>
+        <h2 className="text-[13px] font-semibold text-(--ad-dim) mb-2.5">{ui("Registrations")}</h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <Stat label={ui("Total squads")} value={stats.totalRegistrations} href="/admin/registrations" />
+          <Stat
+            label={ui("Pending")}
+            value={stats.pendingApprovals}
+            sub="needs action"
+            tone={stats.pendingApprovals > 0 ? "warn" : "neutral"}
+            href="/admin/registrations"
+          />
+          <Stat label={ui("Approved")} value={stats.approvedRegistrations} tone="success" href="/admin/registrations" />
+          <Stat label={ui("Waitlisted")} value={stats.waitlisted} href="/admin/registrations" />
         </div>
-      </div>
+      </section>
 
-      {/* Content stats */}
-      <div>
-        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Content</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <StatCard label="Announcements" value={stats.totalAnnouncements} href="/admin/announcements" />
-          <StatCard label="Hall of Fame" value={stats.totalWinners} href="/admin/winners" />
-          <StatCard label="MVP Players" value={stats.totalMvp} href="/admin/mvp" />
-          <StatCard label="Sponsors" value={stats.totalSponsors} href="/admin/sponsors" />
+      <section>
+        <h2 className="text-[13px] font-semibold text-(--ad-dim) mb-2.5">{ui("Content")}</h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <Stat label={ui("Announcements")} value={stats.totalAnnouncements} href="/admin/announcements" />
+          <Stat label={ui("Hall of Fame")} value={stats.totalWinners} tone="gold" href="/admin/winners" />
+          <Stat label={ui("MVP players")} value={stats.totalMvp} tone="gold" href="/admin/mvp" />
+          <Stat label={ui("Sponsors")} value={stats.totalSponsors} href="/admin/sponsors" />
         </div>
-      </div>
+      </section>
 
-      {/* Bottom two panels */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        {/* Active tournaments */}
-        <div className="bg-card rounded-2xl border border-border p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-foreground">Active Tournaments</h2>
-            <Link href="/admin/tournaments" className="text-xs text-primary hover:underline">View all →</Link>
-          </div>
-          {stats.activeTournaments.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No active tournaments.</p>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card
+          title={ui("Active tournaments")}
+          flush
+          actions={
+            <Link href="/admin/tournaments" className="text-[13px] font-semibold text-(--ad-accent)">{ui("View all")}</Link>
+          }
+        >
+          {ui(stats.activeTournaments.length === 0 ? (
+            <EmptyState title={ui("No active tournaments")} />
           ) : (
-            <div className="space-y-3">
+            <ul className="divide-y divide-(--ad-line)">
               {stats.activeTournaments.map((t: Record<string, unknown>) => (
-                <Link key={t.id as string} href={`/admin/tournaments/${t.id}`}
-                  className="flex items-center justify-between py-2 border-b border-border last:border-0 hover:opacity-70 transition-opacity">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{t.name as string}</p>
-                    <p className="text-xs text-muted-foreground">{t.registeredCount as number} / {t.maxSlots as number} squads</p>
-                  </div>
-                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                    t.status === "ongoing" ? "bg-primary/10 text-primary" : "bg-blue-50 text-blue-600"
-                  }`}>
-                    {t.status as string}
-                  </span>
-                </Link>
+                <li key={t.id as string}>
+                  <Link
+                    href={`/admin/tournaments/${t.id}`}
+                    className="flex items-center gap-3 px-5 sm:px-6 py-3.5 hover:bg-(--ad-raised) transition-colors"
+                  >
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-sm font-semibold text-(--ad-text) truncate">{t.name as string}</span>
+                      <span className="block text-xs text-(--ad-dim)">
+                        {t.registeredCount as number} / {t.maxSlots as number}{ui("squads")}</span>
+                    </span>
+                    <TournamentStatusBadge status={t.status as TournamentStatus} />
+                    <ChevronRightIcon size={16} className="text-(--ad-faint) shrink-0" />
+                  </Link>
+                </li>
               ))}
-            </div>
-          )}
-        </div>
+            </ul>
+          ))}
+        </Card>
 
-        {/* Recent registrations */}
-        <div className="bg-card rounded-2xl border border-border p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-foreground">Recent Registrations</h2>
-            <Link href="/admin/tournaments" className="text-xs text-primary hover:underline">View all →</Link>
-          </div>
-          {stats.recentRegistrations.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No registrations yet.</p>
+        <Card
+          title={ui("Recent registrations")}
+          flush
+          actions={
+            <Link href="/admin/registrations" className="text-[13px] font-semibold text-(--ad-accent)">{ui("View all")}</Link>
+          }
+        >
+          {ui(stats.recentRegistrations.length === 0 ? (
+            <EmptyState title={ui("No registrations yet")} />
           ) : (
-            <div className="space-y-3">
+            <ul className="divide-y divide-(--ad-line)">
               {stats.recentRegistrations.map((r: Record<string, unknown>) => (
-                <div key={r.id as string} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{r.squadName as string}</p>
-                    <p className="text-xs text-muted-foreground">by {r.leaderName as string}</p>
-                  </div>
-                  <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                    r.approvalStatus === "approved" ? "bg-green-50 text-green-600" :
-                    r.approvalStatus === "rejected" ? "bg-red-50 text-red-600" :
-                    "bg-yellow-50 text-yellow-600"
-                  }`}>
-                    {r.approvalStatus as string}
+                <li key={r.id as string} className="flex items-center gap-3 px-5 sm:px-6 py-3.5">
+                  <span className="flex-1 min-w-0">
+                    <span className="block text-sm font-semibold text-(--ad-text) truncate">{r.squadName as string}</span>
+                    <span className="block text-xs text-(--ad-dim) truncate">{ui("by")}{r.leaderName as string}</span>
                   </span>
-                </div>
+                  {ui(r.approvalStatus ? (
+                    <ApprovalBadge status={r.approvalStatus as ApprovalStatus} />
+                  ) : (
+                    <Badge>—</Badge>
+                  ))}
+                </li>
               ))}
-            </div>
-          )}
-        </div>
-
+            </ul>
+          ))}
+        </Card>
       </div>
     </div>
   );

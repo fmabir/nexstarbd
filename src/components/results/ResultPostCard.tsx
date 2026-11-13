@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
@@ -40,13 +42,15 @@ export function toView(post: ResultPost): ResultPostView {
 
 /** One Results post: tournament tag, title, text, photos. Tapping a photo opens it full screen. */
 export function ResultPostCard({ post, linkTournament = true }: { post: ResultPostView; linkTournament?: boolean }) {
+  const ui = useUiText();
+
   const [viewing, setViewing] = useState<number | null>(null);
   const close = useCallback(() => setViewing(null), []);
   const when = post.postedAt ? formatDistanceToNow(post.postedAt, { addSuffix: true }) : "just now";
 
   return (
     <article className={`${mCard} overflow-hidden`}>
-      <div className="px-4 pt-4 pb-4">
+      <div className="px-3 pt-3 pb-3">
         <div className="flex items-center gap-2 flex-wrap">
           {post.tournamentName &&
             (linkTournament && post.tournamentId ? (
@@ -59,7 +63,7 @@ export function ResultPostCard({ post, linkTournament = true }: { post: ResultPo
           <span className="text-[12px] text-m-faint">{when}</span>
         </div>
         {post.title && (
-          <h2 className="mt-2.5 font-m-display font-bold text-[21px] leading-tight text-m-text break-words">{post.title}</h2>
+          <h2 className="mt-2.5 font-m-display font-bold text-[18px] leading-tight text-m-text break-words">{ui(post.title)}</h2>
         )}
         {post.body && (
           <p className="mt-1.5 text-[15px] leading-relaxed text-m-text whitespace-pre-line break-words">{post.body}</p>
@@ -78,10 +82,12 @@ export function ResultPostCard({ post, linkTournament = true }: { post: ResultPo
  * four, the last one saying how many more), and open whole in the viewer.
  */
 function PhotoGrid({ photos, onOpen }: { photos: CardPhoto[]; onOpen: (i: number) => void }) {
+  const ui = useUiText();
+
   if (photos.length === 1) {
     const [p] = photos;
     return (
-      <button type="button" onClick={() => onOpen(0)} className="block w-full bg-m-raised" aria-label="Open photo">
+      <button type="button" onClick={() => onOpen(0)} className="block w-full bg-m-raised" aria-label={ui("Open photo")}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={p.src}
@@ -107,7 +113,7 @@ function PhotoGrid({ photos, onOpen }: { photos: CardPhoto[]; onOpen: (i: number
           onClick={() => onOpen(i)}
           // Three photos: the first runs the full height on the left
           className={`relative bg-m-raised ${photos.length === 3 && i === 0 ? "row-span-2" : "aspect-square"}`}
-          aria-label={`Open photo ${i + 1} of ${photos.length}`}
+          aria-label={ui(`Open photo ${i + 1} of ${photos.length}`)}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={p.src} alt="" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
@@ -128,6 +134,8 @@ function PhotoGrid({ photos, onOpen }: { photos: CardPhoto[]; onOpen: (i: number
  * Portalled to <body> (see Sheet for why).
  */
 function Lightbox({ photos, start, onClose }: { photos: CardPhoto[]; start: number; onClose: () => void }) {
+  const ui = useUiText();
+
   const railRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(start);
 
@@ -160,7 +168,7 @@ function Lightbox({ photos, start, onClose }: { photos: CardPhoto[]; start: numb
     "absolute top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center disabled:opacity-0 transition-opacity";
 
   return createPortal(
-    <div className="fixed inset-0 z-50 bg-black m-fade-in" role="dialog" aria-modal="true" aria-label="Photos">
+    <div className="fixed inset-0 z-50 bg-black m-fade-in" role="dialog" aria-modal="true" aria-label={ui("Photos")}>
       <div
         ref={railRef}
         onScroll={(e) => setIndex(Math.round(e.currentTarget.scrollLeft / e.currentTarget.clientWidth))}
@@ -182,7 +190,7 @@ function Lightbox({ photos, start, onClose }: { photos: CardPhoto[]; start: numb
           type="button"
           onClick={onClose}
           className="w-11 h-11 rounded-full flex items-center justify-center bg-white/15 hover:bg-white/25"
-          aria-label="Close"
+          aria-label={ui("Close")}
         >
           <CloseIcon size={22} />
         </button>
@@ -190,7 +198,7 @@ function Lightbox({ photos, start, onClose }: { photos: CardPhoto[]; start: numb
 
       {photos.length > 1 && (
         <>
-          <button type="button" onClick={() => go(index - 1)} disabled={index === 0} className={`${arrow} left-3`} aria-label="Previous photo">
+          <button type="button" onClick={() => go(index - 1)} disabled={index === 0} className={`${arrow} left-3`} aria-label={ui("Previous photo")}>
             <ChevronLeftIcon size={24} />
           </button>
           <button
@@ -198,7 +206,7 @@ function Lightbox({ photos, start, onClose }: { photos: CardPhoto[]; start: numb
             onClick={() => go(index + 1)}
             disabled={index === photos.length - 1}
             className={`${arrow} right-3`}
-            aria-label="Next photo"
+            aria-label={ui("Next photo")}
           >
             <ChevronRightIcon size={24} />
           </button>

@@ -1,3 +1,5 @@
+
+import { useUiText } from "@/components/i18n/ui-text";
 import Image from "next/image";
 import type { Winner } from "@/lib/types";
 import { formatShortDate } from "@/lib/utils/formatDate";
@@ -25,6 +27,8 @@ export function MobileHallOfFame({
   emptyText: string;
   winners: Winner[];
 }) {
+  const ui = useUiText();
+
   const podiums: Podium[] = [];
   const byId = new Map<string, Podium>();
   for (const w of winners) {
@@ -39,37 +43,37 @@ export function MobileHallOfFame({
   podiums.forEach((p) => p.winners.sort((a, b) => a.position - b.position));
 
   return (
-    <div className="md:hidden m-app">
-      <PageHeader title={title} subtitle={subtitle} art={art.trophy} />
+    <div className="player-container">
+      <PageHeader title={ui(title)} subtitle={ui(subtitle)} art={art.trophy} />
 
-      {podiums.length === 0 ? (
+      {ui(podiums.length === 0 ? (
         <div className="px-4">
-          <EmptyState art={art.trophy} title={emptyText} />
+          <EmptyState art={art.trophy} title={ui(emptyText)} />
         </div>
       ) : (
-        <div className="px-4 space-y-4">
+        <div className="px-4 grid md:grid-cols-2 gap-3 items-start">
           {podiums.map((p) => {
             const photo = p.winners.find((w) => w.position === 1)?.photoUrl;
             return (
               <article key={p.tournamentId} className={`${mCard} overflow-hidden`}>
                 {photo && (
-                  <div className="relative h-40 bg-m-raised">
-                    <Image src={photo} alt={p.winners[0].squadName} fill sizes="100vw" className="object-cover" />
+                  <div className="relative h-28 bg-m-raised">
+                    <Image src={photo} alt={ui(p.winners[0].squadName)} fill sizes="100vw" className="object-cover" />
                   </div>
                 )}
                 <header className="flex items-baseline justify-between gap-3 px-4 pt-4 pb-1">
                   <h2 className="font-m-display font-semibold text-[19px] leading-tight text-m-text truncate">{p.name}</h2>
-                  <span className="shrink-0 text-[12px] text-m-faint">{formatShortDate(p.date)}</span>
+                  <span className="shrink-0 text-[12px] text-m-faint">{ui(formatShortDate(p.date))}</span>
                 </header>
                 <ol className="px-4 divide-y divide-m-line">
                   {p.winners.map((w) => (
-                    <li key={w.id} className="flex items-center gap-3 py-3.5">
+                    <li key={w.id} className="flex items-center gap-3 py-2.5">
                       <PlaceBadge place={w.position} />
                       <div className="flex-1 min-w-0">
                         <span className={`block text-[11px] font-semibold uppercase tracking-[0.08em] ${placeText[w.position]}`}>
                           {placeName[w.position]}
                         </span>
-                        <p className="font-m-display font-bold text-[20px] leading-tight text-m-text truncate">{w.squadName}</p>
+                        <p className="font-m-display font-bold text-[18px] leading-tight text-m-text truncate">{w.squadName}</p>
                         <p className="text-[12px] text-m-dim line-clamp-2">{w.players.join(" · ")}</p>
                       </div>
                       <span className="shrink-0 font-m-display font-semibold text-[17px] text-m-gold-text">{w.prize}</span>
@@ -80,7 +84,7 @@ export function MobileHallOfFame({
             );
           })}
         </div>
-      )}
+      ))}
     </div>
   );
 }

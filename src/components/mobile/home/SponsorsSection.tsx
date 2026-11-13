@@ -1,9 +1,13 @@
+
+import { useUiText } from "@/components/i18n/ui-text";
 import Image from "next/image";
 import type { Sponsor } from "@/lib/types";
 import { Caption, Section } from "@/components/mobile/ui/primitives";
 
 /** Sponsor logos on white tiles (logos are drawn for light backgrounds), one grid per tier. */
 export function SponsorsSection({ sponsors }: { sponsors: Sponsor[] }) {
+  const ui = useUiText();
+
   const active = sponsors.filter((s) => s.isActive);
   if (active.length === 0) return null;
 
@@ -17,11 +21,11 @@ export function SponsorsSection({ sponsors }: { sponsors: Sponsor[] }) {
   ].filter((t) => t.items.length > 0);
 
   return (
-    <Section title="Partners">
+    <Section title={ui("Partners")}>
       <div className="px-4 space-y-4">
         {tiers.map((t) => (
           <div key={t.title}>
-            <Caption className="mb-2">{t.title}</Caption>
+            <Caption className="mb-2">{ui(t.title)}</Caption>
             <div className={`grid ${t.grid} gap-2`}>
               {t.items.map((s) => (
                 <a
@@ -30,9 +34,9 @@ export function SponsorsSection({ sponsors }: { sponsors: Sponsor[] }) {
                   target={s.websiteUrl ? "_blank" : undefined}
                   rel="noopener noreferrer"
                   className={`relative ${t.tile} rounded-xl bg-white border border-m-line overflow-hidden`}
-                  aria-label={s.name}
+                  aria-label={ui(s.name)}
                 >
-                  <Image src={s.logoUrl} alt={s.name} fill sizes={t.sizes} className="object-contain p-2.5" />
+                  <Image src={s.logoUrl} alt={ui(s.name)} fill sizes={t.sizes} className="object-contain p-2.5" />
                 </a>
               ))}
             </div>

@@ -1,11 +1,14 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
+import { LanguageToggle } from "@/components/layout/LanguageToggle";
 import { useId } from "react";
 import { useLoginFlow, type LoginMode } from "@/lib/hooks/useLoginFlow";
-import { ArtTile, BackLink, Wordmark, art, mBtn, mInput } from "@/components/mobile/ui/primitives";
+import { BackLink, Wordmark, mBtn, mInput } from "@/components/mobile/ui/primitives";
 import { CheckIcon } from "@/components/mobile/ui/icons";
 
-const linkBtn = "text-m-red-text font-semibold active:opacity-70";
+const linkBtn = "text-primary font-semibold active:opacity-70";
 const backBtn = "block mx-auto py-2 px-3 text-[14px] font-medium text-m-dim active:text-m-text";
 
 const heading: Record<Exclude<LoginMode, "success">, { title: string; subtitle: string }> = {
@@ -21,12 +24,14 @@ function Field({
   aside,
   ...input
 }: { label: string; aside?: React.ReactNode } & React.InputHTMLAttributes<HTMLInputElement>) {
+  const ui = useUiText();
+
   const id = useId();
   return (
     <div>
       <div className="flex items-center justify-between mb-1.5">
         <label htmlFor={id} className="text-[14px] font-medium text-m-text">
-          {label}
+          {ui(label)}
         </label>
         {aside}
       </div>
@@ -36,7 +41,7 @@ function Field({
 }
 
 function Spinner() {
-  return <div className="w-8 h-8 border-2 border-m-red border-t-transparent rounded-full animate-spin" />;
+  return <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />;
 }
 
 function Centered({ children }: { children: React.ReactNode }) {
@@ -47,6 +52,8 @@ function Centered({ children }: { children: React.ReactNode }) {
 
 /** Sign in / sign up / reset for phones — full screen, same flow as the desktop card. */
 export function MobileLogin() {
+  const ui = useUiText();
+
   const f = useLoginFlow();
 
   if (f.loading) {
@@ -63,9 +70,9 @@ export function MobileLogin() {
     return (
       <Centered>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/banners/lnsbd.png" alt="NexStarBD" className="w-16 h-16" />
+        <img src="/banners/lnsbd.png" alt={ui("NexStarBD")} className="w-16 h-16" />
         <Spinner />
-        <p className="text-[14px] font-medium text-m-dim">{f.localOverlay}</p>
+        <p className="text-[14px] font-medium text-m-dim">{ui(f.localOverlay)}</p>
       </Centered>
     );
   }
@@ -76,8 +83,8 @@ export function MobileLogin() {
         <span className="w-16 h-16 rounded-full bg-m-green/15 text-m-green-text flex items-center justify-center">
           <CheckIcon size={30} />
         </span>
-        <p className="text-[17px] font-semibold text-m-text max-w-[18rem]">{f.successMsg}</p>
-        <p className="text-[14px] text-m-dim">Redirecting you now…</p>
+        <p className="text-[17px] font-semibold text-m-text max-w-[18rem]">{ui(f.successMsg)}</p>
+        <p className="text-[14px] text-m-dim">{ui("Redirecting you now…")}</p>
         <Spinner />
       </Centered>
     );
@@ -99,7 +106,7 @@ export function MobileLogin() {
           maxLength={1}
           value={digit}
           autoComplete={i === 0 ? "one-time-code" : "off"}
-          aria-label={`Digit ${i + 1}`}
+          aria-label={ui(`Digit ${i + 1}`)}
           onChange={(e) => f.handleOtpInput(i, e.target.value)}
           onKeyDown={(e) => f.handleOtpKeyDown(i, e)}
           onKeyUp={(e) => {
@@ -108,93 +115,84 @@ export function MobileLogin() {
               setTimeout(() => f.otpRefs.current[i + 1]?.focus(), 0);
             }
           }}
-          className="m-field flex-1 min-w-0 max-w-14 h-14 rounded-xl border border-m-line text-center font-sans font-semibold text-[24px] tabular-nums text-m-text focus:outline-none focus:border-m-red focus:ring-2 focus:ring-m-red/25"
+          className="m-field flex-1 min-w-0 max-w-14 h-14 rounded-xl border border-m-line text-center font-sans font-semibold text-[24px] tabular-nums text-m-text focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25"
         />
       ))}
     </div>
   );
 
   const resend = () => (
-    <p className="text-center text-[14px] text-m-dim">
-      Didn&apos;t get the code?{" "}
+    <p className="text-center text-[14px] text-m-dim">{ui("Didn't get the code?")}{ui(" ")}
       <button type="button" onClick={f.handleResend} disabled={f.resendCooldown > 0} className={`${linkBtn} disabled:opacity-50`}>
-        {f.resendCooldown > 0 ? `Resend in ${f.resendCooldown}s` : "Resend"}
+        {ui(f.resendCooldown > 0 ? ui(`Resend in ${f.resendCooldown}s`) : "Resend")}
       </button>
     </p>
   );
 
   const sentTo = (lead: string) => (
     <p className="text-[14px] text-m-dim text-center">
-      {lead} <span className="font-semibold text-m-text break-all">{f.email}</span>
+      {ui(lead)} <span className="font-semibold text-m-text break-all">{f.email}</span>
     </p>
   );
 
   const submit = (idle: string, working: string) => (
     <button type="submit" disabled={f.busy} className={`${mBtn.primary} w-full disabled:opacity-60`}>
-      {f.busy ? working : idle}
+      {ui(f.busy ? working : idle)}
     </button>
   );
 
   return (
-    <div className="m-app min-h-dvh flex flex-col px-5 pt-2 pb-10">
+    <div className="max-w-[440px] mx-auto px-5 pt-4 pb-12 md:mt-6 md:mb-8 md:rounded-3xl md:border md:border-m-line md:bg-white md:px-6 md:py-5">
       <div className="h-12 flex items-center justify-between">
-        <BackLink href="/" label="Home" />
-        <Wordmark size={24} />
+        <BackLink href="/" label={ui("Home")} />
+        <div className="flex items-center gap-2"><LanguageToggle /><Wordmark size={24} /></div>
       </div>
 
-      <div className="mt-2 mb-7">
-        <ArtTile src={art.squad} sizes="100vw" className="w-full h-52" />
-        <h1 className="mt-6 font-m-display font-bold text-[34px] leading-[1.05] text-m-text">{h.title}</h1>
-        <p className="mt-1.5 text-[15px] text-m-dim">{h.subtitle}</p>
+      <div className="mt-5 mb-5">
+        <h1 className="font-m-display font-bold text-[28px] leading-[1.05] text-m-text">{ui(h.title)}</h1>
+        <p className="mt-1.5 text-[15px] text-m-dim">{ui(h.subtitle)}</p>
       </div>
 
       {f.error && (
         <div className="mb-4 rounded-xl border border-m-red/40 bg-m-red/10 px-4 py-3 text-[14px] text-m-red-text" role="alert">
-          {f.error}
+          {ui(f.error)}
         </div>
       )}
       {f.info && (
         <div className="mb-4 rounded-xl border border-m-green/35 bg-m-green/10 px-4 py-3 text-[14px] text-m-green-text" role="status">
-          {f.info}
+          {ui(f.info)}
         </div>
       )}
 
       {f.mode === "verify" && (
-        <form onSubmit={f.handleVerifySignup} className="space-y-5">
+        <form onSubmit={f.handleVerifySignup} className="space-y-4">
           {sentTo("We sent a 6-digit code to")}
           {otpBoxes()}
           {submit("Verify email", "Verifying…")}
           {resend()}
-          <button type="button" onClick={() => f.switchMode("signup")} className={backBtn}>
-            ← Back
-          </button>
+          <button type="button" onClick={() => f.switchMode("signup")} className={backBtn}>{ui("← Back")}</button>
         </form>
       )}
 
       {f.mode === "forgot" && (
         <form onSubmit={f.handleSendResetOtp} className="space-y-4">
           <Field
-            label="Email"
+            label={ui("Email")}
             type="email"
             value={f.email}
             onChange={(e) => f.setEmail(e.target.value)}
-            placeholder="you@gmail.com"
+            placeholder={ui("you@gmail.com")}
             required
             autoComplete="email"
           />
           {f.email && f.email.includes("@") && sentTo("We'll send a reset code to")}
           {submit("Send reset code", "Sending…")}
           {f.email && (
-            <p className="text-center text-[13px] text-m-dim">
-              Wrong email?{" "}
-              <button type="button" onClick={() => f.setEmail("")} className={linkBtn}>
-                Change it
-              </button>
+            <p className="text-center text-[13px] text-m-dim">{ui("Wrong email?")}{ui(" ")}
+              <button type="button" onClick={() => f.setEmail("")} className={linkBtn}>{ui("Change it")}</button>
             </p>
           )}
-          <button type="button" onClick={() => f.switchMode("signin")} className={backBtn}>
-            ← Back to sign in
-          </button>
+          <button type="button" onClick={() => f.switchMode("signin")} className={backBtn}>{ui("← Back to sign in")}</button>
         </form>
       )}
 
@@ -203,28 +201,26 @@ export function MobileLogin() {
           {sentTo("Enter the code sent to")}
           {otpBoxes()}
           <Field
-            label="New password"
+            label={ui("New password")}
             type="password"
             value={f.newPassword}
             onChange={(e) => f.setNewPassword(e.target.value)}
-            placeholder="Min. 6 characters"
+            placeholder={ui("Min. 6 characters")}
             required
             autoComplete="new-password"
           />
           <Field
-            label="Confirm password"
+            label={ui("Confirm password")}
             type="password"
             value={f.confirmPassword}
             onChange={(e) => f.setConfirmPassword(e.target.value)}
-            placeholder="Repeat new password"
+            placeholder={ui("Repeat new password")}
             required
             autoComplete="new-password"
           />
           {submit("Reset password", "Resetting…")}
           {resend()}
-          <button type="button" onClick={() => f.switchMode("forgot")} className={backBtn}>
-            ← Back
-          </button>
+          <button type="button" onClick={() => f.switchMode("forgot")} className={backBtn}>{ui("← Back")}</button>
         </form>
       )}
 
@@ -233,50 +229,48 @@ export function MobileLogin() {
           <form onSubmit={f.mode === "signup" ? f.handleSignUp : f.handleSignIn} className="space-y-4">
             {f.mode === "signup" && (
               <Field
-                label="Your name"
+                label={ui("Your name")}
                 type="text"
                 value={f.displayName}
                 onChange={(e) => f.setDisplayName(e.target.value)}
-                placeholder="e.g. Safwan"
+                placeholder={ui("e.g. Safwan")}
                 autoComplete="name"
               />
             )}
             <Field
-              label="Email"
+              label={ui("Email")}
               type="email"
               value={f.email}
               onChange={(e) => f.setEmail(e.target.value)}
-              placeholder="you@gmail.com"
+              placeholder={ui("you@gmail.com")}
               required
               autoComplete="email"
             />
             <Field
-              label="Password"
+              label={ui("Password")}
               aside={
                 f.mode === "signin" && (
-                  <button type="button" onClick={f.handleForgotClick} className={`${linkBtn} text-[13px] py-1`}>
-                    Forgot password?
-                  </button>
+                  <button type="button" onClick={f.handleForgotClick} className={`${linkBtn} text-[13px] py-1`}>{ui("Forgot password?")}</button>
                 )
               }
               type="password"
               value={f.password}
               onChange={(e) => f.setPassword(e.target.value)}
-              placeholder={f.mode === "signup" ? "Min. 6 characters" : "Your password"}
+              placeholder={ui(f.mode === "signup" ? "Min. 6 characters" : "Your password")}
               required
               autoComplete={f.mode === "signup" ? "new-password" : "current-password"}
             />
             <div className="pt-1">{submit(f.mode === "signin" ? "Sign in" : "Create account", "Please wait…")}</div>
           </form>
 
-          <p className="mt-6 text-center text-[14px] text-m-dim">
-            {f.mode === "signin" ? "Don't have an account?" : "Already have an account?"}{" "}
+          <p className="mt-4 text-center text-[14px] text-m-dim">
+            {ui(f.mode === "signin" ? "Don't have an account?" : "Already have an account?")}{ui(" ")}
             <button
               type="button"
               onClick={() => f.switchMode(f.mode === "signin" ? "signup" : "signin")}
               className={`${linkBtn} py-2`}
             >
-              {f.mode === "signin" ? "Create one" : "Sign in"}
+              {ui(f.mode === "signin" ? "Create one" : "Sign in")}
             </button>
           </p>
         </>

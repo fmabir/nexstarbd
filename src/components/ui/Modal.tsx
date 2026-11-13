@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import React, { useEffect } from "react";
 
 interface ModalProps {
@@ -10,6 +12,8 @@ interface ModalProps {
 }
 
 export function Modal({ open, onClose, title, children }: ModalProps) {
+  const ui = useUiText();
+
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -29,7 +33,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
       <div className="relative bg-card rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto z-10">
         {title && (
           <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-            <h2 className="font-display text-2xl text-foreground tracking-wide">{title}</h2>
+            <h2 className="font-display text-2xl text-foreground tracking-wide">{ui(title)}</h2>
             <button
               onClick={onClose}
               className="text-muted-foreground hover:text-foreground text-2xl leading-none"

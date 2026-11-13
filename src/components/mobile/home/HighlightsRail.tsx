@@ -1,5 +1,7 @@
 "use client";
 
+import { useUiText } from "@/components/i18n/ui-text";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -47,10 +49,12 @@ function WelcomeSlide() {
 }
 
 function BannerSlide() {
+  const ui = useUiText();
+
   return (
     <div className={slideShell}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/banners/bgbn.png" alt="NexStarBD — hunting the best Free Fire players in Bangladesh" className="w-full h-full object-cover" />
+      <img src="/banners/bgbn.png" alt={ui("NexStarBD — hunting the best Free Fire players in Bangladesh")} className="w-full h-full object-cover" />
     </div>
   );
 }
@@ -77,6 +81,8 @@ function PodiumLine({ place, winner }: { place: 1 | 2; winner: Winner }) {
 }
 
 function ChampionSlide({ champion, runnerUp, tournamentName }: { champion: Winner; runnerUp: Winner | null; tournamentName: string }) {
+  const ui = useUiText();
+
   return (
     <div className={slideShell}>
       <div className="absolute top-2 right-2 w-[88px] h-[88px]">
@@ -85,18 +91,16 @@ function ChampionSlide({ champion, runnerUp, tournamentName }: { champion: Winne
       <div className="relative h-full flex flex-col p-4">
         <div className="pr-24">
           <p className="flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.08em] text-m-gold-text">
-            <CrownIcon size={16} className="shrink-0" />
-            Champions
-          </p>
+            <CrownIcon size={16} className="shrink-0" />{ui("Champions")}</p>
           <p className="mt-0.5 text-[13px] text-m-faint truncate">{tournamentName}</p>
         </div>
         <div className="mt-auto space-y-3">
           <PodiumLine place={1} winner={champion} />
-          {runnerUp ? (
+          {ui(runnerUp ? (
             <PodiumLine place={2} winner={runnerUp} />
           ) : (
-            <p className="text-[12px] text-m-faint pl-10">No runner-up recorded</p>
-          )}
+            <p className="text-[12px] text-m-faint pl-10">{ui("No runner-up recorded")}</p>
+          ))}
         </div>
       </div>
     </div>
@@ -104,6 +108,8 @@ function ChampionSlide({ champion, runnerUp, tournamentName }: { champion: Winne
 }
 
 function LeaderboardSlide({ player }: { player: MvpPlayer }) {
+  const ui = useUiText();
+
   return (
     <div className={slideShell}>
       {/* mvpbg is a bright scene with the player on the right — fade it to white under the text */}
@@ -112,22 +118,19 @@ function LeaderboardSlide({ player }: { player: MvpPlayer }) {
       <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-white/0" />
       <div className="relative h-full flex flex-col p-4 w-[72%]">
         <p className="flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.08em] text-m-red-text">
-          <CrosshairIcon size={16} className="shrink-0" />
-          Top kills
-        </p>
+          <CrosshairIcon size={16} className="shrink-0" />{ui("Top kills")}</p>
         <p className="mt-0.5 text-[13px] text-m-faint truncate">{player.tournamentName}</p>
         <div className="mt-auto min-w-0">
           <p className="font-m-display font-bold text-[22px] leading-tight text-m-text truncate">{player.playerName}</p>
-          <p className="text-[12px] font-mono text-m-dim truncate">UID {player.uid}</p>
+          <p className="text-[12px] font-mono text-m-dim truncate">{ui("UID")}{player.uid}</p>
           <p className="mt-1.5 flex items-baseline gap-2">
             <span className="font-m-display font-bold text-[44px] leading-[0.9] tabular-nums text-m-red-text">{player.kills}</span>
-            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-m-dim">
-              Kills{player.damage ? ` · ${player.damage.toLocaleString()} dmg` : ""}
+            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-m-dim">{ui("Kills")}{ui(player.damage ? ` · ${player.damage.toLocaleString()} dmg` : "")}
             </span>
           </p>
           {player.achievement && (
             <Chip tone="gold" className="mt-2 max-w-full">
-              <span className="truncate">{player.achievement}</span>
+              <span className="truncate">{ui(player.achievement)}</span>
             </Chip>
           )}
         </div>
@@ -137,6 +140,8 @@ function LeaderboardSlide({ player }: { player: MvpPlayer }) {
 }
 
 function UpcomingSlide({ tournament: t }: { tournament: Tournament }) {
+  const ui = useUiText();
+
   const banner = resolveBanner(t.bannerUrl, t.id);
   return (
     <Link href={`/tournaments/${t.id}`} className={`${slideShell} block`}>
@@ -150,12 +155,12 @@ function UpcomingSlide({ tournament: t }: { tournament: Tournament }) {
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 p-4">
         <span className={`inline-block ${onImage}`}>
-          <Chip>Upcoming</Chip>
+          <Chip>{ui("Upcoming")}</Chip>
         </span>
         <p className="mt-2 font-m-display font-bold text-[21px] leading-[1.15] text-white line-clamp-2">{t.name}</p>
         <p className="mt-0.5 text-[13px] text-white/80 truncate">
           {/* Bright gold: this line sits on the dark photo, not the white page */}
-          <span className="font-semibold text-m-gold">{t.prizePool}</span> · {formatTimeOnly(t.startsAt)} · {formatDateOnly(t.startsAt)}
+          <span className="font-semibold text-m-gold">{t.prizePool}</span> · {ui(formatTimeOnly(t.startsAt))} · {ui(formatDateOnly(t.startsAt))}
         </p>
       </div>
     </Link>
@@ -172,6 +177,8 @@ export function HighlightsRail({
   mvpPlayers: MvpPlayer[];
   upcomingTournaments: Tournament[];
 }) {
+  const ui = useUiText();
+
   // Champion + runner-up of the same tournament share a slide
   const byTournament = new Map<string, { champion?: Winner; runnerUp?: Winner; tournamentName: string }>();
   for (const w of winners) {
@@ -243,7 +250,7 @@ export function HighlightsRail({
   };
 
   return (
-    <div role="region" aria-roledescription="carousel" aria-label="Highlights">
+    <div role="region" aria-roledescription="carousel" aria-label={ui("Highlights")}>
       <div
         ref={railRef}
         onScroll={onScroll}
@@ -256,7 +263,7 @@ export function HighlightsRail({
             key={i}
             className="snap-start shrink-0 w-[86%] h-[204px]"
             aria-roledescription="slide"
-            aria-label={`${i + 1} of ${slides.length}`}
+            aria-label={ui(`${i + 1} of ${slides.length}`)}
           >
             {slide.type === "welcome" && <WelcomeSlide />}
             {slide.type === "banner" && <BannerSlide />}
@@ -280,7 +287,7 @@ export function HighlightsRail({
                 goTo(i);
               }}
               className="flex items-center justify-center h-6 w-5"
-              aria-label={`Go to slide ${i + 1}`}
+              aria-label={ui(`Go to slide ${i + 1}`)}
               aria-current={i === current}
             >
               <span

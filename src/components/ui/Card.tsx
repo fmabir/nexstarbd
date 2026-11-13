@@ -1,3 +1,5 @@
+
+import { useUiText } from "@/components/i18n/ui-text";
 import React from "react";
 
 interface CardProps {
@@ -16,6 +18,8 @@ interface CardProps {
  * ground keeps it readable instead of stacking dark text on saturated pink.
  */
 export function Card({ children, className = "", accent = "none", bare = false }: CardProps) {
+  const ui = useUiText();
+
   const accentStyles = {
     primary: "border-l-4 border-l-primary",
     secondary: "border-l-4 border-l-secondary",
@@ -26,7 +30,7 @@ export function Card({ children, className = "", accent = "none", bare = false }
     <div
       className={`bg-card rounded-2xl shadow-sm p-1.5 ${accentStyles[accent]} ${className}`}
     >
-      {bare ? children : <div className="bg-panel rounded-xl p-5">{children}</div>}
+      {ui(bare ? children : <div className="bg-panel rounded-xl p-5">{children}</div>)}
     </div>
   );
 }

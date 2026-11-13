@@ -1,7 +1,11 @@
+
+import { useUiText } from "@/components/i18n/ui-text";
 import Image from "next/image";
 import type { Sponsor } from "@/lib/types";
 
 export function SponsorsSection({ sponsors }: { sponsors: Sponsor[] }) {
+  const ui = useUiText();
+
   const active = sponsors.filter((s) => s.isActive);
   if (active.length === 0) return null;
 
@@ -19,7 +23,7 @@ export function SponsorsSection({ sponsors }: { sponsors: Sponsor[] }) {
     >
       <Image
         src={sponsor.logoUrl}
-        alt={sponsor.name}
+        alt={ui(sponsor.name)}
         fill
         className="object-contain"
       />
@@ -32,9 +36,7 @@ export function SponsorsSection({ sponsors }: { sponsors: Sponsor[] }) {
       {heroBanners.length > 0 && (
         <div className="bg-gradient-to-r from-muted to-muted/50 py-8 border-b border-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-6">
-              Platinum Partners
-            </p>
+            <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-6">{ui("Platinum Partners")}</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {heroBanners.map((sponsor) => (
                 <SponsorLink
@@ -52,9 +54,7 @@ export function SponsorsSection({ sponsors }: { sponsors: Sponsor[] }) {
       {standardBanners.length > 0 && (
         <div className="py-10 border-b border-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-8">
-              Our Sponsors &amp; Partners
-            </p>
+            <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-8">{ui("Our Sponsors & Partners")}</p>
             <div className="flex flex-wrap items-center justify-center gap-8">
               {standardBanners.map((sponsor) => (
                 <SponsorLink
@@ -72,9 +72,7 @@ export function SponsorsSection({ sponsors }: { sponsors: Sponsor[] }) {
       {sidebarBanners.length > 0 && (
         <div className="py-8 bg-muted/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-6">
-              Supporting Partners
-            </p>
+            <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-6">{ui("Supporting Partners")}</p>
             <div className="flex flex-wrap items-center justify-center gap-6">
               {sidebarBanners.map((sponsor) => (
                 <SponsorLink
