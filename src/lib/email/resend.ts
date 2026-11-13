@@ -11,7 +11,9 @@ export async function sendOtpEmail(
   const isReset = type === "password_reset";
   const verifyUrl = `https://nexstarbd.com/login?email=${encodeURIComponent(email)}&otp=${otp}&type=${type}`;
 
-  await resend.emails.send({
+  // Resend reports failures in the result rather than throwing; surface them
+  // so the player is told, instead of waiting for an email that never comes
+  const { error } = await resend.emails.send({
     from: "NexStarBD <noreply@nexstarbd.com>",
     to: email,
     subject: isReset
@@ -93,4 +95,5 @@ export async function sendOtpEmail(
 </html>
     `,
   });
+  if (error) throw new Error(`Email not sent: ${error.message}`);
 }

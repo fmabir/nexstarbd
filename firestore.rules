@@ -64,5 +64,10 @@ service cloud.firestore {
     match /pendingVerifications/{email} {
       allow read, write: if false; // Admin SDK only
     }
+
+    // Per-address and per-IP counters capping how many codes are emailed
+    match /otpRateLimits/{key} {
+      allow read, write: if false; // Admin SDK only
+    }
   }
 }

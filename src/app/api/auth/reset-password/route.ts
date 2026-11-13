@@ -1,11 +1,13 @@
 import { type NextRequest } from "next/server";
-import { adminAuth, adminDb } from "@/lib/firebase/admin";
+import { adminAuth } from "@/lib/firebase/admin";
+import { consumeOtp, normalizeEmail } from "@/lib/server/otp";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { email, otp, newPassword } = body;
+  const email = normalizeEmail(body.email);
+  const { otp, newPassword } = body;
 
-  if (!email || !otp || !newPassword) {
+  if (!email || !otp || typeof newPassword !== "string" || !newPassword) {
     return Response.json({ error: "Missing required fields" }, { status: 400 });
   }
 
@@ -14,28 +16,14 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const doc = await adminDb.collection("pendingVerifications").doc(email).get();
-    if (!doc.exists) return Response.json({ error: "invalid-otp" }, { status: 400 });
+    // Reset codes only; wrong guesses are counted and the code is used up on success
+    const result = await consumeOtp(email, otp, "password_reset");
+    if (!result.ok) return Response.json({ error: result.error }, { status: 400 });
 
-    const data = doc.data()!;
-
-    if (data.type !== "password_reset") {
-      return Response.json({ error: "invalid-otp" }, { status: 400 });
-    }
-    if (Date.now() > data.expiresAt) {
-      await doc.ref.delete();
-      return Response.json({ error: "otp-expired" }, { status: 400 });
-    }
-    if (data.otp !== otp) {
-      return Response.json({ error: "invalid-otp" }, { status: 400 });
-    }
-
-    // Update password and clean up
-    await adminAuth.updateUser(data.uid, { password: newPassword });
-    await doc.ref.delete();
+    await adminAuth.updateUser(result.uid, { password: newPassword });
 
     // Sign user in with custom token
-    const customToken = await adminAuth.createCustomToken(data.uid);
+    const customToken = await adminAuth.createCustomToken(result.uid);
     return Response.json({ ok: true, customToken });
   } catch (err) {
     console.error("reset-password error:", err);

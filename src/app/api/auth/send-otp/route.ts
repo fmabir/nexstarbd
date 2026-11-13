@@ -1,22 +1,27 @@
 import { type NextRequest } from "next/server";
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { sendOtpEmail } from "@/lib/email/resend";
-
-function generateOtp(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
+import { generateOtp, mayRequestOtp, normalizeEmail, saveOtp } from "@/lib/server/otp";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { email, password, displayName, resendOnly, type } = body;
+  const { password, displayName, resendOnly, type } = body;
+  const email = normalizeEmail(body.email);
 
   if (!email) return Response.json({ error: "Email is required" }, { status: 400 });
 
   const isPasswordReset = type === "password_reset";
+  if (!isPasswordReset && !resendOnly && typeof password === "string" && password.length < 6) {
+    return Response.json({ error: "weak-password" }, { status: 400 });
+  }
 
   try {
+    // Before touching any account: caps how many codes an address (and an IP) can be sent
+    if (!(await mayRequestOtp(request, email))) {
+      return Response.json({ error: "too-many-requests" }, { status: 429 });
+    }
+
     const otp = generateOtp();
-    const expiresAt = Date.now() + 10 * 60 * 1000;
 
     let uid: string;
     let name: string = displayName || "";
@@ -76,10 +81,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    await adminDb.collection("pendingVerifications").doc(email).set({
-      uid, otp, expiresAt, email,
-      type: isPasswordReset ? "password_reset" : "signup",
-    });
+    await saveOtp(email, uid, otp, isPasswordReset ? "password_reset" : "signup");
 
     await sendOtpEmail(email, otp, name, isPasswordReset ? "password_reset" : "signup");
 
